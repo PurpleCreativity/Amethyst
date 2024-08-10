@@ -1,11 +1,11 @@
 import { ActivityType, Guild, User } from "discord.js";
-import AmetronClient from "../classes/AmetronClient.js";
+import SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "crypto";
 
 export default class Functions {
-    client: AmetronClient;
+    client: SuperClient;
 
-    constructor(client: AmetronClient) {
+    constructor(client: SuperClient) {
         this.client = client;
     }
 
@@ -139,6 +139,11 @@ export default class Functions {
 
     GenerateID = () => {
 		return crypto.randomUUID();
+	};
+
+	MemoryUsage = () => {
+		const used = process.memoryUsage().heapUsed / 1024 / 1024;
+		return Math.round(used)
 	};
 
     CreateAcronym = (string : string) => {
