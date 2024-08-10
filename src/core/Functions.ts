@@ -211,6 +211,10 @@ export default class Functions {
 		this.client.user.setActivity(text, { type: activityType });
 	}
 
+	isDev = (userID: string) => {
+		return this.client.config.devList.includes(userID);
+	}
+
     pcall = async <Params extends any[], Ret>(func: (...args: Params) => Ret, ...args: Params) => {
 		try {
 			return [true, await func(...args)]
