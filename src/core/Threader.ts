@@ -127,6 +127,10 @@ class Threader {
 	constructor(client : SuperClient) {
 		this.client = client;
 	}
+
+	Init = () => {
+		this.client.success("Initialized Threader");
+	}
 	
 	CreateThread = <V extends (...args : any[]) => any>(name : string, func : V) => {
 		const thread = new this.Thread(this, name, func);

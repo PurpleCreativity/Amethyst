@@ -8,6 +8,7 @@ import axios, { Axios } from "axios";
 import mongoose, { Mongoose } from "mongoose";
 import WrapBlox from "wrapblox";
 import Threader from "../core/Threader.js";
+import Events from "../core/Events.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -16,6 +17,7 @@ class SuperClient extends Client {
     config: Config = config;
     Functions: Functions
 	Threader: Threader;
+	Events: Events;
 
     //? Dependencies
     Axios: Axios = axios;
@@ -28,6 +30,7 @@ class SuperClient extends Client {
 
     //? Variables
     devMode: boolean = this.Arguments.includes("--dev");
+	maintenanceMode: false;
 	MemoryUsage: number[] = [];
 
     //* Log Functions
@@ -116,6 +119,8 @@ class SuperClient extends Client {
         this.config.credentials.encryptionKey = process.env.encryptionKey as string;
 
 		await this.Functions.Init();
+		await this.Threader.Init();
+		await this.Events.Init();
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
     }
@@ -125,7 +130,8 @@ class SuperClient extends Client {
 
         this.Functions = new Functions(this);
 		this.Threader = new Threader(this);
-    }
+		this.Events = new Events(this);
+	}
 }
 
 export default SuperClient;
