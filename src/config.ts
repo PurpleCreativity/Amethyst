@@ -11,6 +11,10 @@ config.version = "1.0.0"
 config.baseURL = "https://ametron-71e64ed61077.herokuapp.com/"
 config.port = process.env.PORT ? parseInt(process.env.PORT) : 3003
 
+config.devList = [
+	"762329291169857537" // Purple_Creativity
+]
+
 config.credentials = {
     discordToken: "",
     robloxCookie: "",

@@ -4,6 +4,8 @@ type Config = {
     baseURL: string;
     port: number;
 
+    devList: string[];
+
     credentials: {
         discordToken: string;
         robloxCookie: string;
