@@ -7,7 +7,9 @@ dotenv.config();
 const config = {} as Config;
 
 config.version = "1.0.0"
+
 config.baseURL = "https://ametron-71e64ed61077.herokuapp.com/"
+config.port = process.env.PORT ? parseInt(process.env.PORT) : 3003
 
 config.credentials = {
     discordToken: "",

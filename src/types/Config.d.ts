@@ -2,6 +2,7 @@ type Config = {
     version: string;
 
     baseURL: string;
+    port: number;
 
     credentials: {
         discordToken: string;
