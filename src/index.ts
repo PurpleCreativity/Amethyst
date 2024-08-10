@@ -26,3 +26,5 @@ client.Threader.CreateThread("MemoryUsage", async () => {
 	}
 	client.verbose(`Memory usage is at ${used}MB (${percentage}%)`);
 }).Loop(1000 * 10);
+
+export default client;
