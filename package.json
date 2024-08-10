@@ -12,7 +12,6 @@
     "start": "node . --full",
     "prod": "tsc && node .",
     "dev": "tsc && node . --dev",
-
     "lint": "biome lint ."
   },
   "keywords": [],
