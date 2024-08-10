@@ -9,8 +9,6 @@ const config = {} as Config;
 config.version = "1.0.0"
 config.baseURL = "https://ametron-71e64ed61077.herokuapp.com/"
 
-config.debugMode = true;
-
 config.credentials = {
     discordToken: "",
     robloxCookie: "",

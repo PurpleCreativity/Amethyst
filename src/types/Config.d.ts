@@ -3,8 +3,6 @@ type Config = {
 
     baseURL: string;
 
-    debugMode: boolean;
-
     credentials: {
         discordToken: string;
         robloxCookie: string;
