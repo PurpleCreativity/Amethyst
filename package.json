@@ -1,6 +1,7 @@
 {
   "name": "ametron",
   "version": "1.0.0",
+  "description": "Ametron a multipurpose discord bot",
   "main": "./build/index.js",
   "exports": {
     ".": "./build/index.js"
@@ -15,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "typescript": "^5.5.4"
   },
