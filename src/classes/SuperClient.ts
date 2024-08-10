@@ -124,8 +124,6 @@ class SuperClient extends Client {
 		await this.Events.Init();
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
-
-		console.log(this)
     }
 
     constructor(options: ClientOptions) {
