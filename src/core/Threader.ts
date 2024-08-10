@@ -128,7 +128,7 @@ class Threader {
 		this.client = client;
 	}
 
-	Init = () => {
+	Init = async () => {
 		this.client.success("Initialized Threader");
 	}
 	
