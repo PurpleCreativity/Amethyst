@@ -12,9 +12,6 @@
 			"recommended": true,
 			"suspicious": {
 				"noExplicitAny": "off"
-			},
-			"nursery": {
-				"noUnusedImports": "error"
 			}
 		},
 		"include": ["src"]
