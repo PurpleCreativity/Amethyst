@@ -174,7 +174,7 @@ export default class Functions {
 			throw new Error("Invalid RGB input. RGB input should have exactly 3 values between 0 and 255 separated by commas.");
 		}
 		const hex = rgb.map((value) => {
-			const intValue = parseInt(value.trim(), 10);
+			const intValue = Number.parseInt(value.trim(), 10);
 			if (Number.isNaN(intValue) || intValue < 0 || intValue > 255) {
 				throw new Error("Invalid RGB input. Each value should be an integer between 0 and 255.");
 			}
