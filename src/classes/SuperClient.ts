@@ -30,6 +30,7 @@ class SuperClient extends Client {
 
     //? Variables
     devMode: boolean = this.Arguments.includes("--dev");
+	redeployCommands: boolean = this.Arguments.includes("--rc");
 	maintenanceMode: false;
 	MemoryUsage: number[] = [];
 
@@ -123,6 +124,8 @@ class SuperClient extends Client {
 		await this.Events.Init();
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
+
+		console.log(this)
     }
 
     constructor(options: ClientOptions) {
