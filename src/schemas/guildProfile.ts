@@ -27,6 +27,12 @@ type guildUser = {
     }
 }
 
+type Flag = {
+    name: string,
+    description: string,
+    enabled: boolean,
+}
+
 type APIKey = {
     name : string,
     key : string,
@@ -125,6 +131,7 @@ interface guildProfileInterface extends mongoose.Document {
 
     users: Map<string, guildUser>,
     pointlogs: Map<string, PointLog>,
+    flags: Map<string, Flag>,
 
     schedule: {
         scheduled: Map<string, ScheduledEvent>,
@@ -233,6 +240,15 @@ const guildProfileSchema = new mongoose.Schema({
 
                 updatedAt : Date,
             }
+        }
+    },
+
+    flags : {
+        type : Map,
+        of : {
+            name : String,
+            description : String,
+            enabled : Boolean,
         }
     },
 

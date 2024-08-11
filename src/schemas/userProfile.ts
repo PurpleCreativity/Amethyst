@@ -8,6 +8,12 @@ type Setting = {
     value: any,
 }
 
+type Flag = {
+    name: string,
+    description: string,
+    enabled: boolean,
+}
+
 interface userProfileInterface extends mongoose.Document {
     _id: mongoose.Types.ObjectId,
     iv: string,
@@ -22,6 +28,7 @@ interface userProfileInterface extends mongoose.Document {
         id: number,
     }
 
+    flags: Map<string, Flag>,
     settings: Map<string, Setting>,
 
     linkRoblox: (robloxUser: User) => Promise<void>,
@@ -39,6 +46,15 @@ const userProfileSchema = new mongoose.Schema({
     roblox: {
         username: String,
         id: Number,
+    },
+
+    flags: {
+        type: Map,
+        of: {
+            name: String,
+            description: String,
+            enabled: Boolean,
+        }
     },
 
     settings: {
