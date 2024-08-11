@@ -176,7 +176,7 @@ interface guildProfileInterface extends mongoose.Document {
 }
 
 const guildProfileSchema = new mongoose.Schema({
-    _id : client.Mongoose.Schema.Types.ObjectId,
+    _id : mongoose.Schema.Types.ObjectId,
     iv : String,
 
     guild : {
