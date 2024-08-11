@@ -1,5 +1,5 @@
-import EventEmitter from "events";
-import SuperClient from "../classes/SuperClient.js";
+import EventEmitter from "node:events";
+import type SuperClient from "../classes/SuperClient.js";
 
 export default class Events {
 	client : SuperClient;

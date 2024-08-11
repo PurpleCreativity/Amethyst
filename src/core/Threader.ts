@@ -1,4 +1,4 @@
-import SuperClient from "../classes/SuperClient.js";
+import type SuperClient from "../classes/SuperClient.js";
 import Signal from "../classes/Signal.js";
 
 export class Thread<V extends (...args : any[]) => any> {

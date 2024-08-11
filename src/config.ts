@@ -1,4 +1,4 @@
-import { Config } from "./types/Config.js";
+import type { Config } from "./types/Config.js";
 
 import chalk from "chalk";
 import dotenv from "dotenv";
@@ -9,7 +9,7 @@ const config = {} as Config;
 config.version = "1.0.0"
 
 config.baseURL = "https://ametron-71e64ed61077.herokuapp.com/"
-config.port = process.env.PORT ? parseInt(process.env.PORT) : 3003
+config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3003
 
 config.devList = [
 	"762329291169857537" // Purple_Creativity

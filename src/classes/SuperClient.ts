@@ -1,11 +1,11 @@
-import { Client, ClientOptions, TextChannel } from "discord.js";
+import { Client, type ClientOptions, type TextChannel } from "discord.js";
 
-import { Config } from "../types/Config.js";
+import type { Config } from "../types/Config.js";
 import config from "../config.js";
 import Functions from "../core/Functions.js";
 
-import axios, { Axios } from "axios";
-import mongoose, { Mongoose } from "mongoose";
+import axios, { type Axios } from "axios";
+import mongoose, { type Mongoose } from "mongoose";
 import WrapBlox from "wrapblox";
 import Threader from "../core/Threader.js";
 import Events from "../core/Events.js";

@@ -1,6 +1,6 @@
-import { ActivityType, Guild, User } from "discord.js";
-import SuperClient from "../classes/SuperClient.js";
-import { createCipheriv, createDecipheriv } from "crypto";
+import type { ActivityType, Guild, User } from "discord.js";
+import type SuperClient from "../classes/SuperClient.js";
+import { createCipheriv, createDecipheriv } from "node:crypto";
 
 export default class Functions {
     client: SuperClient;
