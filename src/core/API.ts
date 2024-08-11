@@ -44,6 +44,22 @@ export default class API {
 		return key
 	}
 
+	GetGuildProfileFromAPIKey = async (APIKey: string) => {
+		const guilds = await this.client.Database.GetAllGuilds(true);
+
+		for (const guildProfile of guilds.values()) {
+			for (const keyData of guildProfile.API.keys.values()) {
+				const decryptedKey = this.client.Functions.Decrypt(keyData.key, guildProfile.iv);
+				if (decryptedKey === APIKey) {
+					return {
+						guildProfile: guildProfile,
+						keyData: keyData
+					};
+				}
+			}
+		}
+	}
+
 	LoadAPIRoutes = async () => {
 		const routeFolders = fs.readdirSync(path.join(process.cwd(), "build/website/routes/api"));
 
