@@ -10,6 +10,7 @@ import WrapBlox from "wrapblox";
 import Threader from "../core/Threader.js";
 import Events from "../core/Events.js";
 import client from "../index.js";
+import Database from "../core/Database.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -19,6 +20,8 @@ class SuperClient extends Client {
     Functions: Functions
 	Threader: Threader;
 	Events: Events;
+
+	Database: Database;
 
     //? Dependencies
     Axios: Axios = axios;
@@ -135,6 +138,8 @@ class SuperClient extends Client {
 		await this.Threader.Init();
 		await this.Events.Init();
 
+		await this.Database.Init();
+
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
     }
 
@@ -144,6 +149,8 @@ class SuperClient extends Client {
         this.Functions = new Functions(this);
 		this.Threader = new Threader(this);
 		this.Events = new Events(this);
+
+		this.Database = new Database(this);
 	}
 }
 
