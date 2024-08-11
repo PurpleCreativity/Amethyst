@@ -1,7 +1,7 @@
 {
-  "name": "ametron",
+  "name": "amethyst",
   "version": "1.0.0",
-  "description": "Ametron a multipurpose discord bot",
+  "description": "Amethyst a multipurpose discord bot",
   "main": "./build/index.js",
   "exports": {
     ".": "./build/index.js"
