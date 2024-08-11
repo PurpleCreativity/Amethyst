@@ -9,6 +9,7 @@ import mongoose, { type Mongoose } from "mongoose";
 import WrapBlox from "wrapblox";
 import Threader from "../core/Threader.js";
 import Events from "../core/Events.js";
+import client from "../index.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -118,6 +119,17 @@ class SuperClient extends Client {
             this.config.credentials.databaseURL = process.env.databaseURL as string;
         }
         this.config.credentials.encryptionKey = process.env.encryptionKey as string;
+
+		await this.login(this.config.credentials.discordToken);
+		this.success("Logged in to Discord");
+
+		try {
+			await this.WrapBlox.login(this.config.credentials.robloxCookie);
+			this.success("Logged in to Roblox");
+		} catch (error) {
+			client.error("Failed to login to Roblox");
+			client.error(error);
+		}
 
 		await this.Functions.Init();
 		await this.Threader.Init();
