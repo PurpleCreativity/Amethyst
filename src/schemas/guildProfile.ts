@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import client from "../index.js";
 import type { Group, User } from "wrapblox";
+import type { Guild, GuildMember } from "discord.js";
 
 type guildUser = {
     roblox: {
@@ -151,6 +152,9 @@ interface guildProfileInterface extends mongoose.Document {
     linkedGuilds: Map<string, linkedGuild>
 
     //? Methods
+
+    fetchGuild: () => Promise<Guild>,
+    fetchOwner: () => Promise<GuildMember>,
 
     getUser: (searcher: string | number) => Promise<guildUser>,
     addUser: (robloxUser: User) => Promise<guildUser>,
@@ -343,6 +347,17 @@ const guildProfileSchema = new mongoose.Schema({
 });
 
 //? Methods
+
+guildProfileSchema.methods.fetchGuild = async function () {
+    return await client.Functions.GetGuild(this.guild.id);
+}
+
+guildProfileSchema.methods.fetchOwner = async function () {
+    const guild = await this.fetchGuild();
+    const owner = await guild.fetchOwner().then((owner:any) => owner.user);
+
+    return owner;
+}
 
 // Users
 guildProfileSchema.methods.getUser = async function (searcher: string | number) {
