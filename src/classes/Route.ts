@@ -1,4 +1,5 @@
 import type express from "express";
+import client from "../index.js";
 
 export type APIMethods = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"
 export type APIPermissions = "Administrator" | "ViewPoints" | "CreatePointLogs" | "ViewSchedule" | "Moderation" | "Roblox";
@@ -37,17 +38,28 @@ class Route {
 
     Execute() {
         return async (req: express.Request, res: express.Response) => {
-
             try {
                 if (this.public) {
                     this.execute(req, res);
                     return;
                 }
 
+				const APIKey = req.headers["x-api-key"];
+				if (!APIKey) return res.status(401).send({ error: "No API Key provided", message: "Provide a API key header (x-api-key) with your request" }).end();
+
+				const guildAndkey = await client.API.GetGuildProfileFromAPIKey(APIKey as string);
+				const guildProfile = guildAndkey?.guildProfile;
+				const keyData = guildAndkey?.keyData;
+
+				if (!guildProfile || !keyData) return res.status(401).send({ error: "Invalid API Key", message: "The API key provided is invalid" }).end();
+
+				if (this.permissions.length > 0) {
+					const hasPermission = this.permissions.some(permission => keyData.permissions.includes(permission));
+					if (!hasPermission) return res.status(403).send({ error: "Missing Permissions", message: "You do not have the required permissions to access this route" }).end();
+				}
+
                 this.execute(req, res);
-                //client.Logs.LogAPI(req, res);
             } catch (error) {
-                //client.Logs.LogError(error as Error);
                 return res.status(500).send({ error: "An error occured while processing your request.", message: error }).end();
             }
         }
