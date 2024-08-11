@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import client from "../index.js";
 import type { Group, User } from "wrapblox";
 import type { Guild, GuildMember } from "discord.js";
+import type { customPermissionOptions } from "../classes/SlashCommand.js";
 
 type guildUser = {
     roblox: {
@@ -162,6 +163,7 @@ interface guildProfileInterface extends mongoose.Document {
 
     fetchGuild: () => Promise<Guild>,
     fetchOwner: () => Promise<GuildMember>,
+    customPermissionCheck: (guildMember: GuildMember, customPermissions: customPermissionOptions[]) => Promise<boolean>,
 
     getUser: (searcher: string | number) => Promise<guildUser>,
     addUser: (robloxUser: User) => Promise<guildUser>,
@@ -373,6 +375,37 @@ guildProfileSchema.methods.fetchOwner = async function () {
     const owner = await guild.fetchOwner().then((owner:any) => owner.user);
 
     return owner;
+}
+
+guildProfileSchema.methods.customPermissionCheck = async function (guildMember: GuildMember, customPermissions: customPermissionOptions[]) {
+    if (customPermissions.length === 0) return true;
+
+    const roles = guildMember.roles.cache.map((role) => role.id);
+    const ownedPermissions = [] as customPermissionOptions[];
+
+    const adminPermission = this.guild.customPermissions.get("Administrator")
+    if (adminPermission) {
+        if (adminPermission.users.includes(guildMember.id)) return true;
+
+        for (const roleId of roles) {
+            if (adminPermission.roles.includes(roleId)) return true;
+        }
+    }
+
+    for (const permissionName of customPermissions) {
+        const permission = this.guild.customPermissions.get(permissionName)
+		if (!permission) continue;
+
+        if (permission.users.includes(guildMember.id)) {ownedPermissions.push(permission.name); continue;};
+
+		for (const roleId of roles) {
+			if (permission.roles.includes(roleId)) {ownedPermissions.push(permission.name); continue;};
+		}
+    }
+
+    if (customPermissions.every(permission => ownedPermissions.includes(permission))) return true;
+
+    return false;
 }
 
 // Users
