@@ -98,7 +98,7 @@ export default class Database {
         return newGuildProfile as any as guildProfileInterface;
     }
 
-    GetGuildProfile = async (guildId: number, useCache = true): Promise<guildProfileInterface> => {
+    GetGuildProfile = async (guildId: string, useCache = true): Promise<guildProfileInterface> => {
         if (useCache) {
             const cachedGuild = this.cache.guilds.get(guildId.toString());
             if (cachedGuild) return cachedGuild;
