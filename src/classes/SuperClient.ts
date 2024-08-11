@@ -11,6 +11,7 @@ import Threader from "../core/Threader.js";
 import Events from "../core/Events.js";
 import client from "../index.js";
 import Database from "../core/Database.js";
+import Process from "../core/Process.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -20,7 +21,7 @@ class SuperClient extends Client {
     Functions: Functions
 	Threader: Threader;
 	Events: Events;
-
+	Process: Process;
 	Database: Database;
 
     //? Dependencies
@@ -137,7 +138,7 @@ class SuperClient extends Client {
 		await this.Functions.Init();
 		await this.Threader.Init();
 		await this.Events.Init();
-
+		await this.Process.Init();
 		await this.Database.Init();
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
@@ -149,7 +150,7 @@ class SuperClient extends Client {
         this.Functions = new Functions(this);
 		this.Threader = new Threader(this);
 		this.Events = new Events(this);
-
+		this.Process = new Process(this);
 		this.Database = new Database(this);
 	}
 }
