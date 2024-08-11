@@ -146,14 +146,9 @@ export default class Functions {
 		return Math.round(used)
 	};
 
-    CreateAcronym = (string : string) => {
-        const words = string.split(" ");
-        let acronym = "";
-        for (const word of words) {
-            acronym += word[0].toUpperCase();
-        }
-        return acronym;
-    }
+	CreateAcronym = (string : string) => {
+		return string.split(" ").map(word => word[0].toUpperCase()).join("");
+	}
 
     ConvertPlaceIDToUniverseID = async (placeID: number) => {
 		const response = await this.client.Axios.get(`https://apis.roblox.com/universes/v1/places/${placeID}/universe`);
