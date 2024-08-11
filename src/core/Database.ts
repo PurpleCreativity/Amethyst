@@ -1,4 +1,4 @@
-import type { Guild, Snowflake } from "discord.js";
+import type { Guild, Snowflake, User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import guildProfile, { type guildProfileInterface } from "../schemas/guildProfile.js";
 import userProfile, { type userProfileInterface } from "../schemas/userProfile.js";
@@ -127,7 +127,107 @@ export default class Database {
         return guilds;
     }
 
+    CreateUserProfile = async (user: string | User | Snowflake): Promise<userProfileInterface> => {
+        let actualUser: User | undefined;
+        if (typeof user === "string") actualUser = await this.client.Functions.GetUser(user, undefined, undefined) as User; else actualUser = user;
+        if (!actualUser) throw new Error("User not found");
+
+        const newUserProfile = new userProfile({
+            _id: new this.client.Mongoose.Types.ObjectId(),
+            iv: crypto.randomBytes(16).toString("hex"),
+
+            user: {
+                id: actualUser.id,
+                name: actualUser.username,
+            },
+
+            roblox: {
+                username: "",
+                id: 0,
+            },
+
+            settings: new Map()
+                .set("doScheduleRemindeDM", { name: "Schedule DM Reminder", description: "Whether or not to send a DM when a schedule is about to start", value: true })
+            ,
+        })
+
+        await newUserProfile.save();
+        this.cache.users.set(actualUser.id, newUserProfile as any as userProfileInterface);
+
+        return newUserProfile as any as userProfileInterface;
+    }
+
+    GetUserProfile = async (userId: string, useCache = true): Promise<userProfileInterface> => {
+        if (useCache) {
+            const cachedUser = this.cache.users.get(userId);
+            if (cachedUser) return cachedUser;
+        }
+
+        const userDataProfile = await userProfile.findOne({ "user.id": userId });
+        if (!userDataProfile) throw new Error("User not found");
+
+        this.cache.users.set(userId, userDataProfile as any as userProfileInterface);
+
+        return userDataProfile as any as userProfileInterface;
+    }
+
+    GetUserProfileByRobloxId = async (robloxId: number, useCache = true): Promise<userProfileInterface> => {
+        if (useCache) {
+            for (const user of this.cache.users.values()) {
+                if (user.roblox.id === robloxId) return user;
+            }
+        }
+
+        const userDataProfile = await userProfile.findOne({ "roblox.id": robloxId });
+        if (!userDataProfile) throw new Error("User not found");
+
+        return userDataProfile as any as userProfileInterface;
+    }
+
+    HandleSchedule = async () => {
+        const guilds = await guildProfile.find();
+        for (const guild of guilds) {
+            if (!guild.guild || !guild.guild.id) {
+                this.client.warn("A guild has been found without the guild object or guildId, deleting it.")
+                await guildProfile.deleteOne()
+                continue;
+            }
+            this.cache.guilds.set(guild.guild.id.toString(), guild as any as guildProfileInterface);
+        }
+
+        const users = await userProfile.find();
+        for (const user of users) {
+            if (!user.user || !user.user.id) {
+                this.client.warn("A user has been found without the user object or userId, deleting it.")
+                await userProfile.deleteOne()
+                continue;
+            }
+            this.cache.users.set(user.user.id, user as any as userProfileInterface);
+        }
+
+        this.client.log("Updated Database Cache");
+    }
+
+    IsConnected = async () => {
+        return this.client.Mongoose.connection.readyState === 1
+    }
+
     Init = async () => {
+        try {
+            await this.client.Mongoose.connect(this.client.config.credentials.databaseURL)
+        } catch (error) {
+            this.client.error("Failed to connect to database");
+            this.client.error(error);
+        }
+
+        if (await this.IsConnected()) this.client.success("Connected to Database");
+        else {
+            this.client.error("Failed to connect to database");
+            return;
+        }
+
+        this.client.Threader.CreateThread("DatabaseCache", this.HandleSchedule).Loop(1000 * 60);
+
         this.client.success("Initialized Database");
     }
 }
