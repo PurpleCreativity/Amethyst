@@ -103,7 +103,7 @@ class SuperClient extends Client {
 	};
 
     Startup = async () => {
-        this.log(`Starting up Ametron v${this.config.version}`);
+        this.log(`Starting up Amethyst v${this.config.version}`);
 
         if (this.devMode) {
             this.warn("Running in development mode");
