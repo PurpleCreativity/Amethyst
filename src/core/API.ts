@@ -73,7 +73,6 @@ export default class API {
 				const route = await import(`file://${path.join(process.cwd(), "build/website/routes/api", folder, file)}`).then(res => res.default);
 				if (!(route instanceof Route)) continue;
 
-				console.log(`Loaded API Route: ${route.path}`)
 				this.APIRouter[route.method](`/${folder}/${route.path}`, route.Execute())
 			}
 		}
@@ -81,11 +80,11 @@ export default class API {
 
 	LoadUIRoutes = async () => {
 		const files = fs.readdirSync(path.join(process.cwd(), "build/website/routes/ui")).filter(file => file.endsWith(".js"))
+
 		for (const file of files) {
 			const route = await import(`file://${path.join(process.cwd(), "build/website/routes/ui", file)}`).then(res => res.default);
 			if (!(route instanceof Route)) continue;
 
-			console.log(`Loaded UI Route: ${route.path}`)
 			this.UIRouter[route.method](`/${route.path}`, route.Execute())
 		}
 	}
