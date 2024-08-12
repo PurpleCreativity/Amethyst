@@ -1,6 +1,8 @@
 import type { ActivityType, Guild, User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
+import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
+import Icons from "../assets/Icons.js";
 
 export default class Functions {
     client: SuperClient;
@@ -208,6 +210,38 @@ export default class Functions {
 
 	isDev = (userID: string) => {
 		return this.client.config.devList.includes(userID);
+	}
+
+	makeInfoEmbed = (options: EmbedOptions) => {
+		const embed = new BaseEmbed(options);
+		if (!options.color) embed.setColor(0x4287f5);
+		if (!options.author) embed.setAuthor({ name: "Info", iconURL: Icons.info });
+
+		return embed;
+	}
+
+	makeWarnEmbed = (options: EmbedOptions) => {
+		const embed = new BaseEmbed(options);
+		if (!options.color) embed.setColor(0xffcc00);
+		if (!options.author) embed.setAuthor({ name: "Warning", iconURL: Icons.warn });
+
+		return embed;
+	}
+
+	makeSuccessEmbed = (options: EmbedOptions) => {
+		const embed = new BaseEmbed(options);
+		if (!options.color) embed.setColor(0x00ff00);
+		if (!options.author) embed.setAuthor({ name: "Success", iconURL: Icons.check });
+
+		return embed;
+	}
+
+	makeErrorEmbed = (options: EmbedOptions) => {
+		const embed = new BaseEmbed(options);
+		if (!options.color) embed.setColor(0xff0000);
+		if (!options.author) embed.setAuthor({ name: "Error", iconURL: Icons.close });
+
+		return embed;
 	}
 
     pcall = async <Params extends any[], Ret>(func: (...args: Params) => Ret, ...args: Params) => {
