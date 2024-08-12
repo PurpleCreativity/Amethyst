@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Embeds</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #333333;
+        }
+
+        .embed {
+            font-size: 28px;
+            margin-bottom: 10px;
+            margin-top: -20px;
+            border-radius: 5px;
+            background-color: #181A1B;
+            border-left: #ffffff 6px solid;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .embed-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .embed-description {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .embed-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .embed-field-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .embed-field-value {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .embed-footer {
+            font-size: 14px;
+            color: #666666;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <br>
+
+    <div class="embed">
+        <div class="embed-title">Title</div>
+        <div class="embed-description">This is an embed description</div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 1</div>
+            <div class="embed-field-value">Value 1</div>
+        </div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 2</div>
+            <div class="embed-field-value">Value 2</div>
+        </div>
+        <div class="embed-footer">Footer</div>
+    </div>
+
+    <div class="embed">
+        <div class="embed-title">Title</div>
+        <div class="embed-description">This is an embed description with a [link](https://example.com)</div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 1</div>
+            <div class="embed-field-value">Value 1</div>
+        </div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 2</div>
+            <div class="embed-field-value">Value 2</div>
+        </div>
+        <div class="embed-footer">Footer</div>
+    </div>
+
+    <div class="embed">
+        <div class="embed-title">Title</div>
+        <div class="embed-description">This is an embed description with a [link](https://example.com) and a [inline link](https://example.com)</div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 1</div>
+            <div class="embed-field-value">Value 1</div>
+        </div>
+        <div class="embed-field">
+            <div class="embed-field-name">Field 2</div>
+            <div class="embed-field-value">Value 2</div>
+        </div>
+        <div class="embed-footer">Footer</div>
+    </div>
+</body>
+</html>
