@@ -13,6 +13,7 @@ import client from "../index.js";
 import Database from "../core/Database.js";
 import Process from "../core/Process.js";
 import API from "../core/API.js";
+import Interactables from "../core/Interactables.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -24,6 +25,7 @@ class SuperClient extends Client {
 	Events: Events;
 	Process: Process;
 	Database: Database;
+	Interactables: Interactables
 	API: API;
 
     //? Dependencies
@@ -142,6 +144,7 @@ class SuperClient extends Client {
 		await this.Events.Init();
 		await this.Process.Init();
 		await this.Database.Init();
+		await this.Interactables.Init();
 		await this.API.Init();
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
@@ -155,6 +158,7 @@ class SuperClient extends Client {
 		this.Events = new Events(this);
 		this.Process = new Process(this);
 		this.Database = new Database(this);
+		this.Interactables = new Interactables(this);
 		this.API = new API(this);
 	}
 }
