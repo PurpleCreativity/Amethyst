@@ -116,7 +116,7 @@ class SuperClient extends Client {
         if (this.devMode) {
             this.warn("Running in development mode");
 
-            this.config.baseURL = `http://localhost:${this.config.port}/`;
+            this.config.baseURL = `localhost:${this.config.port}/`;
 
             this.config.credentials.discordToken = process.env.Dev_discordToken as string;
             this.config.credentials.robloxCookie = process.env.robloxCookie as string;
