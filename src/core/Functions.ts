@@ -189,7 +189,7 @@ export default class Functions {
 		const cipher = createCipheriv('aes256', key, iv);
 		const encryptedMessage = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
 
-		return { text: encryptedMessage, key : key.toString("hex"), iv: iv.toString("hex") };
+		return encryptedMessage;
 	}
 
 	Decrypt = (text : string, iv : any) => {
