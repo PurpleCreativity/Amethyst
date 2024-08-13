@@ -23,7 +23,7 @@ export default class Modal {
 		return this.Modal;
 	}
 
-    Prompt(interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction ) {
+    async Prompt(interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction ) {
         interaction.showModal(this.getModal());
 
         return new Promise((resolve, reject) => {
