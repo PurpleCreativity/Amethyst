@@ -28,12 +28,6 @@ export type customPermissionOptions =
  | "EventScheduler"
  | "ScheduleManager";
 
- export type SubCommandOption = {
-	name: string;
-	description: string;
-	options?: ValidOptions[];
-}
-
 export type CommandOps = {
 	name: string;
 	description: string;
@@ -46,7 +40,7 @@ export type CommandOps = {
     customPermissions?: customPermissionOptions[];
 
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
-    options?: SubCommandOption[];
+    options?: ValidOptions[];
 
 	integration_types?: number[];
 	contexts?: number[]
@@ -97,9 +91,10 @@ export default class SlashCommand extends SlashCommandBuilder {
 
 		if (options.options) {
 			for (const option of options.options) {
-				this.options.push(JSON.parse(JSON.stringify(option)))
+				this.options.push(option)
 			}
 		}
+
 		if (options.subcommands) {
 			for (const subcommand of options.subcommands) {
 				if (subcommand instanceof SlashCommandSubcommandGroupBuilder) {
