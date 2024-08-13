@@ -1,4 +1,4 @@
-import type { ButtonInteraction, Interaction, ModalSubmitInteraction, SelectMenuInteraction } from "discord.js";
+import type { AnySelectMenuInteraction, ButtonInteraction, Interaction, ModalSubmitInteraction } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 
 export default class Process {
@@ -71,7 +71,7 @@ export default class Process {
         }
 
         if (interaction.isAnySelectMenu()) {
-            this.client.emit("selectMenu", interaction as SelectMenuInteraction);
+            this.client.emit("selectMenu", interaction as AnySelectMenuInteraction);
             return;
         }
     }
