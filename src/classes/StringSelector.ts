@@ -36,9 +36,10 @@ export default class StringSelector {
         return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(this.Selector);
     }
 
-    async Prompt(interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction, messageData: messageData) {
-        const actualComponents = messageData.components || []
+    async Prompt(interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction, messageData: messageData, rowPosition?: number) {
+        const actualComponents = []
         actualComponents.push(this.getSelector());
+        for (const row of messageData.components || []) actualComponents.push(row);
         messageData.components = actualComponents;
 
         await interaction.reply(messageData);
