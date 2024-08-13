@@ -166,7 +166,7 @@ export default class Database {
         }
 
         const userDataProfile = await userProfile.findOne({ "user.id": userId });
-        if (!userDataProfile) throw new Error("User not found");
+        if (!userDataProfile) return await this.CreateUserProfile(userId);
 
         this.cache.users.set(userId, userDataProfile as any as userProfileInterface);
 
