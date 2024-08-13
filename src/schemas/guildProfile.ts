@@ -52,8 +52,8 @@ type customPermission = {
 }
 
 type customChannel = {
-    id: string,
-    type: string,
+    id: number,
+    name: string,
 }
 
 type linkedGuild  = {
@@ -195,8 +195,8 @@ const guildProfileSchema = new mongoose.Schema({
         channels : {
             type : Map,
             of : {
-                id : String,
-                type : String,
+                id : Number,
+                name : String,
             }
         },
         customPermissions : {
@@ -467,7 +467,7 @@ guildProfileSchema.methods.getChannel = async function (type: string) {
 }
 
 guildProfileSchema.methods.setChannel = async function (data: customChannel) {
-    this.guild.channels.set(data.type, data);
+    this.guild.channels.set(data.name, data);
     await this.save();
 }
 

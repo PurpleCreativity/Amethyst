@@ -37,12 +37,13 @@ export default class Database {
                 shortname: this.client.Functions.CreateAcronym(actualGuild.name),
 
                 channels: new Map()
-                    .set("PointsDatabaseUpdates", { name: "PointsDatabaseUpdates", id: null })
-                    .set("PointLogUpdates", { name: "PointLogUpdates", id: null })
-                    .set("ScheduleUpdates", { name: "ScheduleUpdates", id: null })
-                    .set("GameLogs", { name: "GameLogs", id: null })
-                    .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: null })
-                    .set("RobloxCalls", { name: "RobloxCalls", id: null }),
+                    .set("PointsDatabaseUpdates", { name: "PointsDatabaseUpdates", id: 0 })
+                    .set("PointLogUpdates", { name: "PointLogUpdates", id: 0 })
+                    .set("ScheduleUpdates", { name: "ScheduleUpdates", id: 0 })
+                    .set("GameLogs", { name: "GameLogs", id: 0 })
+                    .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: 0 })
+                    .set("RobloxCalls", { name: "RobloxCalls", id: 0 })
+                ,
 
                 permissions: new Map()
                     .set("Administrator", { name: "Administrator", roles: [], users: [owner.id] })
@@ -63,6 +64,7 @@ export default class Database {
 
             users: new Map(),
             pointlogs: new Map(),
+            flags: new Map(),
 
             schedule: {
                 scheduled: new Map(),
@@ -86,7 +88,7 @@ export default class Database {
             },
 
             settings: new Map()
-                    .set("publicSchedule", { name: "Public Schedule", description: "Whether or not the schedule is public", value: true })
+                .set("publicSchedule", { name: "Public Schedule", description: "Whether or not the schedule is public", value: true })
             ,
 
             linkedGuilds: new Map(),
@@ -105,7 +107,7 @@ export default class Database {
         }
 
         const guildDataProfile = await guildProfile.findOne({ "guild.id": guildId });
-        if (!guildDataProfile) throw new Error("Guild not found");
+        if (!guildDataProfile) return await this.CreateGuildProfile(guildId);
 
         this.cache.guilds.set(guildId.toString(), guildDataProfile as any as guildProfileInterface);
 
