@@ -12,9 +12,9 @@ export default class Process {
         try {
             //this.client.Logs.LogError(error);
             this.client.error(error.stack);
-            this.client.error(error.name);
-            this.client.error(error.message);
-            this.client.error(error);
+    //        this.client.error(error.name);
+  //          this.client.error(error.message);
+//            this.client.error(error);
         } catch (error) {
             this.client.error(error);
         }
