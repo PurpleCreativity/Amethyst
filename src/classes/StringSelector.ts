@@ -1,4 +1,4 @@
-import { ActionRowBuilder, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, StringSelectMenuBuilder, type StringSelectMenuOptionBuilder } from "discord.js"
+import { ActionRowBuilder, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, StringSelectMenuBuilder, type StringSelectMenuInteraction, type StringSelectMenuOptionBuilder } from "discord.js"
 import client from "../index.js"
 
 export type StringSelectorOptions = {
@@ -21,8 +21,8 @@ type messageData = {
 
 export default class StringSelector {
     Selector: StringSelectMenuBuilder
-    Options: StringSelectMenuOptionBuilder[]
-    allowedUsers: string[]
+    Options: StringSelectMenuOptionBuilder[] = [];
+    allowedUsers: string[] = [];
 
     constructor(options: StringSelectorOptions) {
         this.Selector = new StringSelectMenuBuilder().setPlaceholder(options.Placeholder).setCustomId(client.Functions.GenerateID()).setMaxValues(options.MaxValues || 1).setMinValues(options.MinValues || 1);
@@ -39,6 +39,7 @@ export default class StringSelector {
     async Prompt(interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction, messageData: messageData) {
         const actualComponents = messageData.components || []
         actualComponents.push(this.getSelector());
+        messageData.components = actualComponents;
 
         await interaction.reply(messageData);
 
@@ -51,7 +52,7 @@ export default class StringSelector {
                     return;
                 }
 
-                resolve(newInteraction);
+                resolve(newInteraction as StringSelectMenuInteraction);
             })
         });
     }
