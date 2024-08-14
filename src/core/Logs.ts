@@ -9,16 +9,10 @@ export default class Logs {
 
     LogError = async (error: Error) => {
         this.client.error(error.stack as string, true);
-        console.count("got here")
         if (!error.stack) return;
 
-        console.count("got here")
-
-        console.log(this.client.BotChannels);
         const channel = this.client.BotChannels.errors;
         if (!channel) return;
-
-        console.count("got here")
 
         if (error.stack.length > 1024) {
             error.stack = error.stack.slice(0, 1024);
@@ -49,8 +43,6 @@ export default class Logs {
                 }
             ]
         })
-
-        console.count("got here")
 
         await channel.send({ embeds: [errorEmbed] });
     }
