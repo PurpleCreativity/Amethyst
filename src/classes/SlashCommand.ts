@@ -33,6 +33,7 @@ export type CommandOps = {
 	description: string;
 
     dmpermission?: boolean;
+	module?: string;
     userApp?: boolean;
     devOnly?: boolean;
 
@@ -59,6 +60,7 @@ export default class SlashCommand extends SlashCommandBuilder {
 	subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 	devOnly?: boolean;
 	userApp?: boolean;
+	module: string;
 	globalCooldown?: number;
 	guildCooldown?: number;
 	userCooldown?: number;
@@ -81,6 +83,7 @@ export default class SlashCommand extends SlashCommandBuilder {
 		this.permissions = options.permissions ?? [];
 		this.customPermissions = options.customPermissions ?? [];
 
+		this.module = options.module ?? "miscellaneous";
 		this.devOnly = options.devOnly;
 		this.globalCooldown = options.globalCooldown;
 		this.guildCooldown = options.guildCooldown;

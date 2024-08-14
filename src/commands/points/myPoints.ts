@@ -5,6 +5,8 @@ const command = new SlashCommand({
     name: "mypoints",
     description: "Shows your points",
 
+    module: "points",
+
     userCooldown: 30000,
 
     execute: async (interaction) => {
