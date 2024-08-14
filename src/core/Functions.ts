@@ -121,22 +121,29 @@ export default class Functions {
 		}
 	};
 
-    GetRobloxUser = async (searcher: string) => {
-		const id = Number.parseInt(searcher);
-		if (!id) {
+    GetRobloxUser = async (searcher: string | number) => {
+		if (typeof searcher === "number") {
 			try {
-				const user = await this.client.WrapBlox.fetchUserByName(searcher);
-				return user;
-			} catch (err) {
+				return await this.client.WrapBlox.fetchUser(searcher);
+			} catch (error) {
 				return undefined;
 			}
 		}
-		try {
-			const user = await this.client.WrapBlox.fetchUserByName(searcher);
-			return user;
-		} catch (err) {
-			return undefined;
+
+		if (typeof searcher === "string") {
+			try {
+				return await this.client.WrapBlox.fetchUserByName(searcher);
+			} catch (error) {
+				return undefined;
+			}
 		}
+	}
+
+	GetLinkedRobloxUser = async (discordId: string) => {
+		const userDataProfile = await this.client.Database.GetUserProfile(discordId);
+		if (!userDataProfile) return undefined;
+
+		return await this.GetRobloxUser(userDataProfile.roblox.id);
 	}
 
     GenerateID = () => {
