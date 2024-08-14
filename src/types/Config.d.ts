@@ -13,6 +13,10 @@ type Config = {
     
         encryptionKey: string;
     },
+
+    channels: {
+		[key: string]: string
+	};
     
     logConfig: {
 		[key: string]: {

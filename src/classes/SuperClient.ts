@@ -14,6 +14,7 @@ import Database from "../core/Database.js";
 import Process from "../core/Process.js";
 import API from "../core/API.js";
 import Interactables from "../core/Interactables.js";
+import Logs from "../core/Logs.js";
 
 class SuperClient extends Client {
     Start = new Date();
@@ -22,6 +23,7 @@ class SuperClient extends Client {
     config: Config = config;
     Functions: Functions
 	Threader: Threader;
+	Logs: Logs;
 	Events: Events;
 	Process: Process;
 	Database: Database;
@@ -35,13 +37,13 @@ class SuperClient extends Client {
 
     //? Properties
     Arguments: string[] = process.argv.slice(2);
-    AttachedChannels: { [key: string]: TextChannel } = {};
 
     //? Variables
     devMode: boolean = this.Arguments.includes("--dev");
 	redeployCommands: boolean = this.Arguments.includes("--rc");
 	maintenanceMode: false;
 	MemoryUsage: number[] = [];
+	BotChannels: { [key: string]: TextChannel } = {};
 
     //* Log Functions
 	Log = async (type : "error" | "success" | "info" | "verbose" | "warn" | "deprecated", message : unknown, useDate?: boolean): Promise<undefined> => {
@@ -139,6 +141,17 @@ class SuperClient extends Client {
 			client.error(error);
 		}
 
+		for (const channel in this.config.channels) {
+			const channelId = this.config.channels[channel];
+			try {
+				const fetchedChannel = await this.channels.fetch(channelId);
+				this.BotChannels[channel] = fetchedChannel as TextChannel;
+			} catch (error) {
+				this.error(`Failed to fetch channel ${channel}`);
+				this.error(error);
+			}
+		}
+
 		await this.Functions.Init();
 		await this.Threader.Init();
 		await this.Events.Init();
@@ -155,6 +168,7 @@ class SuperClient extends Client {
 
         this.Functions = new Functions(this);
 		this.Threader = new Threader(this);
+		this.Logs = new Logs(this);
 		this.Events = new Events(this);
 		this.Process = new Process(this);
 		this.Database = new Database(this);

@@ -8,13 +8,9 @@ export default class Process {
         this.client = client;
     }
 
-    Error = async (error: Error) => {
+    uncaughtException = async (error: Error) => {
         try {
-            //this.client.Logs.LogError(error);
-            this.client.error(error.stack);
-    //        this.client.error(error.name);
-  //          this.client.error(error.message);
-//            this.client.error(error);
+            this.client.Logs.LogError(error);
         } catch (error) {
             this.client.error(error);
         }
@@ -80,7 +76,7 @@ export default class Process {
         this.client.Events.AddEvent("client", "interactionCreate", this.interactionCreate);
         //this.client.Events.AddEvent("client", "guildCreate", this.guildCreate);
 
-        this.client.Events.AddEvent("process", "uncaughtException", this.Error);
+        this.client.Events.AddEvent("process", "uncaughtException", this.uncaughtException);
 
         this.client.success("Initialized Process");
     }

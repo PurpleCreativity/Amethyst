@@ -22,6 +22,10 @@ config.credentials = {
     encryptionKey: ""
 }
 
+config.channels = {
+	errors: "1273247363544121499",
+}
+
 config.logConfig = {
 	error: {
 		color: chalk.bold.red,
