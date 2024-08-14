@@ -10,6 +10,11 @@ type guildUser = {
         id: number,
     }
 
+    discord: {
+        username: string,
+        id: string,
+    }
+
     points: number,
 
     note: {
@@ -59,7 +64,7 @@ type customChannel = {
 type linkedGuild  = {
     shortname: string,
     id: string,
-    _documentId: mongoose.Types.ObjectId,
+    _documentId: string,
 
     settings: Map<string, Setting>,
 }
@@ -174,6 +179,9 @@ interface guildProfileInterface extends mongoose.Document {
     getChannel: (type: string) => Promise<customChannel>,
     setChannel: (data: customChannel) => Promise<void>,
 
+    calculateUserPendingPoints: (robloxId: number) => Promise<number>,
+
+    getAllPointLogs: () => Promise<PointLog[]>,
     addPointLog: (pointLog: PointLog) => Promise<void>,
     getPointLog: (id: string) => Promise<PointLog | undefined>,
     removePointLog: (id: string) => Promise<void>,
@@ -224,6 +232,11 @@ const guildProfileSchema = new mongoose.Schema({
             roblox : {
                 username : String,
                 id : Number,
+            },
+
+            discord: {
+                username: String,
+                id: String,
             },
 
             points : Number,
@@ -457,6 +470,23 @@ guildProfileSchema.methods.addUser = async function (robloxUser: User) {
     return this.getUser(robloxUser.id);
 }
 
+guildProfileSchema.methods.calculateUserPendingPoints = async function (robloxId: number) {
+    const robloxUser = await client.Functions.GetRobloxUser(robloxId);
+    if (!robloxUser) return 0;
+
+    const pointlogs = await this.getAllPointLogs();
+    let pendingPoints = 0;
+
+    for (const log of pointlogs) {
+        const entry = log.data.find((entry: { username: string, points: number }) => entry.username.toLowerCase() === robloxUser.name.toLowerCase());
+        if (!entry) continue;
+
+        pendingPoints += entry.points;
+    }
+
+    return pendingPoints;
+}
+
 // Channels
 guildProfileSchema.methods.getChannel = async function (type: string) {
     const channel = this.guild.channels.get(type);
@@ -482,6 +512,16 @@ guildProfileSchema.methods.addModule = async function (module: Module) {
 }
 
 // Pointlogs
+guildProfileSchema.methods.getAllPointLogs = async function () {
+    const pointlogs = [] as PointLog[];
+
+    for (const pointlog of this.pointlogs.values()) {
+        pointlogs.push(pointlog);
+    }
+
+    return pointlogs;
+}
+
 guildProfileSchema.methods.addPointLog = async function (pointLog: PointLog) {
     this.pointlogs.set(pointLog.id, pointLog);
     await this.save();
