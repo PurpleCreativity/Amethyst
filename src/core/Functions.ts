@@ -131,6 +131,14 @@ export default class Functions {
 		}
 
 		if (typeof searcher === "string") {
+			if (!Number.isNaN(Number.parseInt(searcher))) {
+				try {
+					return await this.client.WrapBlox.fetchUser(Number.parseInt(searcher));
+				} catch (error) {
+					return undefined;
+				}
+			}
+
 			try {
 				return await this.client.WrapBlox.fetchUserByName(searcher);
 			} catch (error) {
@@ -141,7 +149,7 @@ export default class Functions {
 
 	GetLinkedRobloxUser = async (discordId: string) => {
 		const userDataProfile = await this.client.Database.GetUserProfile(discordId);
-		if (!userDataProfile) return undefined;
+		if (!userDataProfile || !userDataProfile.roblox.id || userDataProfile.roblox.id === 0) return undefined;
 
 		return await this.GetRobloxUser(userDataProfile.roblox.id);
 	}
