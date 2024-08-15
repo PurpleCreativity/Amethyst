@@ -25,7 +25,7 @@ const command = new SlashCommand({
             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() }, 
         });
 
-        embed.addFields({ name: guildDataProfile.guild.shortname, value: `${guildUser.points} ${guildPendingPoints !== 0 ? `(${guildPendingPoints} pending)` : ""}`, inline: true })
+        embed.addFields({ name: guildDataProfile.guild.shortname, value: `${guildUser.points} points ${guildPendingPoints !== 0 ? `(${guildPendingPoints} pending)` : ""}\n${guildUser.ranklock.rank !== 0 && !guildUser.ranklock.shadow ? "**Ranklocked**" : ""}`, inline: true })
 
         for (const linkedGuild of guildDataProfile.linkedGuilds.keys()) {
             const linkedGuildData = await client.Database.GetGuildProfile(linkedGuild);
@@ -33,7 +33,7 @@ const command = new SlashCommand({
 
             const pendingPoints = await linkedGuildData.calculateUserPendingPoints(robloxUser.id);
 
-            embed.addFields({ name: linkedGuildData.guild.shortname, value: `${linkedGuildUser.points} ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}`, inline: true });
+            embed.addFields({ name: linkedGuildData.guild.shortname, value: `${linkedGuildUser.points} points ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}\n${linkedGuildUser.ranklock.rank !== 0 && !linkedGuildUser.ranklock.shadow ? "**Ranklocked**" : ""}`, inline: true });
         }
 
         interaction.reply({ embeds: [embed] });
