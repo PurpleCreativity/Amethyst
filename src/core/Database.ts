@@ -62,6 +62,13 @@ export default class Database {
                 ,
             },
 
+            modules: new Map()
+                .set("Points", { name: "Points", enabled: true })
+                .set("Schedule", { name: "Schedule", enabled: true })
+                .set("Utility", { name: "Utility", enabled: true })
+                .set("Moderation", { name: "Moderation", enabled: true })
+            ,
+
             users: new Map(),
             pointlogs: new Map(),
             flags: new Map(),
