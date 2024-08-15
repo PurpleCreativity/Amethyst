@@ -57,7 +57,7 @@ type customPermission = {
 }
 
 type customChannel = {
-    id: number,
+    id: string,
     name: string,
 }
 
@@ -126,7 +126,7 @@ interface guildProfileInterface extends mongoose.Document {
     iv: string,
 
     guild: {
-        id: number,
+        id: string,
         shortname: string,
 
         channels: Map<string, customChannel>,
@@ -173,6 +173,9 @@ interface guildProfileInterface extends mongoose.Document {
     getUser: (searcher: string | number) => Promise<guildUser>,
     addUser: (robloxUser: User) => Promise<guildUser>,
 
+    setPoints: (robloxId: number, points: number) => Promise<void>,
+    incrementPoints: (robloxId: number, points: number) => Promise<void>,
+
     getModule: (name: string) => Promise<Module | undefined>,
     addModule: (module: Module) => Promise<void>,
 
@@ -197,13 +200,13 @@ const guildProfileSchema = new mongoose.Schema({
     iv : String,
 
     guild : {
-        id : Number,
+        id : String,
         shortname : String,
 
         channels : {
             type : Map,
             of : {
-                id : Number,
+                id : String,
                 name : String,
             }
         },
@@ -470,6 +473,7 @@ guildProfileSchema.methods.addUser = async function (robloxUser: User) {
     return this.getUser(robloxUser.id);
 }
 
+// Points
 guildProfileSchema.methods.calculateUserPendingPoints = async function (robloxId: number) {
     const robloxUser = await client.Functions.GetRobloxUser(robloxId);
     if (!robloxUser) return 0;
@@ -487,10 +491,27 @@ guildProfileSchema.methods.calculateUserPendingPoints = async function (robloxId
     return pendingPoints;
 }
 
+guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmount: number) {
+    const user = await this.getUser(robloxId);
+    if (!user) throw new Error("User not found");
+
+    user.points = newAmount;
+    await this.save();
+}
+
+guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number) {
+    const user = await this.getUser(robloxId);
+    if (!user) throw new Error("User not found");
+
+    user.points += amount;
+    await this.save();
+}
 // Channels
 guildProfileSchema.methods.getChannel = async function (type: string) {
     const channel = this.guild.channels.get(type);
     if (!channel) throw new Error("Channel not found");
+
+    if (channel.id === "0") return undefined;
 
     const actualChannel = await client.Functions.GetChannel(channel.id, this.guild.id);
     return actualChannel;
