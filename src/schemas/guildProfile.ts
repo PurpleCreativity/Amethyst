@@ -152,7 +152,7 @@ interface guildProfileInterface extends mongoose.Document {
     },
 
     roblox: {
-        group: number,
+        groupId: number,
 
         rover_Key: string,
         bloxlink_Key: string,
@@ -337,7 +337,7 @@ const guildProfileSchema = new mongoose.Schema({
     },
 
     roblox : {
-        group : Number,
+        groupId : Number,
 
         rover_Key : String,
         bloxlink_Key : String,
@@ -594,7 +594,11 @@ guildProfileSchema.methods.linkGroup = async function (groupID:number) {
 }
 
 guildProfileSchema.methods.fetchGroup = async function () {
-    return await client.WrapBlox.fetchGroup(this.roblox.group);
+    try {
+        return await client.WrapBlox.fetchGroup(this.roblox.groupId);
+    } catch (error) {
+        return undefined;
+    }
 }
 
 const guildProfile = mongoose.model("guildProfile", guildProfileSchema);
