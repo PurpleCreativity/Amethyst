@@ -7,6 +7,7 @@ const command = new SlashCommand({
     description: "Sets a user's points",
 
     customPermissions: ["PointsManager"],
+    
     options: [
         new SlashCommandStringOption()
             .setName("user")
