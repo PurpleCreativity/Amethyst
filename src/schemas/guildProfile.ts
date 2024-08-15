@@ -61,6 +61,22 @@ type customChannel = {
     name: string,
 }
 
+type Bind = {
+    name: string,
+    roles: string[],
+    bind: string,
+	enabled: boolean,
+}
+
+type trackedRobloxGroup = {
+    groupId: number,
+    channelId: string,
+	tracked: {
+        ranks: number[],
+        types: string[],
+    }
+}
+
 type linkedGuild  = {
     shortname: string,
     id: string,
@@ -134,6 +150,7 @@ interface guildProfileInterface extends mongoose.Document {
     },
 
     modules: Map<string, Module>,
+    binds: Map<string, Bind>,
 
     users: Map<string, guildUser>,
     pointlogs: Map<string, PointLog>,
@@ -157,6 +174,7 @@ interface guildProfileInterface extends mongoose.Document {
         rover_Key: string,
         bloxlink_Key: string,
 
+        trackedGroups: Map<string, trackedRobloxGroup>,
         places: Map<string, RobloxPlace>,
     },
 
@@ -226,6 +244,16 @@ const guildProfileSchema = new mongoose.Schema({
             name : String,
             description : String,
             enabled : Boolean,
+        }
+    },
+
+    binds: {
+        type : Map,
+        of : {
+            name: String,
+            roles: [String],
+            bind: String,
+            enabled: Boolean,
         }
     },
 
@@ -341,6 +369,18 @@ const guildProfileSchema = new mongoose.Schema({
 
         rover_Key : String,
         bloxlink_Key : String,
+
+        trackedGroups: {
+            type : Map,
+            of : {
+                groupId: Number,
+                channelId: String,
+                tracked: {
+                    ranks: [Number],
+                    types: [String],
+                }
+            }
+        },
 
         places : {
             type : Map,

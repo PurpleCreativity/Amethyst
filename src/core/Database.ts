@@ -62,6 +62,8 @@ export default class Database {
                 ,
             },
 
+            binds: new Map(),
+
             modules: new Map()
                 .set("Points", { name: "Points", enabled: true })
                 .set("Schedule", { name: "Schedule", enabled: true })
@@ -91,6 +93,7 @@ export default class Database {
                 rover_Key: null,
                 bloxlink_Key: null,
 
+                trackedGroups: new Map(),
                 places: new Map(),
             },
 
