@@ -37,15 +37,15 @@ export default class Database {
                 shortname: this.client.Functions.CreateAcronym(actualGuild.name),
 
                 channels: new Map()
-                    .set("PointsDatabaseUpdates", { name: "PointsDatabaseUpdates", id: 0 })
-                    .set("PointLogUpdates", { name: "PointLogUpdates", id: 0 })
-                    .set("ScheduleUpdates", { name: "ScheduleUpdates", id: 0 })
-                    .set("GameLogs", { name: "GameLogs", id: 0 })
-                    .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: 0 })
-                    .set("RobloxCalls", { name: "RobloxCalls", id: 0 })
+                    .set("PointsDatabaseUpdates", { name: "PointsDatabaseUpdates", id: "0" })
+                    .set("PointLogUpdates", { name: "PointLogUpdates", id: "0" })
+                    .set("ScheduleUpdates", { name: "ScheduleUpdates", id: "0" })
+                    .set("GameLogs", { name: "GameLogs", id: "0" })
+                    .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: "0" })
+                    .set("RobloxCalls", { name: "RobloxCalls", id: "0" })
                 ,
 
-                permissions: new Map()
+                customPermissions: new Map()
                     .set("Administrator", { name: "Administrator", roles: [], users: [owner.id] })
                     .set("Moderator", { name: "Moderator", roles: [], users: [owner.id] })
 
