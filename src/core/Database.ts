@@ -228,7 +228,7 @@ export default class Database {
             return;
         }
 
-        this.client.Threader.CreateThread("DatabaseCache", this.HandleSchedule).Loop(1000 * 60);
+        this.client.Threader.CreateThread("DatabaseCache", this.HandleSchedule).Loop(1000 * 60 * 10);
 
         this.client.success("Initialized Database");
     }
