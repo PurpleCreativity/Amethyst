@@ -5,7 +5,7 @@ const command = new SlashCommand({
     name: "mypoints",
     description: "Shows your points",
 
-    module: "points",
+    module: "Points",
 
     userCooldown: 30000,
 

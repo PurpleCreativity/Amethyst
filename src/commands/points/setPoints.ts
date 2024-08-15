@@ -6,8 +6,9 @@ const command = new SlashCommand({
     name: "setpoints",
     description: "Sets a user's points",
 
+    module: "Points",
     customPermissions: ["PointsManager"],
-    
+
     options: [
         new SlashCommandStringOption()
             .setName("user")
@@ -36,7 +37,7 @@ const command = new SlashCommand({
 
         return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({
             title: "Set Points",
-            description: `Set ${robloxUser.name}'s points to ${amount}`,
+            description: `Set [${robloxUser.name}](https://www.roblox.com/users/${robloxUser.id}/profile)'s points to \`${amount}\``,
             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() },
             fields: [
                 { name: "Old Points", value: `\`${oldPoints}\``, inline: true },
