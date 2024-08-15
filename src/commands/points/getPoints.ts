@@ -32,7 +32,7 @@ const command = new SlashCommand({
             title: "User Data",
             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() },
             fields: [
-                { name: "Points", value: `${guildUser.points} ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}`, inline: true },
+                { name: "Points", value: `${guildUser.points} ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}\n${guildUser.ranklock.rank !== 0 && !guildUser.ranklock.shadow ? "**Ranklocked**" : ""}`, inline: true },
             ],
         })
 
