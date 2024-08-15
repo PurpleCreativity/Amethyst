@@ -33,7 +33,7 @@ export type CommandOps = {
 	description: string;
 
     dmpermission?: boolean;
-	module?: string;
+	module?: ValidModules;
     userApp?: boolean;
     devOnly?: boolean;
 
