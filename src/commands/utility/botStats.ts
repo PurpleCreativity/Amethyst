@@ -10,6 +10,7 @@ const command = new SlashCommand({
     execute: async (interaction) => {
         if (client.uptime === null || !client.user) throw new Error("Uptime is undefined");
 
+        // Breaks on localhost
         const elapsed = await client.Functions.pcall(async () => {
             const startTime = new Date().getTime();
             await client.Axios.get(`${client.config.baseURL}/api/v1/healtcheck`);
