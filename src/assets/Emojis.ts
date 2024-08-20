@@ -4,5 +4,7 @@ export default {
 
     "rover": "<:RoVer:1272943872820904039>",
     "bloxlink": "<:BloxLink:1272943880492290170>",
-    "roblox": "<:Roblox:1272943859999178864>"
+    "roblox": "<:Roblox:1272943859999178864>",
+
+    "omegawarn": "<:warning:1275515330990702633>"
 }
