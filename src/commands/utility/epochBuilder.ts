@@ -181,7 +181,7 @@ const command = new SlashCommand({
                 const modal = new Modal({
                     Title: "Set Date",
                     Inputs: [
-                        new TextInputBuilder().setCustomId("date").setLabel("Date").setRequired(true).setStyle(TextInputStyle.Short).setPlaceholder("dd/MM/yyyy hh:mm")
+                        new TextInputBuilder().setCustomId("date").setLabel("Date").setRequired(true).setStyle(TextInputStyle.Short).setPlaceholder("dd/MM/yyyy hh:mm\nIn UTC")
                     ]
                 })
 
