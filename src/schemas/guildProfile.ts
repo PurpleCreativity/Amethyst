@@ -134,6 +134,9 @@ type ScheduledEvent = {
 
     event: string;
     ongoing : boolean;
+
+    discordEventId: string;
+    robloxEventId: string;
 	id : string;
 }
 
@@ -325,6 +328,9 @@ const guildProfileSchema = new mongoose.Schema({
 
                 event : String,
                 ongoing : Boolean,
+
+                discordEventId: String,
+                robloxEventId: String,
                 id : String,
             }
         },
