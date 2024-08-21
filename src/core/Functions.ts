@@ -1,4 +1,4 @@
-import type { ActivityType, Guild, User } from "discord.js";
+import type { ActivityType, Guild, GuildScheduledEvent, GuildScheduledEventCreateOptions, Snowflake, User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
@@ -257,6 +257,14 @@ export default class Functions {
 		if (!options.author) embed.setAuthor({ name: "Error", iconURL: Icons.close });
 
 		return embed;
+	}
+
+	scheduleGuildEvent = async (guild: Guild | string | Snowflake, event: GuildScheduledEventCreateOptions) => {
+		let actualGuild: Guild | undefined;
+        if (typeof guild === "string") actualGuild = await this.client.Functions.GetGuild(guild, false) as Guild; else actualGuild = guild;
+        if (!actualGuild) throw new Error("Guild not found");
+
+		return await actualGuild.scheduledEvents.create(event);
 	}
 
     pcall = async <Params extends any[], Ret>(func: (...args: Params) => Ret, ...args: Params) => {
