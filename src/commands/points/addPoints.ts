@@ -36,9 +36,11 @@ const command = new SlashCommand({
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         const oldPoints = (await guildDataProfile.getUser(robloxUser.id)).points;
+
+        await interaction.deferReply();
         await guildDataProfile.incrementPoints(robloxUser.id, amount, modifierUser);
 
-        return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({
+        return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({
             title: "Add Points",
             description: `Added \`${amount}\` points to [${robloxUser.name}](https://www.roblox.com/users/${robloxUser.id}/profile)`,
             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() },

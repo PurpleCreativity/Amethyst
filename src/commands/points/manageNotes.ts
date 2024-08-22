@@ -75,9 +75,10 @@ const command = new SlashCommand({
                 const robloxUser = await client.Functions.GetRobloxUser(user);
                 if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage Notes", description: "User not found" })], ephemeral: true });
 
+                await interaction.deferReply();
                 await guildDataProfile.setNotes(robloxUser.id, { text: "", visible: true }, modifierUser);
 
-                await interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Cleared notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })], ephemeral: false });
+                await interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Cleared notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })] });
 
                 break;
             }
