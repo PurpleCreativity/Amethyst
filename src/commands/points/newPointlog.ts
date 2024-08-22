@@ -181,10 +181,22 @@ const command = new SlashCommand({
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
-                const userText = currentLog.data.map(user => `${user.points} - ${user.username}`).join('\n');
+                const pointsMap: { [key: number]: string[] } = {};
+    
+                for (const user of currentLog.data) {
+                    if (!pointsMap[user.points]) {
+                        pointsMap[user.points] = [];
+                    }
+                    pointsMap[user.points].push(user.username);
+                }
+
+                const userText = Object.entries(pointsMap)
+                    .map(([points, usernames]) => `${points} - ${usernames.map(username => `${username}`).join(', ')}`)
+                    .join('\n');
+
                 const userBuffer = Buffer.from(userText, 'utf-8');
 
-                await buttonInteraction.reply({ files: [{ name: "data.txt", attachment: userBuffer }], ephemeral: true });
+                await buttonInteraction.reply({ files: [{ name: `pointlog_fulldata_${currentLog.id}.txt`, attachment: userBuffer }], ephemeral: true });
             }
         });
 
