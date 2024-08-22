@@ -601,6 +601,8 @@ guildProfileSchema.methods.getAllPointLogs = async function () {
         pointlogs.push(pointlog);
     }
 
+    pointlogs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
     return pointlogs;
 }
 
