@@ -110,7 +110,7 @@ const command = new SlashCommand({
             embeds.push(buttonEmbed);
         }
 
-        await interaction.reply({ embeds: [client.Functions.makeInfoEmbed({ title: "Your Point Logs", description: `You have ${pointLogs.length} pending point logs.`}) ]})
+        await interaction.reply({ embeds: [client.Functions.makeInfoEmbed({ title: "Your Point Logs", description: `You have \`${pointLogs.length}\` pending point logs.`}) ]})
         for (const embed of embeds) {
             try {
                 await interaction.channel?.send(embed.getMessageData());
