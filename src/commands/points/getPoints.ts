@@ -2,6 +2,7 @@ import { ButtonStyle, SlashCommandStringOption } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
+import Emojis from "../../assets/Emojis.js";
 
 const command = new SlashCommand({
     name: "getpoints",
@@ -41,6 +42,7 @@ const command = new SlashCommand({
         buttonEmbed.addButton({
             label: "Full Data",
             style: ButtonStyle.Secondary,
+            emoji: Emojis.folder_open,
             allowedUsers: [interaction.user.id],
 
             function: async (buttoninteraction) => {
