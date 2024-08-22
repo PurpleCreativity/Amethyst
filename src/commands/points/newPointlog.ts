@@ -49,12 +49,12 @@ const command = new SlashCommand({
                 const foundField = embed.GetField(`> ${log.points} points`);
 
                 if (foundField) {
-                    foundField.value += `, \`${log.username}\``;
+                    foundField.value += `, [${log.username}](https://www.roblox.com/users/${log.id}/profile)`;
                     if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
                     continue;
                 }
 
-                embed.addFields([{ name: `> ${log.points} points`, value: `\`${log.username}\`` }]);
+                embed.addFields([{ name: `> ${log.points} points`, value: `[${log.username}](https://www.roblox.com/users/${log.id}/profile)` }]);
 
                 if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
                     embed.setDescription(`## ${Emojis.omegawarn} Unable to show full log!\nUse the buttons below to add or remove points from this log, or to add a note.`)
