@@ -126,7 +126,7 @@ const command = new SlashCommand({
 
                         if (actualPoints === 0) continue;
 
-                        currentLog.data.push({ username: actualUser.name, points: actualPoints });
+                        currentLog.data.push({ username: actualUser.name, id: actualUser.id, points: actualPoints });
                     }
                 }
 

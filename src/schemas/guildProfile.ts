@@ -112,6 +112,8 @@ type PointLog = {
 
 	data : {
 		username : string,
+        id: number,
+        
 		points : number,
 	}[]
 	notes : string | undefined,
@@ -318,6 +320,7 @@ const guildProfileSchema = new mongoose.Schema({
 
             data : [{
                 username : String,
+                id: Number,
                 points : Number,
             }],
             notes : String,
