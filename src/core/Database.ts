@@ -73,7 +73,10 @@ export default class Database {
 
             users: new Map(),
             pointlogs: new Map(),
-            flags: new Map(),
+
+            flags: new Map()
+                .set("CreationVersion", { name: "CreationVersion", value: this.client.config.version })
+            ,
 
             schedule: {
                 scheduled: new Map(),
@@ -157,6 +160,11 @@ export default class Database {
                 username: "",
                 id: 0,
             },
+
+            flags: new Map()
+                .set("CreationVersion", { name: "CreationVersion", value: this.client.config.version })
+            ,
+
 
             settings: new Map()
                 .set("doScheduleRemindeDM", { name: "Schedule DM Reminder", description: "Whether or not to send a DM when a schedule is about to start", value: true })
