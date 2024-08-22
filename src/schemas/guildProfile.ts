@@ -133,7 +133,10 @@ type ScheduledEvent = {
 	time : number;
 	duration : number;
 	notes? : string;
-	host : string;
+	host: {
+        username: string,
+        id: number,
+    },
 
     event: string;
     ongoing : boolean;
@@ -330,7 +333,10 @@ const guildProfileSchema = new mongoose.Schema({
                 time : Number,
                 duration : Number,
                 notes : String,
-                host : String,
+                host: {
+                    username: String,
+                    id: Number,
+                },
 
                 event : String,
                 ongoing : Boolean,
