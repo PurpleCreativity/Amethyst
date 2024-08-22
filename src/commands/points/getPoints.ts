@@ -56,8 +56,8 @@ const command = new SlashCommand({
                             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() },
                             fields: [
                                 { name: "Points", value: `${guildUser.points} ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}`, inline: false },
-                                { name: "Notes", value: `${guildUser.note.text !== "" ? `Visible: \`${guildUser.note.visible}\`\n Note: ${guildUser.note.text}` : "No notes"}`, inline: false },
-                                { name: "Ranklock", value: `${robloxGroup && guildUser.ranklock.rank !== 0 ? `Ranklocked to \`${role?.name}\`:\`${role?.rank}\`\nShadow: \`${guildUser.ranklock.shadow}\`\nReason: ${guildUser.ranklock.reason !== "" ? guildUser.ranklock.reason : "No reason"}` : "No ranklock data"}`, inline: false },
+                                { name: "Notes", value: `${guildUser.note.text !== "" ? `Visible: \`${guildUser.note.visible}\`\n Note: ${guildUser.note.text}` : "No notes"}\nUpdated on <t:${Math.round(guildUser.note.updatedAt.getTime() / 1000)}:F>`, inline: false },
+                                { name: "Ranklock", value: `${robloxGroup && guildUser.ranklock.rank !== 0 ? `Ranklocked to \`${role?.name}\`:\`${role?.rank}\`\nShadow: \`${guildUser.ranklock.shadow}\`\nReason: ${guildUser.ranklock.reason !== "" ? guildUser.ranklock.reason : "No reason"}` : "No ranklock data"}\nUpdated on <t:${Math.round(guildUser.ranklock.updatedAt.getTime() / 1000)}:F>`, inline: false },
                             ]
                         })
                     ], ephemeral: true

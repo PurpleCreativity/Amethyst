@@ -201,16 +201,17 @@ interface guildProfileInterface extends mongoose.Document {
     getUser: (searcher: string | number) => Promise<guildUser>,
     addUser: (robloxUser: User) => Promise<guildUser>,
 
+    setNotes: (robloxId: number, noteData: { text: string, visible: boolean }, modifier?: number | User) => Promise<void>,
+
+    calculateUserPendingPoints: (robloxId: number) => Promise<number>,
     setPoints: (robloxId: number, points: number) => Promise<void>,
-    incrementPoints: (robloxId: number, points: number, modifier: number | User) => Promise<void>,
+    incrementPoints: (robloxId: number, points: number, modifier?: number | User) => Promise<void>,
 
     getModule: (name: string) => Promise<Module | undefined>,
     addModule: (module: Module) => Promise<void>,
 
     getChannel: (type: string) => Promise<customChannel>,
     setChannel: (data: customChannel) => Promise<void>,
-
-    calculateUserPendingPoints: (robloxId: number) => Promise<number>,
 
     getAllPointLogs: () => Promise<PointLog[]>,
     addPointLog: (pointLog: PointLog) => Promise<void>,
@@ -550,6 +551,39 @@ guildProfileSchema.methods.calculateUserPendingPoints = async function (robloxId
     return pendingPoints;
 }
 
+guildProfileSchema.methods.setNotes = async function (robloxId: number, noteData: { text: string, visible: boolean }, modifier?: number | User) {
+    const user = await this.getUser(robloxId);
+    if (!user) throw new Error("User not found");
+
+    const oldData = user.note;
+    user.note = noteData;
+    user.note.updatedAt = new Date();
+    await this.save();
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
+
+    const channel = await this.getChannel("PointsDatabaseUpdates");
+    if (!channel) return;
+
+    const targetUser = await client.Functions.GetRobloxUser(robloxId);
+    if (!targetUser) return;
+
+    await channel.send({ embeds: [
+        client.Functions.makeInfoEmbed({
+            title: "Notes Updated",
+            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **updated** the notes for [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
+            thumbnail: await targetUser.fetchUserHeadshotUrl(),
+            footer: { text: actualModifier.name, iconURL: await actualModifier.fetchUserHeadshotUrl() },
+            fields: [
+                { name: "Old Data", value: `${oldData.text !== "" ? `Visible: \`${oldData.visible}\`\n Note: ${oldData.text}` : "No notes"}`, inline: false },
+                { name: "New Data", value: `${noteData.text !== "" ? `Visible: \`${noteData.visible}\`\n Note: ${noteData.text}` : "No notes"}`, inline: false }
+            ]
+        })
+    ] })
+}
+
 guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmount: number) {
     const user = await this.getUser(robloxId);
     if (!user) throw new Error("User not found");
@@ -558,7 +592,7 @@ guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmou
     await this.save();
 }
 
-guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number, modifier: number | User) {
+guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number, modifier?: number | User) {
     const user = await this.getUser(robloxId);
     if (!user) throw new Error("User not found");
     const oldPoints = user.points;
