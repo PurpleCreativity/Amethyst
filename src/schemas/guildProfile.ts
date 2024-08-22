@@ -105,7 +105,10 @@ type RobloxPlace = {
 
 type PointLog = {
 	id : string,
-    creator : string,
+    creator : {
+        username : string,
+        id: number,
+    },
 
 	data : {
 		username : string,
@@ -305,7 +308,10 @@ const guildProfileSchema = new mongoose.Schema({
         type : Map,
         of : {
             id : String,
-            creator : String,
+            creator : {
+                username : String,
+                id: Number,
+            },
 
             data : [{
                 username : String,

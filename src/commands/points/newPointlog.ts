@@ -24,7 +24,10 @@ const command = new SlashCommand({
         const currentLog = {
             id: client.Functions.GenerateID(),
 
-            creator: creatorUser.name,
+            creator: {
+                username: creatorUser.name,
+                id: creatorUser.id
+            },
 
             data: [],
             notes: undefined as string | undefined,
