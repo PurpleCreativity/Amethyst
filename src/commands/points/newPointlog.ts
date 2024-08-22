@@ -1,4 +1,4 @@
-import { ButtonStyle, type ModalSubmitInteraction, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ButtonStyle, Emoji, type ModalSubmitInteraction, TextInputBuilder, TextInputStyle } from "discord.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
@@ -72,6 +72,7 @@ const command = new SlashCommand({
         const addData = buttonEmbed.addButton({
             label: "Add Data",
             style: ButtonStyle.Primary,
+            emoji: Emojis.add,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
@@ -150,6 +151,7 @@ const command = new SlashCommand({
         const setNote = buttonEmbed.addButton({
             label: "Set Note",
             style: ButtonStyle.Secondary,
+            emoji: Emojis.description,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
@@ -176,8 +178,9 @@ const command = new SlashCommand({
         buttonEmbed.nextRow();
 
         const fullData = buttonEmbed.addButton({
-            label: "View Full Data",
+            label: "Full Data",
             style: ButtonStyle.Secondary,
+            emoji: Emojis.folder_open,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
@@ -205,6 +208,7 @@ const command = new SlashCommand({
         const finishLog = buttonEmbed.addButton({
             label: "Finish Log",
             style: ButtonStyle.Success,
+            emoji: Emojis.check,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
@@ -222,6 +226,7 @@ const command = new SlashCommand({
         const cancelLog = buttonEmbed.addButton({
             label: "Cancel",
             style: ButtonStyle.Danger,
+            emoji: Emojis.delete,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
