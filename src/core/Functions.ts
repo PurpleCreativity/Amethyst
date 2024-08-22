@@ -273,12 +273,12 @@ export default class Functions {
 		for (const data of pointlog.data) {
 			const foundField = embed.GetField(`> ${data.points} points`)
 			if (foundField) {
-				foundField.value += `, [${data.username}](https://www.roblox.com/users/${data.id}/profile)`;
+				foundField.value += `, \`${data.username}\``;
 				if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
                 continue;
 			}
 
-			embed.addFields({ name: `> ${data.points} points`, value: `[${data.username}](https://www.roblox.com/users/${data.id}/profile)` })
+			embed.addFields({ name: `> ${data.points} points`, value: `\`${data.username}\`` })
 
 			if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
 				embed.setDescription(`## ${Emojis.omegawarn} Unable to show full log!\n${baseDescription}`);
