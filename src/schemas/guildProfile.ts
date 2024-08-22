@@ -578,8 +578,8 @@ guildProfileSchema.methods.incrementPoints = async function (robloxId: number, a
 
     await channel.send({ embeds: [
         client.Functions.makeInfoEmbed({
-            title: "Points Updated",
-            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) added \`${amount}\` points to [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
+            title: "Points Incremented",
+            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **added** \`${amount}\` points to [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
             thumbnail: await targetUser.fetchUserHeadshotUrl(),
             footer: { text: actualModifier.name, iconURL: await actualModifier.fetchUserHeadshotUrl() },
             fields: [
