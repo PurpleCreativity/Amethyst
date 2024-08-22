@@ -22,7 +22,7 @@ const command = new SlashCommand({
         pointLogs = pointLogs.filter(pointlog => pointlog.creator.id === robloxUser.id);
         if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You have no point logs" })], ephemeral: true });
 
-        const embeds = [];
+        const embeds = [] as ButtonEmbed[];
 
         for (const pointlog of pointLogs) {
             const baseEmbed = client.Functions.makePointlogEmbed(pointlog);
