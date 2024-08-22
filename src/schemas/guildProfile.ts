@@ -623,7 +623,7 @@ guildProfileSchema.methods.importPointLog = async function (id: string) {
     if (!pointLog) throw new Error("Point log not found");
 
     for (const data of pointLog.data) {
-        const user = await this.getUser(data.username);
+        const user = await this.getUser(data.id);
         user.points += data.points;
     }
 
