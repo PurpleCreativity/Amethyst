@@ -1,0 +1,75 @@
+import { SlashCommandStringOption } from "discord.js";
+import SlashCommand from "../../classes/SlashCommand.js";
+import client from "../../index.js";
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
+
+const command = new SlashCommand({
+    name: "getlogs",
+    description: "Get pointlogs with given filtering",
+
+    customPermissions: ["PointsManager"],
+
+    options: [
+        new SlashCommandStringOption()
+            .setName("creator-filter")
+            .setDescription("Filters by creator (Username or Id)")
+            .setRequired(false)
+        ,
+
+        new SlashCommandStringOption()
+            .setName("included-filter")
+            .setDescription("Filters by included user (Username or Id)")
+            .setRequired(false)
+    ],
+
+    execute: async (interaction) => {
+        if (!interaction.guild) return;
+        const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+
+        const creatorFilter = interaction.options.getString("creator-filter", false);
+        const includedFilter = interaction.options.getString("included-filter", false);
+
+        let pointLogs = await guildDataProfile.getAllPointLogs();
+
+        if (creatorFilter) {
+            const actualCreator = await client.Functions.GetRobloxUser(creatorFilter);
+            if (!actualCreator) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "Creator not found" })], ephemeral: true });
+
+            pointLogs = pointLogs.filter(pointLog => pointLog.creator.id === actualCreator.id);
+        }
+
+        if (includedFilter) {
+            const actualIncludedUser = await client.Functions.GetRobloxUser(includedFilter);
+            if (!actualIncludedUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "Target not found" })], ephemeral: true });
+            
+            pointLogs = pointLogs.filter(pointlog => pointlog.data.some(user => user.id === actualIncludedUser.id));
+        }
+
+        if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "No point logs found" })], ephemeral: true });
+
+        const embeds = [] as ButtonEmbed[];
+
+        for (const pointlog of pointLogs) {
+            const baseEmbed = client.Functions.makePointlogEmbed(pointlog);
+            const buttonEmbed = new ButtonEmbed(baseEmbed);
+
+            embeds.push(buttonEmbed);
+        }
+
+        let description = `Found \`${pointLogs.length}\` pending point logs`
+        if (creatorFilter || includedFilter) description += " with given filters"
+
+        await interaction.reply({ embeds: [client.Functions.makeInfoEmbed({ title: "All Logs", description: description })]});
+        for (const embed of embeds) {
+            try {
+                await interaction.channel?.send(embed.getMessageData());
+            } catch (error) {
+                if (!(error instanceof Error)) return;
+                client.Logs.LogError(error);
+                await interaction.followUp({ embeds: [client.Functions.makeErrorEmbed({ title: error.name, description: `Failed to send point log \`${embed.Embed.data.title}\`\n\n\`\`\`${error.message}\`\`\``, footer: { text: "If this error persists, please contact the bot developer" } })], ephemeral: true });
+            }
+        }
+    }
+})
+
+export default command;
