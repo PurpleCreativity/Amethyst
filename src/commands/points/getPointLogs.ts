@@ -13,6 +13,12 @@ const command = new SlashCommand({
 
     options: [
         new SlashCommandStringOption()
+            .setName("pointlog-id")
+            .setDescription("The id of the pointlog")
+            .setRequired(false)
+        ,
+
+        new SlashCommandStringOption()
             .setName("creator-filter")
             .setDescription("Filters by creator (Username or Id)")
             .setRequired(false)
@@ -28,6 +34,7 @@ const command = new SlashCommand({
         if (!interaction.guild) return;
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
 
+        const pointlogId = interaction.options.getString("pointlog-id", false);
         const creatorFilter = interaction.options.getString("creator-filter", false);
         const includedFilter = interaction.options.getString("included-filter", false);
 
@@ -46,6 +53,8 @@ const command = new SlashCommand({
             
             pointLogs = pointLogs.filter(pointlog => pointlog.data.some(user => user.id === actualIncludedUser.id));
         }
+
+        if (pointlogId) pointLogs = pointLogs.filter(pointlog => pointlog.id === pointlogId);
 
         if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "No point logs found" })], ephemeral: true });
 
