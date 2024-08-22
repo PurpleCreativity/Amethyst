@@ -27,16 +27,9 @@ export default class API {
 	APIRouter: express.Router = express.Router({ caseSensitive: false });
 	UIRouter: express.Router = express.Router({ caseSensitive: false });
 
-	Limiter = rateLimit({
-		windowMs: 1 * 60 * 1000, // 1 minute
-		limit: 120, // Limit each IP to 120 requests per `windowMs`
-		standardHeaders: 'draft-6', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-		legacyHeaders: true, // Enable the `X-RateLimit-*` headers.
-
-		handler: (req, res) => {
-			res.status(429).sendFile(path.join(process.cwd(), "src/website/html/429.html"));
-		},
-	})
+	rateLimitHandler(req: express.Request, res: express.Response) {
+		res.status(429).sendFile(path.join(process.cwd(), "src/website/html/429.html"));
+	}
 
 	GenerateKey() {
 		const key = `AMETHYST_API_KEY_${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}`;
@@ -74,6 +67,7 @@ export default class API {
 				if (!(route instanceof Route)) continue;
 
 				this.APIRouter[route.method](`/${folder}/${route.path}`, route.Execute())
+				if (route.rateLimit) this.Server.use(`/api/${folder}/${route.path}`, route.rateLimit)
 			}
 		}
 	}
@@ -86,6 +80,7 @@ export default class API {
 			if (!(route instanceof Route)) continue;
 
 			this.UIRouter[route.method](`/${route.path}`, route.Execute())
+			if (route.rateLimit) this.Server.use(`/${route.path}`, route.rateLimit)
 		}
 	}
 
@@ -94,7 +89,7 @@ export default class API {
 		await this.LoadUIRoutes();
 
 		this.Server.use(express.json())
-		this.Server.use(this.Limiter)
+
 		this.Server.use("/api/", this.APIRouter)
 		this.Server.use("/", this.UIRouter)
 		this.Server.use((req, res) => {

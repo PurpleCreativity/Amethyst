@@ -8,6 +8,7 @@ type RouteOptions = {
 	path: string
 	method : APIMethods
 	public?: boolean,
+	rateLimit?: any,
     deprecated?: boolean,
 	permissions?: APIPermissions[],
 	description?: string,
@@ -19,6 +20,7 @@ class Route {
 	path: string
 	method : Lowercase<APIMethods>
 	public: boolean
+	rateLimit?: any
     deprecated: boolean
 	permissions: APIPermissions[]
 	description: string
@@ -29,6 +31,7 @@ class Route {
 		this.path = opts.path
 		this.method = opts.method.toLowerCase() as Lowercase<APIMethods>
 		this.public = opts.public ?? false
+		this.rateLimit = opts.rateLimit ?? undefined
 		this.permissions = opts.permissions ?? [];
         this.deprecated = opts.deprecated ?? false
 		this.description = opts.description ?? "None"
