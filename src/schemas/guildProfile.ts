@@ -35,8 +35,7 @@ type guildUser = {
 
 type Flag = {
     name: string,
-    description: string,
-    enabled: boolean,
+    value: any,
 }
 
 type APIKey = {
@@ -203,7 +202,7 @@ interface guildProfileInterface extends mongoose.Document {
     addUser: (robloxUser: User) => Promise<guildUser>,
 
     setPoints: (robloxId: number, points: number) => Promise<void>,
-    incrementPoints: (robloxId: number, points: number) => Promise<void>,
+    incrementPoints: (robloxId: number, points: number, modifier: number | User) => Promise<void>,
 
     getModule: (name: string) => Promise<Module | undefined>,
     addModule: (module: Module) => Promise<void>,
@@ -304,8 +303,7 @@ const guildProfileSchema = new mongoose.Schema({
         type : Map,
         of : {
             name : String,
-            description : String,
-            enabled : Boolean,
+            value: mongoose.Schema.Types.Mixed,
         }
     },
 
@@ -560,12 +558,36 @@ guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmou
     await this.save();
 }
 
-guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number) {
+guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number, modifier: number | User) {
     const user = await this.getUser(robloxId);
     if (!user) throw new Error("User not found");
+    const oldPoints = user.points;
 
     user.points += amount;
     await this.save();
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
+
+    const channel = await this.getChannel("PointsDatabaseUpdates");
+    if (!channel) return;
+
+    const targetUser = await client.Functions.GetRobloxUser(robloxId);
+    if (!targetUser) return;
+
+    await channel.send({ embeds: [
+        client.Functions.makeInfoEmbed({
+            title: "Points Updated",
+            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) added \`${amount}\` points to [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
+            thumbnail: await targetUser.fetchUserHeadshotUrl(),
+            footer: { text: actualModifier.name, iconURL: await actualModifier.fetchUserHeadshotUrl() },
+            fields: [
+                { name: "Old Points", value: `\`${oldPoints}\``, inline: true },
+                { name: "New Points", value: `\`${oldPoints + amount}\``, inline: true },
+            ]
+        })
+    ] });
 }
 // Channels
 guildProfileSchema.methods.getChannel = async function (type: string) {
