@@ -1,4 +1,4 @@
-import { type AutocompleteInteraction, type ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandGroupBuilder, type PermissionResolvable, type SlashCommandAttachmentOption, type SlashCommandBooleanOption, type SlashCommandChannelOption, type SlashCommandIntegerOption, type SlashCommandMentionableOption, type SlashCommandNumberOption, type SlashCommandRoleOption, type SlashCommandStringOption, type SlashCommandSubcommandBuilder, GuildMember } from "discord.js";
+import { type AutocompleteInteraction, type ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandGroupBuilder, type PermissionResolvable, type SlashCommandAttachmentOption, type SlashCommandBooleanOption, type SlashCommandChannelOption, type SlashCommandIntegerOption, type SlashCommandMentionableOption, type SlashCommandNumberOption, type SlashCommandRoleOption, type SlashCommandStringOption, type SlashCommandSubcommandBuilder, GuildMember, type SlashCommandUserOption } from "discord.js";
 import client from "../index.js";
 
 export type ValidOptions =
@@ -7,6 +7,7 @@ export type ValidOptions =
  | SlashCommandIntegerOption
  | SlashCommandBooleanOption
  | SlashCommandRoleOption
+ | SlashCommandUserOption
  | SlashCommandChannelOption
  | SlashCommandMentionableOption
  | SlashCommandAttachmentOption;
