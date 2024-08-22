@@ -1,4 +1,4 @@
-import { type APIButtonComponentWithCustomId, ButtonBuilder, type ButtonInteraction, ButtonStyle, ComponentType, type EmbedBuilder } from "discord.js";
+import { type APIButtonComponentWithCustomId, ButtonBuilder, type ButtonInteraction, ButtonStyle, type ComponentEmojiResolvable, ComponentType, type EmbedBuilder } from "discord.js";
 import client from "../index.js";
 
 type Button = {
@@ -7,6 +7,7 @@ type Button = {
     disabled?: boolean;
     allowedUsers?: string[];
     link?: string;
+	emoji?: ComponentEmojiResolvable;
 	customId?: string;
 
     function?: (interaction: ButtonInteraction) => any | Promise<any>;
@@ -51,7 +52,10 @@ class ButtonEmbed {
             return id;
         }
 
-        this.Rows[this.CurrentRow - 1].push(new ButtonBuilder().setLabel(button.label).setStyle(button.style).setCustomId(id).setDisabled(button.disabled ?? false));
+		const Bbutton = new ButtonBuilder().setLabel(button.label).setStyle(button.style).setCustomId(id).setDisabled(button.disabled ?? false);
+		if (button.emoji) Bbutton.setEmoji(button.emoji);
+
+        this.Rows[this.CurrentRow - 1].push(Bbutton);
 
         if (button.function) {
             client.on("buttonPress", async (interaction: ButtonInteraction) => {
