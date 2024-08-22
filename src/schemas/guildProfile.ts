@@ -573,7 +573,7 @@ guildProfileSchema.methods.setNotes = async function (robloxId: number, noteData
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
 
-    await channel.send({ embeds: [
+    channel.send({ embeds: [
         client.Functions.makeInfoEmbed({
             title: "Notes Updated",
             description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **updated** the notes for [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
@@ -609,7 +609,7 @@ guildProfileSchema.methods.setRanklock = async function (robloxId: number, rankl
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
 
-    await channel.send({ embeds: [
+    channel.send({ embeds: [
         client.Functions.makeInfoEmbed({
             title: "Ranklock Updated",
             description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **updated** the ranklock for [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
@@ -644,7 +644,7 @@ guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmou
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
 
-    await channel.send({ embeds: [
+    channel.send({ embeds: [
         client.Functions.makeInfoEmbed({
             title: "Points Updated",
             description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **set** [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)'s points to \`${newAmount}\``,
@@ -678,7 +678,7 @@ guildProfileSchema.methods.incrementPoints = async function (robloxId: number, a
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
 
-    await channel.send({ embeds: [
+    channel.send({ embeds: [
         client.Functions.makeInfoEmbed({
             title: "Points Incremented",
             description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **added** \`${amount}\` points to [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
