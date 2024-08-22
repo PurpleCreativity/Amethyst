@@ -215,7 +215,7 @@ const command = new SlashCommand({
                 try {
                     await guildDataProfile.addPointLog(currentLog);
 
-                    interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Point Log", description: "Point log created successfully" })], components: [] });
+                    interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Point Log", description: "Point log created successfully", footer: { text: currentLog.id } })], components: [] });
                 } catch (error) {
                     if (!(error instanceof Error)) return;
                     buttonInteraction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Point Log", description: `Failed to create point log\n\`\`\`${error.message}\`\`\`` })], ephemeral: true });
