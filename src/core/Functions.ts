@@ -3,6 +3,8 @@ import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
 import Icons from "../assets/Icons.js";
+import type { PointLog } from "../schemas/guildProfile.js";
+import Emojis from "../assets/Emojis.js";
 
 export default class Functions {
     client: SuperClient;
@@ -255,6 +257,36 @@ export default class Functions {
 		const embed = new BaseEmbed(options);
 		if (!options.color) embed.setColor(0xff0000);
 		if (!options.author) embed.setAuthor({ name: "Error", iconURL: Icons.close });
+
+		return embed;
+	}
+
+	makePointlogEmbed = (pointlog: PointLog) => {
+		const embed = this.makeInfoEmbed({
+			title: `\`${pointlog.id}\``,
+			footer: { text: pointlog.id },
+			fields: [ { name: "Notes", value: `${pointlog.notes || "\`No notes\`"}`, inline: false } ]
+		})
+
+		const baseDescription = `Created by [${pointlog.creator.username}](https://www.roblox.com/users/${pointlog.creator.id}/profile) on <t:${Math.round(new Date(pointlog.createdAt).getTime() / 1000)}:F>`;
+
+		for (const data of pointlog.data) {
+			const foundField = embed.GetField(`> ${data.points} points`)
+			if (foundField) {
+				foundField.value += `, \`${data.username}\``;
+				if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
+                continue;
+			}
+
+			embed.addFields({ name: `> ${data.points} points`, value: `\`${data.username}\`` })
+
+			if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
+				embed.setDescription(`## ${Emojis.omegawarn} Unable to show full log!\n${baseDescription}`);
+				break;
+			}
+
+			embed.setDescription(baseDescription);
+		}
 
 		return embed;
 	}
