@@ -10,7 +10,7 @@ const command = new SlashCommand({
     description: "Shows your point logs",
 
     module: "Points",
-    customPermissions: ["PointsManager"],
+    customPermissions: ["CreatePointLogs"],
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
@@ -105,7 +105,6 @@ const command = new SlashCommand({
             })
 
             const canImportLogs = await guildDataProfile.customPermissionCheck(interaction.member as GuildMember, ["PointsManager"]);
-            console.log(canImportLogs)
             if (canImportLogs) buttonEmbed.enableButton(importButton); else buttonEmbed.disableButton(importButton);
 
             embeds.push(buttonEmbed);

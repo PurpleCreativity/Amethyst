@@ -11,7 +11,7 @@ const command = new SlashCommand({
     description: "Create a new point log",
 
     module: "Points",
-    customPermissions: ["PointsManager"],
+    customPermissions: ["CreatePointLogs"],
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
