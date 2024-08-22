@@ -202,6 +202,7 @@ interface guildProfileInterface extends mongoose.Document {
     addUser: (robloxUser: User) => Promise<guildUser>,
 
     setNotes: (robloxId: number, noteData: { text: string, visible: boolean }, modifier?: number | User) => Promise<void>,
+    setRanklock: (robloxId: number, ranklockData: { rank: number, shadow: boolean, reason: string }, modifier?: number | User) => Promise<void>,
 
     calculateUserPendingPoints: (robloxId: number) => Promise<number>,
     setPoints: (robloxId: number, points: number) => Promise<void>,
@@ -560,12 +561,14 @@ guildProfileSchema.methods.setNotes = async function (robloxId: number, noteData
     user.note.updatedAt = new Date();
     await this.save();
 
-    let actualModifier: User | undefined;
-    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
-    if (!actualModifier) return;
+    if (!modifier) return;
 
     const channel = await this.getChannel("PointsDatabaseUpdates");
     if (!channel) return;
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
 
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
@@ -584,6 +587,42 @@ guildProfileSchema.methods.setNotes = async function (robloxId: number, noteData
     ] })
 }
 
+guildProfileSchema.methods.setRanklock = async function (robloxId: number, ranklockData: { rank: number, shadow: boolean, reason: string }, modifier?: number | User) {
+    const user = await this.getUser(robloxId);
+    if (!user) throw new Error("User not found");
+
+    const oldData = user.ranklock;
+
+    user.ranklock = ranklockData;
+    user.ranklock.updatedAt = new Date();
+    await this.save();
+
+    if (!modifier) return;
+
+    const channel = await this.getChannel("PointsDatabaseUpdates");
+    if (!channel) return;
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
+
+    const targetUser = await client.Functions.GetRobloxUser(robloxId);
+    if (!targetUser) return;
+
+    await channel.send({ embeds: [
+        client.Functions.makeInfoEmbed({
+            title: "Ranklock Updated",
+            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **updated** the ranklock for [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)`,
+            thumbnail: await targetUser.fetchUserHeadshotUrl(),
+            footer: { text: actualModifier.name, iconURL: await actualModifier.fetchUserHeadshotUrl() },
+            fields: [
+                { name: "Old Data", value: `${oldData.rank !== 0 ? `Rank: \`${oldData.rank}\`\n Shadow: \`${oldData.shadow}\`\n Reason: ${oldData.reason}` : "No ranklock"}`, inline: false },
+                { name: "New Data", value: `${ranklockData.rank !== 0 ? `Rank: \`${ranklockData.rank}\`\n Shadow: \`${ranklockData.shadow}\`\n Reason: ${ranklockData.reason}` : "No ranklock"}`, inline: false }
+            ]
+        })
+    ]})
+}
+
 guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmount: number) {
     const user = await this.getUser(robloxId);
     if (!user) throw new Error("User not found");
@@ -600,12 +639,14 @@ guildProfileSchema.methods.incrementPoints = async function (robloxId: number, a
     user.points += amount;
     await this.save();
 
-    let actualModifier: User | undefined;
-    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
-    if (!actualModifier) return;
+    if (!modifier) return;
 
     const channel = await this.getChannel("PointsDatabaseUpdates");
     if (!channel) return;
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
 
     const targetUser = await client.Functions.GetRobloxUser(robloxId);
     if (!targetUser) return;
