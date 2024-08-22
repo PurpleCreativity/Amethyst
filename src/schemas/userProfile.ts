@@ -10,8 +10,7 @@ type Setting = {
 
 type Flag = {
     name: string,
-    description: string,
-    enabled: boolean,
+    value: any,
 }
 
 interface userProfileInterface extends mongoose.Document {
@@ -52,8 +51,7 @@ const userProfileSchema = new mongoose.Schema({
         type: Map,
         of: {
             name: String,
-            description: String,
-            enabled: Boolean,
+            value: mongoose.Schema.Types.Mixed,
         }
     },
 
