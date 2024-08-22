@@ -205,7 +205,7 @@ interface guildProfileInterface extends mongoose.Document {
     setRanklock: (robloxId: number, ranklockData: { rank: number, shadow: boolean, reason: string }, modifier?: number | User) => Promise<void>,
 
     calculateUserPendingPoints: (robloxId: number) => Promise<number>,
-    setPoints: (robloxId: number, points: number) => Promise<void>,
+    setPoints: (robloxId: number, points: number, modifier?: number | User) => Promise<void>,
     incrementPoints: (robloxId: number, points: number, modifier?: number | User) => Promise<void>,
 
     getModule: (name: string) => Promise<Module | undefined>,
@@ -623,12 +623,39 @@ guildProfileSchema.methods.setRanklock = async function (robloxId: number, rankl
     ]})
 }
 
-guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmount: number) {
+guildProfileSchema.methods.setPoints = async function (robloxId: number, newAmount: number, modifier?: number | User) {
     const user = await this.getUser(robloxId);
     if (!user) throw new Error("User not found");
 
+    const oldPoints = user.points;
+
     user.points = newAmount;
     await this.save();
+
+    if (!modifier) return;
+
+    const channel = await this.getChannel("PointsDatabaseUpdates");
+    if (!channel) return;
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
+
+    const targetUser = await client.Functions.GetRobloxUser(robloxId);
+    if (!targetUser) return;
+
+    await channel.send({ embeds: [
+        client.Functions.makeInfoEmbed({
+            title: "Points Updated",
+            description: `[${actualModifier.name}](https://www.roblox.com/users/${actualModifier.id}/profile) **set** [${targetUser.name}](https://www.roblox.com/users/${targetUser.id}/profile)'s points to \`${newAmount}\``,
+            thumbnail: await targetUser.fetchUserHeadshotUrl(),
+            footer: { text: actualModifier.name, iconURL: await actualModifier.fetchUserHeadshotUrl() },
+            fields: [
+                { name: "Old Points", value: `${oldPoints}`, inline: true },
+                { name: "New Points", value: `${newAmount}`, inline: true }
+            ]
+        })
+    ] })        
 }
 
 guildProfileSchema.methods.incrementPoints = async function (robloxId: number, amount: number, modifier?: number | User) {

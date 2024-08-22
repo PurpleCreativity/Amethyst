@@ -25,6 +25,9 @@ const command = new SlashCommand({
     execute: async (interaction) => {
         if (!interaction.guild) return;
 
+        const modifierUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
+        if (!modifierUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage Notes", description: "You are not linked to a Roblox account" })], ephemeral: true });
+
         const user = interaction.options.getString("user", true);
         const amount = interaction.options.getNumber("amount", true);
 
@@ -33,7 +36,7 @@ const command = new SlashCommand({
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         const oldPoints = (await guildDataProfile.getUser(robloxUser.id)).points;
-        await guildDataProfile.setPoints(robloxUser.id, amount);
+        await guildDataProfile.setPoints(robloxUser.id, amount, modifierUser);
 
         return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({
             title: "Set Points",
