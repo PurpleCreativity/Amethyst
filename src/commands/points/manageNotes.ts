@@ -64,7 +64,7 @@ const command = new SlashCommand({
 
                 await guildDataProfile.setNotes(robloxUser.id, { text: notes, visible: visible }, modifierUser);
 
-                await interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Set notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })], ephemeral: true });
+                await interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Set notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })], ephemeral: visible });
 
                 break;
             }
@@ -75,10 +75,9 @@ const command = new SlashCommand({
                 const robloxUser = await client.Functions.GetRobloxUser(user);
                 if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage Notes", description: "User not found" })], ephemeral: true });
 
-                await interaction.deferReply();
                 await guildDataProfile.setNotes(robloxUser.id, { text: "", visible: true }, modifierUser);
 
-                await interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Cleared notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })] });
+                await interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage Notes", description: `Cleared notes for \`${robloxUser.name}\`:\`${robloxUser.id}\``, footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() } })] });
 
                 break;
             }
