@@ -38,6 +38,7 @@ const command = new SlashCommand({
         const creatorFilter = interaction.options.getString("creator-filter", false);
         const includedFilter = interaction.options.getString("included-filter", false);
 
+        await interaction.deferReply();
         let pointLogs = await guildDataProfile.getAllPointLogs();
 
         if (creatorFilter) {
@@ -148,7 +149,7 @@ const command = new SlashCommand({
         let description = `Found \`${pointLogs.length}\` pending point logs`
         if (creatorFilter || includedFilter) description += " with given filters"
 
-        await interaction.reply({ embeds: [client.Functions.makeInfoEmbed({ title: "All Logs", description: description })]});
+        await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "All Logs", description: description })]});
         for (const embed of embeds) {
             try {
                 await interaction.channel?.send(embed.getMessageData());
