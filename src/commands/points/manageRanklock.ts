@@ -22,7 +22,7 @@ const command = new SlashCommand({
             .addStringOption(option =>
                 option
                     .setName("rank")
-                    .setDescription("The rank to lock")
+                    .setDescription("The rank name or id")
                     .setRequired(true)
             )
             .addStringOption(option =>
@@ -34,7 +34,7 @@ const command = new SlashCommand({
             .addBooleanOption(option =>
                 option
                     .setName("shadow")
-                    .setDescription("Whether the user should be shadowranklocked")
+                    .setDescription("Whether the ranklock should be shadow")
                     .setRequired(false)
             )
         ,
