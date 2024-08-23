@@ -5,6 +5,7 @@ import client from "../../index.js";
 import type { PointLog } from "../../schemas/guildProfile.js";
 import Modal from "../../classes/Modal.js";
 import Emojis from "../../assets/Emojis.js";
+import Icons from "../../assets/Icons.js";
 
 const command = new SlashCommand({
     name: "newlog",
@@ -163,12 +164,14 @@ const command = new SlashCommand({
                             .setLabel("Note")
                             .setStyle(TextInputStyle.Paragraph)
                             .setMaxLength(1024)
+                            .setRequired(false)
                     ]
                 })
 
                 const response = await modal.Prompt(buttonInteraction) as ModalSubmitInteraction;
                 await response.deferUpdate();
                 currentLog.notes = response.fields.getTextInputValue("note");
+                if (currentLog.notes === "") currentLog.notes = undefined;
 
                 await updateEmbed();
                 interaction.editReply(buttonEmbed.getMessageData());
@@ -199,7 +202,7 @@ const command = new SlashCommand({
 
                 const userBuffer = Buffer.from(userText, 'utf-8');
 
-                await buttonInteraction.reply({ files: [{ name: `pointlog_fulldata_${currentLog.id}.txt`, attachment: userBuffer }], ephemeral: true });
+                await buttonInteraction.reply({ files: [{ name: `pointlog_${currentLog.id}_fulldata.txt`, attachment: userBuffer }], ephemeral: true });
             }
         });
 
@@ -213,12 +216,34 @@ const command = new SlashCommand({
 
             function: async (buttonInteraction) => {
                 try {
-                    await guildDataProfile.addPointLog(currentLog);
+                    await guildDataProfile.addPointLog(currentLog, creatorUser);
+                    const baseEmbed = client.Functions.makePointlogEmbed(currentLog);
+                    baseEmbed.setDescription(null);
+                    baseEmbed.setColor(0x00ff00);
+                    baseEmbed.setAuthor({ name: "Created", iconURL: Icons.check });
 
-                    interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Point Log", description: "Point log created successfully", footer: { text: currentLog.id } })], components: [] });
+                    interaction.editReply({ embeds: [baseEmbed], components: [] });
                 } catch (error) {
                     if (!(error instanceof Error)) return;
-                    buttonInteraction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Point Log", description: `Failed to create point log\n\`\`\`${error.message}\`\`\`` })], ephemeral: true });
+                    const baseEmbed = client.Functions.makeErrorEmbed({ title: "Point Log", description: `Failed to create point log:\n## ${error.name}\n\`\`\`${error.message}\`\`\`\n\nAttached below is the full data of the pointlog` });
+
+                    const pointsMap: { [key: number]: string[] } = {};
+    
+                    for (const user of currentLog.data) {
+                        if (!pointsMap[user.points]) {
+                            pointsMap[user.points] = [];
+                        }
+                        pointsMap[user.points].push(user.username);
+                    }
+
+                    const userText = Object.entries(pointsMap)
+                        .map(([points, usernames]) => `${points} - ${usernames.map(username => `${username}`).join(', ')}`)
+                        .join('\n');
+
+                    const userBuffer = Buffer.from(userText, 'utf-8');
+
+                    await interaction.editReply({ embeds: [baseEmbed], components: [] });
+                    await buttonInteraction.reply({ content: currentLog.notes ? `## Notes\n\`\`\`${currentLog.notes}\`\`\`` : undefined, files: [{ name: `pointlog_${currentLog.id}_fulldata.txt`, attachment: userBuffer }], ephemeral: true });
                 }
             }
         });

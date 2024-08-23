@@ -51,7 +51,7 @@ const command = new SlashCommand({
 
                     const userBuffer = Buffer.from(userText, 'utf-8');
 
-                    await buttonInteraction.reply({ files: [{ name: `pointlog_fulldata_${pointlog.id}.txt`, attachment: userBuffer }], ephemeral: true });
+                    await buttonInteraction.reply({ files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }], ephemeral: true });
                 }
             })
 
@@ -94,7 +94,7 @@ const command = new SlashCommand({
                         successEmbed.setAuthor({ name: "Deleted", iconURL: Icons.close });
                         successEmbed.setTimestamp();
 
-                        await guildDataProfile.removePointLog(pointlog.id);
+                        await guildDataProfile.deletePointLog(pointlog.id);
                         await buttonInteraction.message.edit({ embeds: [successEmbed], components: [] });
                     } catch (error) {
                         if (!(error instanceof Error)) return;

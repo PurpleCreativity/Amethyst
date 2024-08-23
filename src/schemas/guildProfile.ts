@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import client from "../index.js";
 import type { Group, User } from "wrapblox";
-import type { Guild, GuildMember } from "discord.js";
+import { ButtonStyle, type Guild, type GuildMember } from "discord.js";
 import type { customPermissionOptions } from "../classes/SlashCommand.js";
+import ButtonEmbed from "../classes/ButtonEmbed.js";
+import Emojis from "../assets/Emojis.js";
 
 type guildUser = {
     roblox: {
@@ -215,11 +217,11 @@ interface guildProfileInterface extends mongoose.Document {
     setChannel: (data: customChannel) => Promise<void>,
 
     getAllPointLogs: () => Promise<PointLog[]>,
-    addPointLog: (pointLog: PointLog) => Promise<void>,
+    addPointLog: (pointLog: PointLog, modifier?: number | User) => Promise<void>,
     getPointLog: (id: string) => Promise<PointLog | undefined>,
-    removePointLog: (id: string) => Promise<void>,
-    editPointLog: (id: string, newData: PointLog) => Promise<void>,
-    importPointLog: (id: string) => Promise<void>,
+    deletePointLog: (id: string, modifier?: number | User) => Promise<void>,
+    editPointLog: (id: string, newData: PointLog, modifier?: number | User) => Promise<void>,
+    importPointLog: (id: string, modifier?: number | User) => Promise<void>,
 
     linkGroup: (groupID: number) => Promise<void>,
     fetchGroup: () => Promise<Group | undefined>,
@@ -456,6 +458,9 @@ guildProfileSchema.methods.fetchOwner = async function () {
 
 guildProfileSchema.methods.customPermissionCheck = async function (guildMember: GuildMember, customPermissions: customPermissionOptions[]) {
     if (customPermissions.length === 0) return true;
+
+    const owner = await this.fetchOwner();
+    if (guildMember.id === owner.id) return true;
 
     const roles = guildMember.roles.cache.map((role) => role.id);
     const ownedPermissions = [] as customPermissionOptions[];
@@ -730,18 +735,50 @@ guildProfileSchema.methods.getAllPointLogs = async function () {
     return pointlogs;
 }
 
-guildProfileSchema.methods.addPointLog = async function (pointLog: PointLog) {
+guildProfileSchema.methods.addPointLog = async function (pointLog: PointLog, modifier?: number | User) {
     this.pointlogs.set(pointLog.id, pointLog);
     await this.save();
+
+    if (!modifier) return;
+
+    const channel = await this.getChannel("PointLogUpdates");
+    if (!channel) return;
+
+    let actualModifier: User | undefined;
+    if (typeof modifier === "number") actualModifier = await this.client.Functions.GetRobloxUser(modifier); else actualModifier = modifier;
+    if (!actualModifier) return;
+
+    const baseEmbed = client.Functions.makePointlogEmbed(pointLog);
+    const buttonEmbed = new ButtonEmbed(baseEmbed);
+
+    buttonEmbed.addButton({
+        label: "View Data",
+        style: ButtonStyle.Secondary,
+        emoji: Emojis.folder_open,
+        customId: `STATIC_POINTLOG_${pointLog.id}_VIEWDATA`,
+    })
+
+    buttonEmbed.nextRow();
+
+    buttonEmbed.addButton({
+        label: "Delete",
+        style: ButtonStyle.Danger,
+        emoji: Emojis.delete,
+        customId: `STATIC_POINTLOG_${pointLog.id}_DELETE`,
+    })
+
+    buttonEmbed.addButton({
+        label: "Import",
+        style: ButtonStyle.Success,
+        emoji: Emojis.import,
+        customId: `STATIC_POINTLOG_${pointLog.id}_IMPORT`,
+    })
+
+    channel.send(buttonEmbed.getMessageData());
 }
 
 guildProfileSchema.methods.getPointLog = async function (id: string) {
     return this.pointlogs.get(id);
-}
-
-guildProfileSchema.methods.removePointLog = async function (id: string) {
-    this.pointlogs.delete(id);
-    await this.save();
 }
 
 guildProfileSchema.methods.importPointLog = async function (id: string) {
@@ -753,7 +790,8 @@ guildProfileSchema.methods.importPointLog = async function (id: string) {
         user.points += data.points;
     }
 
-    await this.removePointLog(id);
+
+    this.pointlogs.delete(id);
     await this.save();
 }
 
@@ -766,11 +804,11 @@ guildProfileSchema.methods.editPointLog = async function (id: string, newData: P
     await this.save();
 }
 
-guildProfileSchema.methods.denyPointLog = async function (id: string) {
+guildProfileSchema.methods.deletePointLog = async function (id: string) {
     const pointLog = await this.getPointLog(id);
     if (!pointLog) throw new Error("Point log not found");
 
-    await this.removePointLog(id);
+    await this.pointlogs.delete(id);
     await this.save();
 }
 

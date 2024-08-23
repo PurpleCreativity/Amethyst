@@ -57,7 +57,7 @@ const command = new SlashCommand({
 
         if (pointlogId) pointLogs = pointLogs.filter(pointlog => pointlog.id === pointlogId);
 
-        if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "No point logs found" })], ephemeral: true });
+        if (pointLogs.length === 0) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Get Logs", description: "No point logs found" })] });
 
         const embeds = [] as ButtonEmbed[];
 
@@ -87,7 +87,7 @@ const command = new SlashCommand({
 
                     const userBuffer = Buffer.from(userText, 'utf-8');
 
-                    await buttonInteraction.reply({ files: [{ name: `pointlog_fulldata_${pointlog.id}.txt`, attachment: userBuffer }], ephemeral: true });
+                    await buttonInteraction.reply({ files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }], ephemeral: true });
                 }
             })
 
@@ -130,7 +130,7 @@ const command = new SlashCommand({
                         successEmbed.setAuthor({ name: "Deleted", iconURL: Icons.close });
                         successEmbed.setTimestamp();
 
-                        await guildDataProfile.removePointLog(pointlog.id);
+                        await guildDataProfile.deletePointLog(pointlog.id);
                         await buttonInteraction.message.edit({ embeds: [successEmbed], components: [] });
                     } catch (error) {
                         if (!(error instanceof Error)) return;
