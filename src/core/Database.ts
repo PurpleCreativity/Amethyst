@@ -46,19 +46,19 @@ export default class Database {
                 ,
 
                 customPermissions: new Map()
-                    .set("Administrator", { name: "Administrator", roles: [], users: [owner.id] })
-                    .set("Moderator", { name: "Moderator", roles: [], users: [owner.id] })
+                    .set("Administrator", { name: "Administrator", roles: [], users: [] })
+                    .set("Moderator", { name: "Moderator", roles: [], users: [] })
 
-                    .set("RobloxModerator", { name: "RobloxModerator", roles: [], users: [owner.id] })
-                    .set("RobloxGroupManager", { name: "RobloxGroupManager", roles: [], users: [owner.id] })
+                    .set("RobloxModerator", { name: "RobloxModerator", roles: [], users: [] })
+                    .set("RobloxGroupManager", { name: "RobloxGroupManager", roles: [], users: [] })
 
-                    .set("PointsManager", { name: "PointsManager", roles: [], users: [owner.id] })
-                    .set("PointsViewer", { name: "PointsViewer", roles: [], users: [owner.id] })
+                    .set("PointsManager", { name: "PointsManager", roles: [], users: [] })
+                    .set("PointsViewer", { name: "PointsViewer", roles: [], users: [] })
 
-                    .set("CreatePointLogs", { name: "CreatePointLogs", roles: [], users: [owner.id] })
+                    .set("CreatePointLogs", { name: "CreatePointLogs", roles: [], users: [] })
 
-                    .set("EventScheduler", { name: "EventScheduler", roles: [], users: [owner.id] })
-                    .set("ScheduleManager", { name: "ScheduleManager", roles: [], users: [owner.id] })
+                    .set("EventScheduler", { name: "EventScheduler", roles: [], users: [] })
+                    .set("ScheduleManager", { name: "ScheduleManager", roles: [], users: [] })
                 ,
             },
 
