@@ -119,15 +119,15 @@ export default class SlashCommand extends SlashCommandBuilder {
 		if (!interaction.member) return false;
 		if (this.permissions.length === 0 && this.customPermissions.length === 0) return true;
 		if (interaction.guild) {
-			if (typeof interaction.member.permissions === "string" || !interaction.member.permissions.has(this.permissions)) return false;
-			
 			if (this.customPermissions.length > 0) {
 				if (!(interaction.member instanceof GuildMember)) return false;
 				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
 				const check = await guildDataProfile.customPermissionCheck(interaction.member, this.customPermissions);
 				
-				return check;
+				if (!check) return false;
 			}
+
+			if (typeof interaction.member.permissions === "string" || !interaction.member.permissions.has(this.permissions)) return false;
 		}
 
 		return true

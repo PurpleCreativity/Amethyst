@@ -461,6 +461,7 @@ guildProfileSchema.methods.customPermissionCheck = async function (guildMember: 
 
     const owner = await this.fetchOwner();
     if (guildMember.id === owner.id) return true;
+    if (guildMember.permissions.has("Administrator")) return true;
 
     const roles = guildMember.roles.cache.map((role) => role.id);
     const ownedPermissions = [] as customPermissionOptions[];

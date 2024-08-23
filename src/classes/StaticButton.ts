@@ -1,5 +1,6 @@
-import type { ButtonInteraction, PermissionResolvable } from "discord.js";
+import { GuildMember, type ButtonInteraction, type PermissionResolvable } from "discord.js";
 import type { customPermissionOptions } from "./SlashCommand.js";
+import client from "../index.js";
 
 export type StaticButtonOptions = {
     customId: string;
@@ -28,10 +29,32 @@ export default class StaticButton {
     }
 
     async Check(interaction: ButtonInteraction) {
+        if (!interaction.member) return false;
+		if (this.permissions.length === 0 && this.customPermissions.length === 0) return true;
+        if (interaction.guild) {
+			if (this.customPermissions.length > 0) {
+				if (!(interaction.member instanceof GuildMember)) return false;
+				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
+				const check = await guildDataProfile.customPermissionCheck(interaction.member, this.customPermissions);
+				
+				if (!check) return false;
+			}
+		}
+        if (typeof interaction.member.permissions === "string" || !interaction.member.permissions.has(this.permissions)) return false;
         
+        return true;
     }
 
     async Execute(interaction: ButtonInteraction) {
+        if (client.Functions.isDev(interaction.user.id)) {
+			await this.execute(interaction);
+			return;
+		}
+
+        if (!(await this.Check(interaction))) {
+			return interaction.reply({ content: "You do not have permission to use this button.", ephemeral: true });
+		}
+
         this.execute(interaction);
     }
 }
