@@ -24,6 +24,7 @@ config.credentials = {
 
 config.channels = {
 	errors: "1273247363544121499",
+	logs: "1276512737014583318"
 }
 
 config.logConfig = {

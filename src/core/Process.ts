@@ -27,6 +27,10 @@ export default class Process {
         await button.Execute(interaction);
     }
 
+    guildCreate = async (guild: any) => {
+        this.client.Logs.guildCreate(guild);
+    }
+
     interactionCreate = async (interaction: Interaction) => {
         if (interaction.isChatInputCommand()) {
             const command = this.client.Interactables.GetCommand(interaction.commandName);
@@ -74,7 +78,8 @@ export default class Process {
 
     Init = async () => {
         this.client.Events.AddEvent("client", "interactionCreate", this.interactionCreate);
-        //this.client.Events.AddEvent("client", "guildCreate", this.guildCreate);
+
+        this.client.Events.AddEvent("client", "guildCreate", this.guildCreate);
 
         this.client.Events.AddEvent("process", "uncaughtException", this.uncaughtException);
 
