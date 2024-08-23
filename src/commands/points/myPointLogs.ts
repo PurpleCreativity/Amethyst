@@ -22,6 +22,7 @@ const command = new SlashCommand({
         pointLogs = pointLogs.filter(pointlog => pointlog.creator.id === robloxUser.id);
         if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You have no point logs" })], ephemeral: true });
 
+        await interaction.deferReply();
         const embeds = [] as ButtonEmbed[];
 
         for (const pointlog of pointLogs) {
@@ -110,7 +111,7 @@ const command = new SlashCommand({
             embeds.push(buttonEmbed);
         }
 
-        await interaction.reply({ embeds: [client.Functions.makeInfoEmbed({ title: "Your Point Logs", description: `You have \`${pointLogs.length}\` pending point logs.`}) ]})
+        await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Your Point Logs", description: `You have \`${pointLogs.length}\` pending point logs.`}) ]})
         for (const embed of embeds) {
             try {
                 await interaction.channel?.send(embed.getMessageData());
