@@ -75,8 +75,9 @@ const command = new SlashCommand({
 
         return interaction.reply({ embeds: [
             client.Functions.makeInfoEmbed({
-                title: `${robloxUser.name}'s Character Alias`,
-                description: `\`\`\`${aliasString}\`\`\``
+                title: "Character Alias",
+                description: `\`\`\`${aliasString}\`\`\``,
+                footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() }
             })
         ] });
     }
