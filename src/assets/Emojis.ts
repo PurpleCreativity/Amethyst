@@ -15,4 +15,5 @@ export default {
     "add": "<:add:1276155767174725703>",
     "description": "<:description:1276156265155792916>",
     "check": "<:check:1276156510807785483>",
+    "permissions": "<:permissions:1277019889466347633>"
 }
