@@ -48,8 +48,8 @@ class Route {
                     return;
                 }
 
-				const APIKey = req.headers["x-api-key"];
-				if (!APIKey) return res.status(401).send({ error: "No API Key provided", message: "Provide a API key header (x-api-key) with your request" }).end();
+				const APIKey = req.headers["x-api-key"] || req.headers["X-Api-Key"] || req.headers.authorization || req.headers.Authorization;
+				if (!APIKey) return res.status(401).send({ error: "No API Key provided", message: "Provide a API key header (x-api-key or X-Api-Key or authorization or Authorization) with your request" }).end();
 
 				const guildAndkey = await client.API.GetGuildProfileFromAPIKey(APIKey as string);
 				const guildProfile = guildAndkey?.guildProfile;
