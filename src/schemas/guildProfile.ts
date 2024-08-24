@@ -48,7 +48,7 @@ type APIKey = {
     permissions : string[],
 
     createdAt : Date,
-    createdBy : number,
+    createdBy : string,
 }
 
 type customPermission = {
@@ -379,7 +379,7 @@ const guildProfileSchema = new mongoose.Schema({
                 permissions : [String],
 
                 createdAt : Date,
-                createdBy : Number,
+                createdBy : String,
             }
         },
 
