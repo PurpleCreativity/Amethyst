@@ -1,0 +1,264 @@
+import { ButtonStyle, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, type StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import SlashCommand from "../../classes/SlashCommand.js";
+import client from "../../index.js";
+import type { APIKey } from "../../schemas/guildProfile.js";
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
+import Modal from "../../classes/Modal.js";
+import StringSelector from "../../classes/StringSelector.js";
+import Emojis from "../../assets/Emojis.js";
+import Icons from "../../assets/Icons.js";
+
+const permissionOptions = [
+    new StringSelectMenuOptionBuilder().setLabel("Administrator").setDescription("Grants all permissions").setValue("Administrator"),
+    new StringSelectMenuOptionBuilder().setLabel("ViewPoints").setDescription("View points for any user").setValue("ViewPoints"),
+    new StringSelectMenuOptionBuilder().setLabel("ViewSchedule").setDescription("View scheduled events").setValue("ViewSchedule"),
+    new StringSelectMenuOptionBuilder().setLabel("Moderation").setDescription("Moderation related routes").setValue("Moderation"),
+    new StringSelectMenuOptionBuilder().setLabel("CreatePointLogs").setDescription("Grants permission to make pointlogs").setValue("CreatePointLogs"),
+    new StringSelectMenuOptionBuilder().setLabel("Roblox").setDescription("Grants roblox-related permissions, required for robloxreturn").setValue("Roblox")
+]
+
+const makeAPIKeyEmbed = (key: APIKey) => {
+    return client.Functions.makeInfoEmbed({
+        title: `\`${key.name}\``,
+        description: `Created by <@${key.createdBy}> on <t:${Math.round(new Date(key.createdAt).getTime() / 1000)}:F>`,
+        fields: [
+            { name: "Enabled", value: `\`${key.enabled}\``, inline: true },
+        ]
+    })
+}
+
+const command = new SlashCommand({
+    name: "api",
+    description: "Manage the API",
+
+    customPermissions: ["Administrator"],
+    
+    subcommands: [
+        new SlashCommandSubcommandBuilder()
+            .setName("generatekey")
+            .setDescription("Create a new API key")
+        ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("deletekey")
+            .setDescription("Delete an API key")
+            .addStringOption(option =>
+                option
+                    .setName("key")
+                    .setDescription("The key to delete")
+                    .setRequired(true)
+            )
+        ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("managekey")
+            .setDescription("Manage an API key")
+            .addStringOption(option =>
+                option
+                    .setName("key")
+                    .setDescription("The key to manage")
+                    .setRequired(true)
+            )
+        ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("listkeys")
+            .setDescription("List all API keys")
+    ],
+
+    execute: async (interaction) => {
+        if (!interaction.guild) return;
+        const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+        const subcommand = interaction.options.getSubcommand(true);
+
+        switch (subcommand) {
+            case "generatekey": {
+                const keys = guildDataProfile.API.keys;
+                if (keys.size >= 25) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API", description: "You can only have a maximum of 25 API keys per guild." })] });
+
+                const currentKey = {
+                    name: "",
+                    key: client.Functions.Encypt(client.API.GenerateKey(), guildDataProfile.iv),
+
+                    enabled: true,
+                    permissions: [],
+
+                    createdAt: new Date(),
+                    createdBy: interaction.user.id
+                } as APIKey;
+
+                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Create API Key", description: "Use the buttons below to set the data of the API key." });
+                const buttonEmbed = new ButtonEmbed(baseEmbed);
+
+                const updateEmbed = () => {
+                    const embed = baseEmbed;
+
+                    embed.setFields([]);
+                    embed.addFields([
+                        { name: "Name", value: currentKey.name === "" ? "\`Unset\`" : `\`${currentKey.name}\``, inline: false },
+                        { name: "Permissions", value: currentKey.permissions.length === 0 ? "\`Unset\`" : currentKey.permissions.map(permission => `\`${permission}\``).join(", "), inline: false },
+                        { name: "Enabled", value: `\`${currentKey.enabled}\``, inline: true },
+                    ])
+
+                    buttonEmbed.setEmbed(embed);
+                }
+
+                updateEmbed();
+
+                buttonEmbed.addButton({
+                    label: "Set Name",
+                    style: ButtonStyle.Primary,
+                    emoji: Emojis.description,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        const modal = new Modal({
+                            Title: "Set Name",
+                            Inputs: [
+                                new TextInputBuilder()
+                                    .setCustomId("name")
+                                    .setLabel("Name")
+                                    .setStyle(TextInputStyle.Paragraph)
+                                    .setMaxLength(25)
+                                    .setRequired(true)
+                            ]
+                        })
+        
+                        const response = await modal.Prompt(buttonInteraction) as ModalSubmitInteraction;
+                        await response.deferUpdate();
+                        currentKey.name = response.fields.getTextInputValue("name");
+
+                        if (
+                            currentKey.name !== "" &&
+                            currentKey.permissions.length !== 0
+                        ) buttonEmbed.enableButton(generateKey); else buttonEmbed.disableButton(generateKey);
+
+                        updateEmbed();
+                        interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                });
+
+                buttonEmbed.nextRow();
+
+                buttonEmbed.addButton({
+                    label: "Set Permissions",
+                    style: ButtonStyle.Primary,
+                    emoji: Emojis.permissions,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        const selector = new StringSelector({
+                            Placeholder: "Select Permissions",
+                            allowedUsers: [interaction.user.id],
+                            Options: permissionOptions,
+
+                            MaxValues: permissionOptions.length,
+                            MinValues: 1
+                        });
+
+                        const response = await selector.Prompt(buttonInteraction, {}) as StringSelectMenuInteraction;
+                        await response.deferUpdate();
+                        await response.message.delete();
+
+                        if (response.values.includes("Administrator")) response.values = ["Administrator"];
+                        currentKey.permissions = response.values || [];
+
+                        if (
+                            currentKey.name !== "" &&
+                            currentKey.permissions.length !== 0
+                        ) buttonEmbed.enableButton(generateKey); else buttonEmbed.disableButton(generateKey);
+
+                        updateEmbed();
+                        interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                });
+
+                buttonEmbed.addButton({
+                    label: "Clear Permissions",
+                    emoji: Emojis.permissions,
+                    style: ButtonStyle.Danger,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        currentKey.permissions = [];
+
+                        buttonEmbed.disableButton(generateKey);
+
+                        updateEmbed();
+                        interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                })
+
+                buttonEmbed.addButton({
+                    label: "Toggle Enabled",
+                    style: ButtonStyle.Secondary,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        currentKey.enabled = !currentKey.enabled;
+
+                        updateEmbed();
+                        interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                });
+
+                buttonEmbed.nextRow();
+
+                const generateKey = buttonEmbed.addButton({
+                    label: "Generate Key",
+                    style: ButtonStyle.Success,
+                    emoji: Emojis.check,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferReply({ ephemeral: true });
+
+                        try {
+                            guildDataProfile.API.keys.set(currentKey.key, currentKey);
+                            await guildDataProfile.save();
+
+                            const baseEmbed2 = client.Functions.makeInfoEmbed({ title: "API Key Generated", description: "Your API key has been generated with the following data:", fields: [ { name: "Name", value: currentKey.name }, { name: "Permissions", value: currentKey.permissions.map(permission => `\`${permission}\``).join(", ") }, { name: "Enabled", value: `\`${currentKey.enabled}\``, inline: true } ], color: 0x00ff00, author: { name: "Generated", iconURL: Icons.check } })
+                            const buttonEmbed2 = new ButtonEmbed(baseEmbed);
+
+                            buttonEmbed2.addButton({
+                                label: "Reveal Key",
+                                style: ButtonStyle.Danger,
+                                allowedUsers: [interaction.user.id],
+
+                                function: async (buttonInteraction2) => {
+                                    buttonInteraction2.reply({ content: `\`\`\`${client.Functions.Decrypt(currentKey.key, guildDataProfile.iv)}\`\`\``, ephemeral: true });
+                                }
+                            })
+
+                            await interaction.deleteReply();
+                            await buttonInteraction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Key Generated", description: "Please check your DMs" })], components: [] });
+                            await interaction.user.send(buttonEmbed2.getMessageData());
+                        } catch (error) {
+                            return buttonInteraction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Generate Key", description: "I was unable to send you a direct message!" })]})
+                        }
+                    }
+                })
+
+                buttonEmbed.addButton({
+                    label: "Cancel",
+                    style: ButtonStyle.Danger,
+                    emoji: Emojis.delete,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+
+                        await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Generate Key", description: "API key creation cancelled", color: 0xff0000, author: { name: "Cancelled", iconURL: Icons.close } })], components: [] });
+                    }
+                })
+
+                buttonEmbed.disableButton(generateKey);
+                interaction.reply(buttonEmbed.getMessageData());
+            }
+        }
+    }
+})
+
+export default command;
