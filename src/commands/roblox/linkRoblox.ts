@@ -3,7 +3,6 @@ import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import StringSelector from "../../classes/StringSelector.js";
 import Emojis from "../../assets/Emojis.js";
-import type { guildProfileInterface } from "../../schemas/guildProfile.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import { AxiosError } from "axios";
 
