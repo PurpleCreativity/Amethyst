@@ -39,7 +39,7 @@ const command = new SlashCommand({
         const baseEmbed = client.Functions.makeInfoEmbed({ title: "Point Log Creator", description: "Use the buttons below to add or remove points from this log, or to add a note.", footer: { text: currentLog.id } });
         const buttonEmbed = new ButtonEmbed(baseEmbed);
 
-        const updateEmbed = async () => {
+        const updateEmbed = () => {
             const embed = baseEmbed;
 
             embed.setFields([]);
@@ -68,7 +68,7 @@ const command = new SlashCommand({
             buttonEmbed.setEmbed(embed);
         }
 
-        await updateEmbed();
+        updateEmbed();
 
         const addData = buttonEmbed.addButton({
             label: "Add Data",
@@ -144,7 +144,7 @@ const command = new SlashCommand({
                     buttonEmbed.enableButton(finishLog);
                 }
 
-                await updateEmbed();
+                updateEmbed();
                 interaction.editReply(buttonEmbed.getMessageData());
             }
         })
@@ -173,7 +173,7 @@ const command = new SlashCommand({
                 currentLog.notes = response.fields.getTextInputValue("note");
                 if (currentLog.notes === "") currentLog.notes = undefined;
 
-                await updateEmbed();
+                updateEmbed();
                 interaction.editReply(buttonEmbed.getMessageData());
             }
         });
