@@ -1,5 +1,6 @@
 import type express from "express";
 import client from "../index.js";
+import type { guildProfileInterface } from "../schemas/guildProfile.js";
 
 export type APIMethods = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"
 export type APIPermissions = "Administrator" | "ViewPoints" | "CreatePointLogs" | "ViewSchedule" | "Moderation" | "Roblox";
@@ -13,7 +14,7 @@ type RouteOptions = {
 	permissions?: APIPermissions[],
 	description?: string,
 
-	execute(req: express.Request, res: express.Response): void
+	execute(req: express.Request, res: express.Response, guildDataProfile?: guildProfileInterface | undefined): void
 }
 
 class Route {
@@ -25,7 +26,7 @@ class Route {
 	permissions: APIPermissions[]
 	description: string
 
-	execute: (req: express.Request, res: express.Response) => void
+	execute: (req: express.Request, res: express.Response, guildDataProfile?: guildProfileInterface | undefined) => void
 
 	constructor(opts: RouteOptions) {
 		this.path = opts.path
@@ -56,13 +57,14 @@ class Route {
 
 				if (!guildProfile || !keyData) return res.status(401).send({ error: "Invalid API Key", message: "The API key provided is invalid" }).end();
 				if (!keyData.enabled) return res.status(401).send({ error: "API Key Disabled", message: "The API key provided is disabled" }).end();
+				if (keyData.permissions.includes("Administrator")) return this.execute(req, res, guildProfile);
 
 				if (this.permissions.length > 0) {
 					const hasPermission = this.permissions.some(permission => keyData.permissions.includes(permission));
 					if (!hasPermission) return res.status(403).send({ error: "Missing Permissions", message: "You do not have the required permissions to access this route" }).end();
 				}
 
-                this.execute(req, res);
+                this.execute(req, res, guildProfile);
             } catch (error) {
                 return res.status(500).send({ error: "An error occured while processing your request.", message: error }).end();
             }
