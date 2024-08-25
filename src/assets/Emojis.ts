@@ -1,7 +1,6 @@
 import client from "../index.js";
 
-export default client.devMode ? 
-{
+const devEmojis = {
     "thinking": "<a:thinking:1272876208668938313>",
     "loading": "<a:loading:1272878146802155531>",
     
@@ -19,6 +18,6 @@ export default client.devMode ?
     "description": "<:description:1276156265155792916>",
     "check": "<:check:1276156510807785483>",
     "permissions": "<:permissions:1277019889466347633>"
-} : {
-
 }
+
+export default devEmojis;
