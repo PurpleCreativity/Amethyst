@@ -56,7 +56,8 @@ class Route {
 				const keyData = guildAndkey?.keyData;
 
 				if (!guildProfile || !keyData) return res.status(401).send({ error: "Invalid API Key", message: "The API key provided is invalid" }).end();
-				
+
+				if (guildProfile.API.banned) return res.status(401).send({ error: "API Banned", message: "The API is banned" }).end();
 				if (!guildProfile.API.enabled) return res.status(401).send({ error: "API Disabled", message: "The API is disabled" }).end();
 				if (!keyData.enabled) return res.status(401).send({ error: "API Key Disabled", message: "The API key provided is disabled" }).end();
 				if (keyData.permissions.includes("Administrator")) return this.execute(req, res, guildProfile);
