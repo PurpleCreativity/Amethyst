@@ -104,8 +104,6 @@ const command = new SlashCommand({
                     buttonEmbed.setEmbed(embed);
                 }
 
-                updateEmbed();
-
                 buttonEmbed.addButton({
                     label: "Set Name",
                     style: ButtonStyle.Primary,
@@ -217,7 +215,7 @@ const command = new SlashCommand({
                         await buttonInteraction.deferReply({ ephemeral: true });
 
                         try {
-                            guildDataProfile.API.keys.set(currentKey.key, currentKey);
+                            guildDataProfile.API.keys.set(currentKey.name, currentKey);
                             await guildDataProfile.save();
 
                             const baseEmbed2 = client.Functions.makeInfoEmbed({ title: "API Key Generated", description: "Your API key has been generated with the following data:", fields: [ { name: "Name", value: currentKey.name }, { name: "Permissions", value: currentKey.permissions.map(permission => `\`${permission}\``).join(", ") }, { name: "Enabled", value: `\`${currentKey.enabled}\``, inline: true } ], color: 0x00ff00, author: { name: "Generated", iconURL: Icons.check } })
@@ -257,12 +255,154 @@ const command = new SlashCommand({
                     }
                 })
 
+                updateEmbed();
                 buttonEmbed.disableButton(generateKey);
                 return interaction.reply(buttonEmbed.getMessageData());
             }
 
             case "managekey": {
-                break;
+                const existingKey = guildDataProfile.API.keys.get(interaction.options.getString("key", true));
+                if (!existingKey) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Key", description: "Key not found" })], ephemeral: true });
+                const currentKey = JSON.parse(JSON.stringify(existingKey));
+
+                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Create API Key", description: "Use the buttons below to set the data of the API key." });
+                const buttonEmbed = new ButtonEmbed(baseEmbed);
+
+                const updateEmbed = () => {
+                    const embed = baseEmbed;
+
+                    embed.setFields([]);
+                    embed.addFields([
+                        { name: "Name", value: currentKey.name === "" ? "\`Unset\`" : `\`${currentKey.name}\``, inline: false },
+                        { name: "Permissions", value: currentKey.permissions.length === 0 ? "\`Unset\`" : currentKey.permissions.map((permission: any) => `\`${permission}\``).join(", "), inline: false },
+                        { name: "Enabled", value: `\`${currentKey.enabled}\``, inline: true },
+                    ])
+
+                    buttonEmbed.setEmbed(embed);
+                }
+
+                buttonEmbed.addButton({
+                    label: "Edit Name",
+                    style: ButtonStyle.Secondary,
+                    emoji: Emojis.description,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        const modal = new Modal({
+                            Title: "Set Name",
+                            Inputs: [
+                                new TextInputBuilder()
+                                    .setCustomId("name")
+                                    .setLabel("Name")
+                                    .setStyle(TextInputStyle.Paragraph)
+                                    .setMaxLength(25)
+                                    .setRequired(true)
+                            ]
+                        })
+        
+                        const response = await modal.Prompt(buttonInteraction) as ModalSubmitInteraction;
+                        await response.deferUpdate();
+                        currentKey.name = response.fields.getTextInputValue("name");
+
+                        updateEmbed();
+                        await interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                });
+
+                buttonEmbed.nextRow();
+
+                buttonEmbed.addButton({
+                    label: "Set Permissions",
+                    style: ButtonStyle.Primary,
+                    emoji: Emojis.permissions,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        const selector = new StringSelector({
+                            Placeholder: "Select Permissions",
+                            allowedUsers: [interaction.user.id],
+                            Options: permissionOptions,
+
+                            MaxValues: permissionOptions.length,
+                            MinValues: 1
+                        });
+
+                        const response = await selector.Prompt(buttonInteraction, {}) as StringSelectMenuInteraction;
+                        await response.deferUpdate();
+                        await response.message.delete();
+
+                        if (response.values.includes("Administrator")) response.values = ["Administrator"];
+                        currentKey.permissions = response.values || [];
+
+                        updateEmbed();
+                        await interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                });
+
+                buttonEmbed.addButton({
+                    label: "Clear Permissions",
+                    style: ButtonStyle.Danger,
+                    emoji: Emojis.permissions,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        currentKey.permissions = [];
+
+                        updateEmbed();
+                        await interaction.editReply(buttonEmbed.getMessageData());
+                    }
+                })
+
+                buttonEmbed.nextRow();
+
+                buttonEmbed.addButton({
+                   label: "Toggle Enabled",
+                   style: ButtonStyle.Secondary,
+                   allowedUsers: [interaction.user.id],
+                   
+                   function: async (buttonInteraction) => {
+                       await buttonInteraction.deferUpdate();
+                       currentKey.enabled = !currentKey.enabled;
+
+                       updateEmbed();
+                       await interaction.editReply(buttonEmbed.getMessageData());
+                   }
+                });
+
+                buttonEmbed.nextRow();
+
+                buttonEmbed.addButton({
+                    label: "Save Changes",
+                    style: ButtonStyle.Success,
+                    emoji: Emojis.check,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        guildDataProfile.API.keys.set(existingKey.name, currentKey);
+                        await guildDataProfile.save();
+
+                        await interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Manage API Key", description: "Key has been updated" })], components: [] });
+                    }
+                });
+
+                buttonEmbed.addButton({
+                    label: "Delete Key",
+                    style: ButtonStyle.Danger,
+                    emoji: Emojis.delete,
+                    allowedUsers: [interaction.user.id],
+
+                    function: async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        await interaction.deleteReply();
+                        guildDataProfile.API.keys.delete(existingKey.name);
+                        await guildDataProfile.save();
+                    }
+                })
+
+                updateEmbed();
+                return interaction.reply(buttonEmbed.getMessageData());
             }
 
             case "listkeys": {
@@ -277,7 +417,7 @@ const command = new SlashCommand({
                 if (enabled) {
                     return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "API Enabled", description: "The API has been \`enabled\`" })] });
                 }
-                return interaction.reply({ embeds: [client.Functions.makeWarnEmbed({ title: "API Disabled", description: "The API has been \`disabled\`" })] });
+                return interaction.reply({ embeds: [client.Functions.makeWarnEmbed({ title: "API Disabled", description: "The API has been \`+disabled\`" })] });
             }
         }
     },
