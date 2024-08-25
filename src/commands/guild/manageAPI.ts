@@ -40,17 +40,6 @@ const command = new SlashCommand({
         ,
 
         new SlashCommandSubcommandBuilder()
-            .setName("deletekey")
-            .setDescription("Delete an API key")
-            .addStringOption(option =>
-                option
-                    .setName("key")
-                    .setDescription("The key to delete")
-                    .setRequired(true)
-            )
-        ,
-
-        new SlashCommandSubcommandBuilder()
             .setName("managekey")
             .setDescription("Manage an API key")
             .addStringOption(option =>
@@ -58,6 +47,7 @@ const command = new SlashCommand({
                     .setName("key")
                     .setDescription("The key to manage")
                     .setRequired(true)
+                    .setAutocomplete(true)
             )
         ,
 
@@ -259,6 +249,17 @@ const command = new SlashCommand({
                 buttonEmbed.disableButton(generateKey);
                 interaction.reply(buttonEmbed.getMessageData());
             }
+        }
+    },
+
+    autocomplete: async (interaction) => {
+        if (!interaction.guild) return;
+
+        const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
+        const currentOption = interaction.options.getFocused(true);
+
+        switch (currentOption.name) {
+            case "key": return Array.from(guildDataProfile.API.keys.values()).map(key => ({ name: key.name, value: key.name }))
         }
     }
 })
