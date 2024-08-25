@@ -281,7 +281,7 @@ export default class Functions {
 			embed.addFields({ name: `> ${data.points} points`, value: `\`${data.username}\`` })
 
 			if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
-				embed.setDescription(`## ${Emojis.omegawarn} Unable to show full log!\n${baseDescription}`);
+				embed.setDescription(`## ${Emojis.warning} Unable to show full log!\n${baseDescription}`);
 				break;
 			}
 

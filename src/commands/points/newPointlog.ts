@@ -58,7 +58,7 @@ const command = new SlashCommand({
                 embed.addFields([{ name: `> ${log.points} points`, value: `\`${log.username}\`` }]);
 
                 if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
-                    embed.setDescription(`## ${Emojis.omegawarn} Unable to show full log!\nUse the buttons below to add or remove points from this log, or to add a note.`)
+                    embed.setDescription(`## ${Emojis.warning} Unable to show full log!\nUse the buttons below to add or remove points from this log, or to add a note.`)
                     break;
                 }
 
