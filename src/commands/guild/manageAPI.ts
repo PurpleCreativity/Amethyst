@@ -265,7 +265,7 @@ const command = new SlashCommand({
                 if (!existingKey) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Key", description: "Key not found" })], ephemeral: true });
                 const currentKey = JSON.parse(JSON.stringify(existingKey));
 
-                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Create API Key", description: "Use the buttons below to set the data of the API key." });
+                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Create API Key", description: `Created by <@${currentKey.createdBy}> on <t:${Math.round(new Date(currentKey.createdAt).getTime() / 1000)}:F>` });
                 const buttonEmbed = new ButtonEmbed(baseEmbed);
 
                 const updateEmbed = () => {
@@ -380,6 +380,9 @@ const command = new SlashCommand({
 
                     function: async (buttonInteraction) => {
                         await buttonInteraction.deferUpdate();
+                        
+                        currentKey.createdBy = interaction.user.id;
+                        currentKey.createdAt = new Date();
                         guildDataProfile.API.keys.set(existingKey.name, currentKey);
                         await guildDataProfile.save();
 
@@ -406,6 +409,8 @@ const command = new SlashCommand({
             }
 
             case "listkeys": {
+
+
                 break;
             }
 
