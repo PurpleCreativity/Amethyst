@@ -265,7 +265,7 @@ const command = new SlashCommand({
                 if (!existingKey) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Key", description: "Key not found" })], ephemeral: true });
                 const currentKey = JSON.parse(JSON.stringify(existingKey));
 
-                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Create API Key", description: `Created by <@${currentKey.createdBy}> on <t:${Math.round(new Date(currentKey.createdAt).getTime() / 1000)}:F>` });
+                const baseEmbed = client.Functions.makeInfoEmbed({ title: "Manage API Key", description: `Created by <@${currentKey.createdBy}> on <t:${Math.round(new Date(currentKey.createdAt).getTime() / 1000)}:F>` });
                 const buttonEmbed = new ButtonEmbed(baseEmbed);
 
                 const updateEmbed = () => {
@@ -380,7 +380,7 @@ const command = new SlashCommand({
 
                     function: async (buttonInteraction) => {
                         await buttonInteraction.deferUpdate();
-                        
+
                         currentKey.createdBy = interaction.user.id;
                         currentKey.createdAt = new Date();
                         guildDataProfile.API.keys.set(existingKey.name, currentKey);
@@ -409,7 +409,33 @@ const command = new SlashCommand({
             }
 
             case "listkeys": {
+                const keys = Array.from(guildDataProfile.API.keys.values());
+                if (keys.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Keys", description: "No keys found" })] });
 
+                await interaction.deferReply();
+                const embeds = [];
+                for (const key of keys) {
+                    const embed = client.Functions.makeInfoEmbed({
+                        title: `\`${key.name}\``,
+                        description: `Created by <@${key.createdBy}> on <t:${Math.round(new Date(key.createdAt).getTime() / 1000)}:F>`,
+                        fields: [
+                            { name: "Enabled", value: `\`${key.enabled}\``, inline: true },
+                            { name: "Permissions", value: key.permissions.length === 0 ? "\`Unset\`" : key.permissions.map(permission => `\`${permission}\``).join(", "), inline: true },
+                        ]
+                    });
+
+                    embeds.push(embed);
+                }
+
+                
+                await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Key List", description: `Found ${keys.length} keys` })] });
+                for (const embed of embeds) {
+                    try {
+                        await interaction.channel?.send({ embeds: [embed] });
+                    } catch (error) {
+                        await interaction.followUp({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Keys", description: "Could not send embed for a key" })], ephemeral: true });
+                    }
+                }
 
                 break;
             }
