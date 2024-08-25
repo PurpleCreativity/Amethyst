@@ -54,6 +54,17 @@ const command = new SlashCommand({
         new SlashCommandSubcommandBuilder()
             .setName("listkeys")
             .setDescription("List all API keys")
+        ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("toggle")
+            .setDescription("Toggle the entire API")
+            .addBooleanOption(option =>
+                option
+                    .setName("enabled")
+                    .setDescription("Whether the API should be enabled")
+                    .setRequired(true)
+            )
     ],
 
     execute: async (interaction) => {
@@ -247,7 +258,26 @@ const command = new SlashCommand({
                 })
 
                 buttonEmbed.disableButton(generateKey);
-                interaction.reply(buttonEmbed.getMessageData());
+                return interaction.reply(buttonEmbed.getMessageData());
+            }
+
+            case "managekey": {
+                break;
+            }
+
+            case "listkeys": {
+                break;
+            }
+
+            case "toggle": {
+                const enabled = interaction.options.getBoolean("enabled", true);
+                guildDataProfile.API.enabled = enabled;
+                await guildDataProfile.save();
+
+                if (enabled) {
+                    return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "API Enabled", description: "The API has been \`enabled\`" })] });
+                }
+                return interaction.reply({ embeds: [client.Functions.makeWarnEmbed({ title: "API Disabled", description: "The API has been \`disabled\`" })] });
             }
         }
     },
