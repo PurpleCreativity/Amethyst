@@ -220,15 +220,17 @@ const command = new SlashCommand({
                             await guildDataProfile.save();
 
                             const baseEmbed2 = client.Functions.makeInfoEmbed({ title: "API Key Generated", description: "Your API key has been generated with the following data:", fields: [ { name: "Name", value: currentKey.name }, { name: "Permissions", value: currentKey.permissions.map(permission => `\`${permission}\``).join(", ") }, { name: "Enabled", value: `\`${currentKey.enabled}\``, inline: true } ], color: 0x00ff00, author: { name: "Generated", iconURL: Icons.check } })
-                            const buttonEmbed2 = new ButtonEmbed(baseEmbed);
+                            const buttonEmbed2 = new ButtonEmbed(baseEmbed2);
 
-                            buttonEmbed2.addButton({
+                            const revealKey = buttonEmbed2.addButton({
                                 label: "Reveal Key",
                                 style: ButtonStyle.Danger,
                                 allowedUsers: [interaction.user.id],
 
                                 function: async (buttonInteraction2) => {
-                                    buttonInteraction2.reply({ content: `\`\`\`${client.Functions.Decrypt(currentKey.key, guildDataProfile.iv)}\`\`\``, ephemeral: true });
+                                    buttonEmbed2.disableButton(revealKey);
+                                    await buttonInteraction2.message.edit(buttonEmbed2.getMessageData());
+                                    await buttonInteraction2.reply({ content: `\`\`\`${client.Functions.Decrypt(currentKey.key, guildDataProfile.iv)}\`\`\``, ephemeral: true });
                                 }
                             })
 
