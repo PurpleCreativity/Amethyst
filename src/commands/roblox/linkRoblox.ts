@@ -121,40 +121,11 @@ export default new SlashCommand({
         }
 
         const selector = new StringSelector({ Placeholder: "Select a linking method", Options: options, MaxValues: 1, MinValues: 1 });
-        const buttonEmbed = new ButtonEmbed(client.Functions.makeInfoEmbed({ title: "Account Link", description: "Please select a linking method" }));
-        buttonEmbed.setEphemeral(true)
+        
+        const response = await selector.Prompt(interaction, client.Functions.makeInfoEmbed({ title: "Account Link", description: "Please select a linking method" }));
+        if (!response.values) return;
 
-        // biome-ignore lint/style/useConst: fuck off lint
-        let response: StringSelectMenuInteraction;
-
-        buttonEmbed.addButton({
-            label: "Select",
-            style: ButtonStyle.Success,
-
-            function: async (buttoninteraction) => {
-                await buttoninteraction.deferUpdate();
-
-                linkRoblox(response.values[0] as "OAuth 2.0" | "RoVer" | "BloxLink", interaction);
-            },
-        })
-
-        buttonEmbed.addButton({
-            label: "Cancel",
-            style: ButtonStyle.Danger,
-            
-            function: async (buttoninteraction) => {
-                await buttoninteraction.deferUpdate();
-
-                interaction.editReply({ embeds: [
-                    client.Functions.makeInfoEmbed({
-                        title: "Account Link",
-                        description: "Operation cancelled",
-                    })
-                ], components: [] })
-            }
-        })
-
-        response = await selector.Prompt(interaction, buttonEmbed.getMessageData()) as StringSelectMenuInteraction;
-        response.deferUpdate();
+        await response.interaction.deferReply();
+        await linkRoblox(response.values[0] as "OAuth 2.0" | "RoVer" | "BloxLink", response.interaction);
     }
 })
