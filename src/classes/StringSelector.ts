@@ -85,6 +85,7 @@ export default class StringSelector {
 					return;
                 };
 
+                if (newInteraction.customId === submitButton && responseValues === undefined) responseValues = [];
                 const values = newInteraction.customId === submitButton ? responseValues : undefined;
 
                 await interaction.deleteReply();
