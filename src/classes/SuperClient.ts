@@ -1,4 +1,4 @@
-import { Client, type ClientOptions, type TextChannel } from "discord.js";
+import { ActivityType, Client, type ClientOptions, type TextChannel } from "discord.js";
 
 import type { Config } from "../types/Config.js";
 import config from "../config.js";
@@ -159,6 +159,8 @@ class SuperClient extends Client {
 		await this.Database.Init();
 		await this.Interactables.Init();
 		await this.API.Init();
+
+		this.Functions.SetActivity({ name: `on v${this.config.version}`, type: ActivityType.Playing });
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
     }

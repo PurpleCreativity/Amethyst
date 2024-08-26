@@ -1,4 +1,4 @@
-import type { ActivityType, Guild, GuildScheduledEvent, GuildScheduledEventCreateOptions, Snowflake, User } from "discord.js";
+import type { ActivityOptions, ActivityType, Guild, GuildScheduledEvent, GuildScheduledEventCreateOptions, Snowflake, User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
@@ -219,10 +219,10 @@ export default class Functions {
 		return decryptedMessage;
 	}
 
-    SetActivity = (text: string, activityType: ActivityType) => {
+    SetActivity = (options: ActivityOptions) => {
 		if (!this.client.user) return;
 
-		this.client.user.setActivity(text, { type: activityType });
+		this.client.user.setActivity(options);
 	}
 
 	isDev = (userID: string) => {
