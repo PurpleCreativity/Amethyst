@@ -152,10 +152,10 @@ const command = new SlashCommand({
                             Options: permissionOptions,
 
                             MaxValues: permissionOptions.length,
-                            MinValues: 1
+                            MinValues: 0
                         });
 
-                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set" }));
+                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set (leave blank to clear)" }));
 
                         if (!response.values) return;
                         if (response.values.includes("Administrator")) response.values = ["Administrator"];
@@ -165,23 +165,6 @@ const command = new SlashCommand({
                         await interaction.editReply(buttonEmbed.getMessageData());
                     }
                 });
-
-                buttonEmbed.addButton({
-                    label: "Clear Permissions",
-                    emoji: Emojis.permissions,
-                    style: ButtonStyle.Danger,
-                    allowedUsers: [interaction.user.id],
-
-                    function: async (buttonInteraction) => {
-                        await buttonInteraction.deferUpdate();
-                        currentKey.permissions = [];
-
-                        buttonEmbed.disableButton(generateKey);
-
-                        updateEmbed();
-                        interaction.editReply(buttonEmbed.getMessageData());
-                    }
-                })
 
                 buttonEmbed.addButton({
                     label: "Toggle Enabled",
@@ -318,10 +301,10 @@ const command = new SlashCommand({
                             Options: permissionOptions,
 
                             MaxValues: permissionOptions.length,
-                            MinValues: 1
+                            MinValues: 0
                         });
 
-                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set" }));
+                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set (leave blank to clear)" }));
 
                         if (!response.values) return;
                         if (response.values.includes("Administrator")) response.values = ["Administrator"];
@@ -331,21 +314,6 @@ const command = new SlashCommand({
                         await interaction.editReply(buttonEmbed.getMessageData());
                     }
                 });
-
-                buttonEmbed.addButton({
-                    label: "Clear Permissions",
-                    style: ButtonStyle.Danger,
-                    emoji: Emojis.permissions,
-                    allowedUsers: [interaction.user.id],
-
-                    function: async (buttonInteraction) => {
-                        await buttonInteraction.deferUpdate();
-                        currentKey.permissions = [];
-
-                        updateEmbed();
-                        await interaction.editReply(buttonEmbed.getMessageData());
-                    }
-                })
 
                 buttonEmbed.nextRow();
 
