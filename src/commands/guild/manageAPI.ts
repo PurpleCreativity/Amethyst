@@ -155,20 +155,14 @@ const command = new SlashCommand({
                             MinValues: 1
                         });
 
-                        const response = await selector.Prompt(buttonInteraction, {}) as StringSelectMenuInteraction;
-                        await response.deferUpdate();
-                        await response.message.delete();
+                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set" }));
 
+                        if (!response.values) return;
                         if (response.values.includes("Administrator")) response.values = ["Administrator"];
                         currentKey.permissions = response.values || [];
 
-                        if (
-                            currentKey.name !== "" &&
-                            currentKey.permissions.length !== 0
-                        ) buttonEmbed.enableButton(generateKey); else buttonEmbed.disableButton(generateKey);
-
                         updateEmbed();
-                        interaction.editReply(buttonEmbed.getMessageData());
+                        await interaction.editReply(buttonEmbed.getMessageData());
                     }
                 });
 
@@ -327,10 +321,9 @@ const command = new SlashCommand({
                             MinValues: 1
                         });
 
-                        const response = await selector.Prompt(buttonInteraction, {}) as StringSelectMenuInteraction;
-                        await response.deferUpdate();
-                        await response.message.delete();
+                        const response = await selector.Prompt(buttonInteraction, client.Functions.makeInfoEmbed({ title: "Set Permissions", description: "Select permissions to set" }));
 
+                        if (!response.values) return;
                         if (response.values.includes("Administrator")) response.values = ["Administrator"];
                         currentKey.permissions = response.values || [];
 
