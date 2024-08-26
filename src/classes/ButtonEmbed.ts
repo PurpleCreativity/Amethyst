@@ -44,6 +44,10 @@ class ButtonEmbed {
 		}
 	}
 
+	getRows() {
+		return this.Rows
+	}
+
     addButton(button: Button) {
         const id = button.customId || client.Functions.GenerateID();
 
