@@ -83,6 +83,11 @@ export default class Process {
 
         this.client.Events.AddEvent("process", "uncaughtException", this.uncaughtException);
 
+        if (this.client.devMode) {
+            this.client.Events.AddEvent("client", "debug", this.client.verbose);
+            this.client.Events.AddEvent("client", "warn", this.client.warn);
+        }
+
         this.client.success("Initialized Process");
     }
 }
