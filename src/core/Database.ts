@@ -43,6 +43,10 @@ export default class Database {
                     .set("GameLogs", { name: "GameLogs", id: "0" })
                     .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: "0" })
                     .set("RobloxCalls", { name: "RobloxCalls", id: "0" })
+
+                    .set("Custom1", { name: "Custom1", id: "0" })
+                    .set("Custom2", { name: "Custom2", id: "0" })
+                    .set("Custom3", { name: "Custom3", id: "0" })
                 ,
 
                 customPermissions: new Map()
