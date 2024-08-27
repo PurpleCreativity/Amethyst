@@ -2,7 +2,7 @@ import { SlashCommandStringOption, SlashCommandUserOption } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "forcelink",
     description: "Forces a user to link their roblox account",
 
@@ -34,5 +34,3 @@ const command = new SlashCommand({
         return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Force Link", description: `Linked \`${robloxUser.name}\`:\`${robloxUser.id}\` to <@${user.id}>`, thumbnail: await robloxUser.fetchUserHeadshotUrl() })], ephemeral: false });
     }
 })
-
-export default command;

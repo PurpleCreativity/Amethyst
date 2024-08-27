@@ -4,7 +4,7 @@ import client from "../../index.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import Emojis from "../../assets/Emojis.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "getpoints",
     description: "Get a user's points",
 
@@ -68,5 +68,3 @@ const command = new SlashCommand({
         return interaction.reply(buttonEmbed.getMessageData());
     }
 })
-
-export default command;

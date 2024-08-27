@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "botmanager",
     description: "Manages the bot",
 
@@ -97,5 +97,3 @@ const command = new SlashCommand({
         }
     }
 })
-
-export default command;

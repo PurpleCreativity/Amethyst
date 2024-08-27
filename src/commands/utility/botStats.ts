@@ -1,7 +1,7 @@
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "stats",
     description: "Shows the bot statistics",
 
@@ -52,5 +52,3 @@ const command = new SlashCommand({
         await interaction.reply({ embeds: [embed] });
     }
 })
-
-export default command;

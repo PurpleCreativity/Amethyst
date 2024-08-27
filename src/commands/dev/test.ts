@@ -1,6 +1,6 @@
 import SlashCommand from "../../classes/SlashCommand.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "test",
     description: "Test command",
 
@@ -11,5 +11,3 @@ const command = new SlashCommand({
         await interaction.reply("Test command works!");
     }
 })
-
-export default command;

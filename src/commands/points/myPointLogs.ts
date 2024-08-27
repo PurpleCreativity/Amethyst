@@ -5,7 +5,7 @@ import client from "../../index.js";
 import Emojis from "../../assets/Emojis.js";
 import Icons from "../../assets/Icons.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "mylogs",
     description: "Shows your point logs",
 
@@ -123,5 +123,3 @@ const command = new SlashCommand({
         }
     }
 })
-
-export default command;

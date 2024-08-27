@@ -7,7 +7,7 @@ import Modal from "../../classes/Modal.js";
 import Emojis from "../../assets/Emojis.js";
 import Icons from "../../assets/Icons.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "newlog",
     description: "Create a new point log",
 
@@ -265,5 +265,3 @@ const command = new SlashCommand({
         interaction.reply(buttonEmbed.getMessageData());
     }
 })
-
-export default command;

@@ -3,7 +3,7 @@ import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import type { Role } from "wrapblox";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "ranklock",
     description: "Locks a user's rank",
 
@@ -95,5 +95,3 @@ const command = new SlashCommand({
         }
     }
 })
-
-export default command;

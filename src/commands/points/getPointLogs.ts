@@ -5,7 +5,7 @@ import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import Emojis from "../../assets/Emojis.js";
 import Icons from "../../assets/Icons.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "getlogs",
     description: "Get pointlogs with given filtering",
 
@@ -161,5 +161,3 @@ const command = new SlashCommand({
         }
     }
 })
-
-export default command;

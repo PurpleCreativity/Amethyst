@@ -4,7 +4,7 @@ import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import Modal from "../../classes/Modal.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "epochbuilder",
     description: "Builds an epoch",
 
@@ -218,5 +218,3 @@ const command = new SlashCommand({
         await interaction.reply(buttonEmbed.getMessageData());
     }
 })
-
-export default command;

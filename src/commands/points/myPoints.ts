@@ -1,7 +1,7 @@
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "mypoints",
     description: "Shows your points",
 
@@ -38,6 +38,4 @@ const command = new SlashCommand({
 
         interaction.reply({ embeds: [embed] });
     }
-})
-
-export default command;
+});

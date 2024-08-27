@@ -2,7 +2,7 @@ import { SlashCommandNumberOption, SlashCommandStringOption } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "addpoints",
     description: "Adds points to a user",
 
@@ -50,5 +50,3 @@ const command = new SlashCommand({
         })] });
     }
 })
-
-export default command;

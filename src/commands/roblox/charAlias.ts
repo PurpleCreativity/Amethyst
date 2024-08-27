@@ -12,7 +12,7 @@ type avatarAsset = {
     currentVersionId: string
 }
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "charalias",
     description: "Get a user's character alias",
 
@@ -82,5 +82,3 @@ const command = new SlashCommand({
         ] });
     }
 })
-
-export default command;

@@ -27,7 +27,7 @@ const makeAPIKeyEmbed = (key: APIKey) => {
     })
 }
 
-const command = new SlashCommand({
+export default new SlashCommand({
     name: "api",
     description: "Manage the API",
 
@@ -425,5 +425,3 @@ const command = new SlashCommand({
         }
     }
 })
-
-export default command;
