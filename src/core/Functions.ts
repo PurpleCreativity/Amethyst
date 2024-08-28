@@ -1,4 +1,4 @@
-import type { ActivityOptions, ActivityType, Guild, GuildScheduledEvent, GuildScheduledEventCreateOptions, Snowflake, User } from "discord.js";
+import { type ActivityOptions, type Guild, type GuildScheduledEventCreateOptions, Message, type Snowflake, type StartThreadOptions, type TextChannel, type User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
@@ -289,6 +289,14 @@ export default class Functions {
 		}
 
 		return embed;
+	}
+
+	startThread = async (starter: Message | TextChannel, options: StartThreadOptions) => {
+		if (starter instanceof Message) {
+			return await starter.startThread(options);
+		}
+		
+		return await starter.threads.create(options);
 	}
 
 	scheduleGuildEvent = async (guild: Guild | string | Snowflake, event: GuildScheduledEventCreateOptions) => {
