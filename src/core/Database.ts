@@ -105,7 +105,7 @@ export default class Database {
             },
 
             settings: new Map()
-                .set("PublicSchedule", { name: "PublicSchedule", description: "Whether or not the schedule is public", value: true })
+                .set("PublicSchedule", { name: "PublicSchedule", description: "Whether or not the schedule is public", devOnly: false, value: true })
             ,
 
             linkedGuilds: new Map(),
@@ -171,7 +171,7 @@ export default class Database {
 
 
             settings: new Map()
-                .set("doScheduleRemindeDM", { name: "Schedule DM Reminder", description: "Whether or not to send a DM when a schedule is about to start", value: true })
+                .set("ScheduleDMReminder", { name: "ScheduleDMReminder", description: "Whether or not to send a DM when a schedule is about to start", devOnly: false, value: true })
             ,
         })
 
