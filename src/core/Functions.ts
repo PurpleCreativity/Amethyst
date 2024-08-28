@@ -199,6 +199,15 @@ export default class Functions {
 		return hexColor;
 	}
 
+	ConvertStringToHexColor = (string : string) => {
+		const isRGBString = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
+		if (isRGBString) {
+			return this.StringRGBToColorHex(string);
+		}
+
+		return string;
+	}
+
     Encypt = (text : string, iv : any) => {
 		const key = Buffer.from(this.client.config.credentials.encryptionKey, 'hex');
 		iv = Buffer.from(iv, 'hex');
