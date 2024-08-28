@@ -17,16 +17,6 @@ const permissionOptions = [
     new StringSelectMenuOptionBuilder().setLabel("Roblox").setDescription("Grants roblox-related permissions, required for robloxreturn").setValue("Roblox")
 ]
 
-const makeAPIKeyEmbed = (key: APIKey) => {
-    return client.Functions.makeInfoEmbed({
-        title: `\`${key.name}\``,
-        description: `Created by <@${key.createdBy}> on <t:${Math.round(new Date(key.createdAt).getTime() / 1000)}:F>`,
-        fields: [
-            { name: "Enabled", value: `\`${key.enabled}\``, inline: true },
-        ]
-    })
-}
-
 export default new SlashCommand({
     name: "api",
     description: "Manage the API",
