@@ -5,6 +5,7 @@ import type { User } from "wrapblox";
 type Setting = {
     name: string,
     description: string,
+    devOnly: boolean,
     value: any,
 }
 
@@ -60,6 +61,7 @@ const userProfileSchema = new mongoose.Schema({
         of: {
             name: String,
             description: String,
+            devOnly: Boolean,
             value: mongoose.Schema.Types.Mixed,
         }
     }
