@@ -41,8 +41,8 @@ export default class Database {
                     .set("PointLogUpdates", { name: "PointLogUpdates", id: "0" })
                     .set("ScheduleUpdates", { name: "ScheduleUpdates", id: "0" })
                     .set("GameLogs", { name: "GameLogs", id: "0" })
+                    .set("GameCalls", { name: "GameCalls", id: "0" })
                     .set("RobloxGroupLogs", { name: "RobloxGroupLogs", id: "0" })
-                    .set("RobloxCalls", { name: "RobloxCalls", id: "0" })
 
                     .set("Custom1", { name: "Custom1", id: "0" })
                     .set("Custom2", { name: "Custom2", id: "0" })
