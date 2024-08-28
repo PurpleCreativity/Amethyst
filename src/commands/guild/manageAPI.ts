@@ -18,7 +18,7 @@ const permissionOptions = [
 ]
 
 export default new SlashCommand({
-    name: "api",
+    name: "manageapi",
     description: "Manage the API",
 
     customPermissions: ["Administrator"],
