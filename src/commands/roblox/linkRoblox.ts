@@ -1,14 +1,18 @@
-import { type ButtonInteraction, type ChatInputCommandInteraction, StringSelectMenuOptionBuilder } from "discord.js";
+import { type ButtonInteraction, ButtonStyle, type ChatInputCommandInteraction, type ModalSubmitInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import StringSelector from "../../classes/StringSelector.js";
 import Emojis from "../../assets/Emojis.js";
 import { AxiosError } from "axios";
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
+import Modal from "../../classes/Modal.js";
 
-const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interaction: ButtonInteraction | ChatInputCommandInteraction) => {
+const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile Description", interaction: ButtonInteraction | ChatInputCommandInteraction) => {
     const userDataProfile = await client.Database.GetUserProfile(interaction.user.id);
 
     if (method === "RoVer" || method === "BloxLink") {
+        await interaction.deferReply();
+
         if (!interaction.guild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({title: "Account Link", description: "This method is only available in guilds"})], components: [] });
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
 
@@ -85,17 +89,83 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interactio
         return;
     }
 
-    switch (method) {
-        case "OAuth 2.0": {
-            return interaction.editReply({
-                embeds: [
-                    client.Functions.makeErrorEmbed({
-                        title: "OAuth 2.0",
-                        description: "This method is still in development, please use a diffrent method."
+    if (method === "OAuth 2.0") {
+        return interaction.editReply({
+            embeds: [
+                client.Functions.makeErrorEmbed({
+                    title: "OAuth 2.0",
+                    description: "This method is still in development, please use a diffrent method."
+                })
+            ], components: []
+        })
+    }
+
+    if (method === "Profile Description") {
+        let randomString = `amethyst link ${client.Functions.GenerateID()}`
+
+        const modal = new Modal({
+            Title: "Profile Description Verification",
+            Inputs: [
+                new TextInputBuilder().setLabel("Username or Id").setCustomId("user").setPlaceholder("Purple_Creativity").setStyle(TextInputStyle.Short).setRequired(true),
+            ]
+        })
+
+        const response = await modal.Prompt(interaction) as ModalSubmitInteraction;
+        response.deferReply();
+
+        const robloxUser = await client.Functions.GetRobloxUser(response.fields.getTextInputValue("user"));
+        if (!robloxUser) return response.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "User not found" })] });
+
+        const baseEmbed = client.Functions.makeInfoEmbed({ title: `Hello, \`${robloxUser.name}\``, description: `### Your account has not been linked just yet!\n\nPlease set your profile description to the following value: \`\`\`${randomString}\`\`\`` });
+        const buttonEmbed = new ButtonEmbed(baseEmbed);
+
+        buttonEmbed.addButton({
+            label: "I have set my profile description",
+            style: ButtonStyle.Success,
+            emoji: Emojis.check,
+            allowedUsers: [interaction.user.id],
+
+            function: async (buttonInteraction) => {
+                await buttonInteraction.deferReply();
+
+                const userDescription = (await client.Functions.GetRobloxUser(robloxUser.id, false))?.description;
+
+                if (
+                    !userDescription ||
+                    userDescription !== randomString
+                ) return buttonInteraction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "The given value was not found in your profile description" })] });
+
+                const userDataProfile = await client.Database.GetUserProfile(buttonInteraction.user.id);
+                await userDataProfile.linkRoblox(robloxUser);
+
+                await response.deleteReply();
+                await buttonInteraction.editReply({ embeds: [
+                    client.Functions.makeSuccessEmbed({
+                        title: "Account Link",
+                        description: `Your account has been successfully linked to \`${robloxUser.name}\`:\`${robloxUser.id}\``,
+                        thumbnail: await robloxUser.fetchUserHeadshotUrl(),
+                        footer: { text: "Verified via Profile Description", iconURL: client.user?.displayAvatarURL() }
                     })
-                ], components: []
-            })
-        }
+                ] });
+            }
+        })
+
+        buttonEmbed.addButton({
+            label: "The given value got filtered",
+            style: ButtonStyle.Danger,
+            emoji: Emojis.delete,
+            allowedUsers: [interaction.user.id],
+
+            function: async (buttonInteraction) => {
+                await buttonInteraction.deferUpdate();
+
+                randomString = `amethyst link ${client.Functions.GenerateID()}`
+                buttonEmbed.Embed.setDescription(`### Your account has not been linked just yet!\n\nPlease set your profile description to the following value: \`\`\`${randomString}\`\`\``);
+                response.editReply(buttonEmbed.getMessageData());
+            }
+        });
+
+        response.editReply(buttonEmbed.getMessageData());
     }
 }
 
@@ -112,6 +182,8 @@ export default new SlashCommand({
         ]
 
         if (interaction.guild) {
+            options.push(new StringSelectMenuOptionBuilder().setLabel("Profile Description").setValue("Profile Description").setDescription("Utilizes you setting your profile description to a specific value.").setEmoji(Emojis.description))
+
             const bloxLinkMember = await client.Functions.pcall(async () => await interaction.guild?.members.fetch("426537812993638400"));
             const roVerMember = await client.Functions.pcall(async () => await interaction.guild?.members.fetch("298796807323123712"))
 
@@ -124,7 +196,6 @@ export default new SlashCommand({
         const response = await selector.Prompt(interaction, client.Functions.makeInfoEmbed({ title: "Account Link", description: "Please select a linking method" }));
         if (!response.values) return;
 
-        await response.interaction.deferReply();
-        await linkRoblox(response.values[0] as "OAuth 2.0" | "RoVer" | "BloxLink", response.interaction);
+        await linkRoblox(response.values[0] as "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile Description", response.interaction);
     }
 })

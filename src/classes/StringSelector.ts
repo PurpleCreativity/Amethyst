@@ -54,7 +54,7 @@ export default class StringSelector {
             customId: `${this.Selector.data.custom_id}_CANCEL`,
         })
 
-        if (this.Selector.data.min_values && this.Selector.data.min_values > 1) buttonEmbed.disableButton(cancelButton);;
+        if (this.Selector.data.min_values && this.Selector.data.min_values >= 1) buttonEmbed.disableButton(submitButton);;
 
         const components = [] as any;
         components.push(this.getSelector());

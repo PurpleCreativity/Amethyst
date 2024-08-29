@@ -2,6 +2,8 @@ import { type ColorResolvable, type APIEmbedField, EmbedBuilder } from "discord.
 
 export type EmbedOptions = {
 	title?: string,
+	url?: string,
+
 	description?: string,
 
 	color?: ColorResolvable,
@@ -20,6 +22,8 @@ export default class BaseEmbed extends EmbedBuilder {
     constructor(options: EmbedOptions) {
         super()
         this.setTitle(options.title || null)
+		this.setURL(options.url || null)
+
         this.setDescription(options.description || null)
 
         this.setColor(options.color || null)
