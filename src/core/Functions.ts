@@ -123,10 +123,10 @@ export default class Functions {
 		}
 	};
 
-    GetRobloxUser = async (searcher: string | number) => {
+    GetRobloxUser = async (searcher: string | number, useCache = true) => {
 		if (typeof searcher === "number") {
 			try {
-				return await this.client.WrapBlox.fetchUser(searcher);
+				return await this.client.WrapBlox.fetchUser(searcher, useCache);
 			} catch (error) {
 				return undefined;
 			}
@@ -135,14 +135,14 @@ export default class Functions {
 		if (typeof searcher === "string") {
 			if (!Number.isNaN(Number.parseInt(searcher))) {
 				try {
-					return await this.client.WrapBlox.fetchUser(Number.parseInt(searcher));
+					return await this.client.WrapBlox.fetchUser(Number.parseInt(searcher), useCache);
 				} catch (error) {
 					return undefined;
 				}
 			}
 
 			try {
-				return await this.client.WrapBlox.fetchUserByName(searcher);
+				return await this.client.WrapBlox.fetchUserByName(searcher, useCache);
 			} catch (error) {
 				return undefined;
 			}
