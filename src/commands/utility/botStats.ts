@@ -13,7 +13,7 @@ export default new SlashCommand({
         // Breaks on localhost
         const elapsed = await client.Functions.pcall(async () => {
             const startTime = new Date().getTime();
-            await client.Axios.get(`${client.config.baseURL}/api/v1/healtcheck`);
+            await client.Axios.get(`${client.config.baseURL}api/v1/healtcheck`);
             return new Date().getTime() - startTime || 0;
         })
 

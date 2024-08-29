@@ -17,7 +17,7 @@ export default new SlashCommand({
     description: "Get a user's character alias",
 
     userApp: true,
-    userCooldown: 60000,
+    userCooldown: 10000,
 
     options: [
         new SlashCommandStringOption()
