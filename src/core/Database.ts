@@ -207,13 +207,8 @@ export default class Database {
 
         return userDataProfile as any as userProfileInterface;
     }
-
-    // hello sane purple here i am not fixing it its funny
-    // git blame
-    // hello drunk purple here iw rote this
-    // I'm not sure what this code is supposed to do, but it's definitely a masterpiece of confusion and chaos. It's like a Picasso painting, but in code form. I wouldn't dare touch it, because who knows what kind of unpredictable and hilarious results it might produce. Let's just leave it here as a reminder of the wild and unpredictable nature of programming. Cheers to drunk purple for this masterpiece!
-    // hello drunk purple here iw rote this
-    HandleSchedule = async () => {
+    
+    UpdateCache = async () => {
         const guilds = await guildProfile.find();
         for (const guild of guilds) {
             if (!guild.guild || !guild.guild.id) {
@@ -255,7 +250,7 @@ export default class Database {
             return;
         }
 
-        this.client.Threader.CreateThread("DatabaseCache", this.HandleSchedule).Loop(1000 * 60 * 10);
+        this.client.Threader.CreateThread("DatabaseCache", this.UpdateCache).Loop(1000 * 60 * 10);
 
         this.client.success("Initialized Database");
     }
