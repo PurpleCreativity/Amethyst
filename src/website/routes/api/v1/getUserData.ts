@@ -21,13 +21,13 @@ export default new Route({
 	}),
 
     execute: async (req, res, guildProfile) => {
-        if (!guildProfile) return res.status(404).send({ error: "Guild Profile Not Found", message: "The guild profile could not be found" }).end();
+        if (!guildProfile) return res.status(404).send({ error: { name: "Guild Profile Not Found", message: "The guild profile could not be found" } }).end();
 
         const robloxId = req.params.robloxId;
-        if (!robloxId) return res.status(400).send({ error: "Missing Roblox Id", message: "Provide a User Roblox ID in the URL" }).end();
+        if (!robloxId) return res.status(400).send({ error: { name: "Missing Roblox Id", message: "Provide a User Roblox ID in the URL" } }).end();
 
         const user = await guildProfile.getUser(robloxId);
-        if (!user) return res.status(404).send({ error: "User Not Found", message: "The user could not be found" }).end();
+        if (!user) return res.status(404).send({ error: { name: "User Not Found", message: "The user could not be found" } }).end();
 
         const includeLinkedguilds = client.Functions.StringToBoolean(req.query.includeLinkedguilds as string || "false");
 

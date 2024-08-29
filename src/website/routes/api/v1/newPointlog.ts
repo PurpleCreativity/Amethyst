@@ -55,10 +55,10 @@ export default new Route({
 	}),
 
     execute: async (req, res, guildProfile) => {
-        if (!guildProfile) return res.status(404).send({ error: "Guild Profile Not Found", message: "The guild profile could not be found" }).end();
+        if (!guildProfile) return res.status(404).send({ error: { name: "Guild Profile Not Found", message: "The guild profile could not be found" } }).end();
 
         const data : PointLogData = req.body;
-        if (!isValidLog(data)) return res.status(400).send({ error: "Invalid Data", message: "The data provided was invalid" }).end();
+        if (!isValidLog(data)) return res.status(400).send({ error: { name: "Invalid Data", message: "The data provided was invalid" } }).end();
 
         const currentLog = {
             id: client.Functions.GenerateID(),
@@ -79,7 +79,7 @@ export default new Route({
 
             return res.status(200).send(currentLog).end();
         } catch (error) {
-            return res.status(500).send({ error: "Internal Server Error", message: "An internal server error occurred" }).end();
+            return res.status(500).send({ error: { name: "Internal Server Error", message: "An internal server error occurred" } }).end();
         }
     }
 })
