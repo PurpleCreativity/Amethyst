@@ -8,7 +8,7 @@ export default new Route({
     rateLimit: rateLimit({
 		windowMs: 1 * 60 * 1000,
 		limit: 120,
-		standardHeaders: 'draft-6',
+		standardHeaders: true,
 		legacyHeaders: true,
 
 		handler: (req, res) => {
