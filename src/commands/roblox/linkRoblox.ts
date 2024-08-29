@@ -1,9 +1,8 @@
-import { type ButtonInteraction, ButtonStyle, type ChatInputCommandInteraction, type StringSelectMenuInteraction, StringSelectMenuOptionBuilder } from "discord.js";
+import { type ButtonInteraction, type ChatInputCommandInteraction, StringSelectMenuOptionBuilder } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import StringSelector from "../../classes/StringSelector.js";
 import Emojis from "../../assets/Emojis.js";
-import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import { AxiosError } from "axios";
 
 const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interaction: ButtonInteraction | ChatInputCommandInteraction) => {
@@ -11,7 +10,6 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interactio
 
     if (method === "RoVer" || method === "BloxLink") {
         if (!interaction.guild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({title: "Account Link", description: "This method is only available in guilds"})], components: [] });
-        await interaction.editReply({ content: `${Emojis.thinking}  Processing...`, embeds: [], components: [] });
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
 
         if (method === "RoVer") {
@@ -21,7 +19,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interactio
                 const roVerrequest = await client.Axios.get(`https://registry.rover.link/api/guilds/${interaction.guild.id}/discord-to-roblox/${interaction.user.id}`, { headers: { "Authorization": `Bearer ${client.Functions.Decrypt(guildDataProfile.roblox.rover_Key, guildDataProfile.iv)}` } });
                 if (roVerrequest.status !== 200) return interaction.editReply({ content: null, embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "Failed to link your account" })], components: [] });
 
-                const robloxUser = await client.WrapBlox.fetchUser(roVerrequest.data.robloxId)
+                const robloxUser = await client.Functions.GetRobloxUser(roVerrequest.data.robloxId);
                 if (!robloxUser) return interaction.editReply({ content: null, embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "Failed to link your account" })], components: [] });
 
                 await userDataProfile.linkRoblox(robloxUser);
@@ -35,6 +33,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interactio
                     })
                 ], components: [] });
             } catch (error) {
+                client.Logs.LogError(error as Error);
                 if (!(error instanceof AxiosError)) return;
 
                 interaction.editReply({ content: null, embeds: [
@@ -56,7 +55,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink", interactio
                 const bloxLinkRequest = await client.Axios.get(`https://api.blox.link/v4/public/guilds/${interaction.guild.id}/discord-to-roblox/${interaction.user.id}`, { headers: { "Authorization": client.Functions.Decrypt(guildDataProfile.roblox.bloxlink_Key, guildDataProfile.iv) } })
                 if (bloxLinkRequest.status !== 200) return interaction.editReply({ content: null, embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "Failed to link your account" })], components: [] });
 
-                const robloxUser = await client.WrapBlox.fetchUser(bloxLinkRequest.data.robloxID)
+                const robloxUser = await client.Functions.GetRobloxUser(bloxLinkRequest.data.robloxID)
                 if (!robloxUser) return interaction.editReply({ content: null, embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "Failed to link your account" })], components: [] });
 
                 await userDataProfile.linkRoblox(robloxUser);
