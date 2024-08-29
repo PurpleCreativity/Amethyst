@@ -1,7 +1,7 @@
 import Route from "../../../../classes/Route.js";
 import client from "../../../../index.js";
 
-const route = new Route({
+export default new Route({
     path: "version",
     public: true,
     method: "GET",
@@ -12,5 +12,3 @@ const route = new Route({
         })
     }
 })
-
-export default route;

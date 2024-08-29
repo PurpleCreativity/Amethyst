@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 import Route from "../../../../classes/Route.js";
 import client from "../../../../index.js";
 
-const route = new Route({
+export default new Route({
     path: "healthcheck",
     public: true,
     rateLimit: rateLimit({
@@ -20,5 +20,3 @@ const route = new Route({
         res.status(200).send("OK").end();
     },
 })
-
-export default route;

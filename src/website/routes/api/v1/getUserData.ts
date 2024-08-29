@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 import Route from "../../../../classes/Route.js";
 import client from "../../../../index.js";
 
-const route = new Route({
+export default new Route({
     method: "GET",
     path: "guild/data/users/:robloxId",
 
@@ -69,5 +69,3 @@ const route = new Route({
         return res.status(200).send(returnData).end();
     },
 })
-
-export default route;
