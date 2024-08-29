@@ -65,21 +65,20 @@ export default class Logs {
             footer: { text: owner.username, iconURL: owner.displayAvatarURL() },
             image: guild.bannerURL() || undefined,
             thumbnail: guild.iconURL() || undefined,
-            fields: [
-                {
-                    name: "Guild",
-                    value: `Name: \`${guild.name}\`\nId: \`${guild.id}\``
-                },
-                {
-                    name: `Invite Links (${inviteLinks.size})`,
-                    value: inviteLinksFormatted
-                },
-                {
-                    name: "Owner",
-                    value: `Name: \`${owner.username}\`\nId: \`${owner.id}\`\n(<@${owner.id}>)`
-                }
-            ]
         })
+
+        baseEmbed.setFields([{
+            name: "Guild",
+            value: `Name: \`${guild.name}\`\nId: \`${guild.id}\``
+        },
+        {
+            name: `Invite Links (${inviteLinks.size})`,
+            value: inviteLinksFormatted
+        },
+        {
+            name: "Owner",
+            value: `Name: \`${owner.username}\`\nId: \`${owner.id}\`\n(<@${owner.id}>)`
+        }])
 
         const buttonEmbed = new ButtonEmbed(baseEmbed)
 
