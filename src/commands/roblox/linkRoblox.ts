@@ -101,7 +101,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
     }
 
     if (method === "Profile Description") {
-        let randomString = `amethyst verification ${client.Functions.GenerateID()}`
+        let randomString = `amethyst link ${client.Functions.GenerateID()}`
 
         const modal = new Modal({
             Title: "Profile Description Verification",
@@ -159,8 +159,8 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
             function: async (buttonInteraction) => {
                 await buttonInteraction.deferUpdate();
 
-                randomString = `amethyst verification ${client.Functions.GenerateID()}`
-                buttonEmbed.Embed.setDescription(`Please set your profile description to the following value: \`\`\`${randomString}\`\`\``);
+                randomString = `amethyst link ${client.Functions.GenerateID()}`
+                buttonEmbed.Embed.setDescription(`### Your account has not been linked just yet!\n\nPlease set your profile description to the following value: \`\`\`${randomString}\`\`\``);
                 response.editReply(buttonEmbed.getMessageData());
             }
         });
