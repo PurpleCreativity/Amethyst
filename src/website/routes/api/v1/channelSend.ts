@@ -5,7 +5,7 @@ import type { TextChannel } from "discord.js";
 import type { EmbedBuilder } from "@discordjs/builders";
 
 export default new Route({
-    path: "guild/action/send/:channelType",
+    path: "guild/action/:channelType/send",
     method: "POST",
 
     public: false,
