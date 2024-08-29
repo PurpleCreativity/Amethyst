@@ -151,6 +151,11 @@ export default new SlashCommand({
                         if (response.values.includes("Administrator")) response.values = ["Administrator"];
                         currentKey.permissions = response.values || [];
 
+                        if (
+                            currentKey.name !== "" &&
+                            currentKey.permissions.length !== 0
+                        ) buttonEmbed.enableButton(generateKey); else buttonEmbed.disableButton(generateKey);
+
                         updateEmbed();
                         await interaction.editReply(buttonEmbed.getMessageData());
                     }
