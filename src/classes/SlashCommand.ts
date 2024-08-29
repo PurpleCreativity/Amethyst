@@ -116,9 +116,10 @@ export default class SlashCommand extends SlashCommandBuilder {
 
 	async Check (interaction: ChatInputCommandInteraction) {
 		if (this.devOnly && !client.Functions.isDev(interaction.user.id)) return false;
-		if (!interaction.member) return false;
-		if (this.permissions.length === 0 && this.customPermissions.length === 0) return true;
+
 		if (interaction.guild) {
+			if (!interaction.member) return false;
+			if (this.permissions.length === 0 && this.customPermissions.length === 0) return true;
 			if (this.customPermissions.length > 0) {
 				if (!(interaction.member instanceof GuildMember)) return false;
 				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);

@@ -1,4 +1,4 @@
-import type { AnySelectMenuInteraction, ButtonInteraction, Interaction, ModalSubmitInteraction } from "discord.js";
+import type { AnySelectMenuInteraction, ButtonInteraction, Guild, Interaction, ModalSubmitInteraction } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 
 export default class Process {
@@ -27,7 +27,7 @@ export default class Process {
         await button.Execute(interaction);
     }
 
-    guildCreate = async (guild: any) => {
+    guildCreate = async (guild: Guild) => {
         this.client.Logs.guildCreate(guild);
     }
 
