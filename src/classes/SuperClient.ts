@@ -121,10 +121,12 @@ class SuperClient extends Client {
             this.config.baseURL = `localhost:${this.config.port}/`;
 
             this.config.credentials.discordToken = process.env.Dev_discordToken as string;
+			this.config.credentials.discordClientSecret = process.env.Dev_discordClientSecret as string;
             this.config.credentials.robloxCookie = process.env.robloxCookie as string;
             this.config.credentials.databaseURL = process.env.Dev_databaseURL as string;
         } else {
             this.config.credentials.discordToken = process.env.discordToken as string;
+			this.config.credentials.discordClientSecret = process.env.discordClientSecret as string;
             this.config.credentials.robloxCookie = process.env.robloxCookie as string;
             this.config.credentials.databaseURL = process.env.databaseURL as string;
         }

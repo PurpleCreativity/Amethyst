@@ -17,6 +17,8 @@ config.devList = [
 
 config.credentials = {
     discordToken: "",
+	discordClientSecret: "",
+
     databaseURL: "",
 
 	robloxCookie: "",
