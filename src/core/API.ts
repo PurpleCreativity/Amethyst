@@ -5,6 +5,7 @@ import fs from "node:fs"
 import path from "node:path"
 import Route from "../classes/Route.js";
 import MongoStore from "connect-mongo";
+import passport from "passport";
 import type { APIMethods, APIPermissions } from "../classes/Route.js";
 
 export type RouteOptions = {
@@ -109,9 +110,10 @@ export default class API {
 
 		this.Server.use(express.json())
 		this.Server.use(express.urlencoded({ extended: true }))
+
 		this.Server.use(session({
 			secret: this.client.config.credentials.sessionSecret,
-			cookie: { secure: true, maxAge: 7 * 24 * 60 * 60 * 1000 },
+			cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
 
 			resave: false,
 			saveUninitialized: false,
@@ -120,6 +122,9 @@ export default class API {
 				mongoUrl: this.client.config.credentials.databaseURL,
 			})
 		}))
+
+		this.Server.use(passport.initialize())
+		this.Server.use(passport.session())
 		//this.Server.enable("trust proxy")
 
 		this.Server.use("/api/", this.APIRouter)
