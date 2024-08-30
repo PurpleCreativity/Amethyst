@@ -764,17 +764,17 @@ guildProfileSchema.methods.addPointLog = async function (pointLog: PointLog, mod
     buttonEmbed.nextRow();
 
     buttonEmbed.addButton({
-        label: "Delete",
-        style: ButtonStyle.Danger,
-        emoji: Emojis.delete,
-        customId: `STATIC_POINTLOG_${pointLog.id}_DELETE`,
-    })
-
-    buttonEmbed.addButton({
         label: "Import",
         style: ButtonStyle.Success,
         emoji: Emojis.import,
         customId: `STATIC_POINTLOG_${pointLog.id}_IMPORT`,
+    })
+
+    buttonEmbed.addButton({
+        label: "Delete",
+        style: ButtonStyle.Danger,
+        emoji: Emojis.delete,
+        customId: `STATIC_POINTLOG_${pointLog.id}_DELETE`,
     })
 
     channel.send(buttonEmbed.getMessageData());
