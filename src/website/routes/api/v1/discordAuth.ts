@@ -35,8 +35,6 @@ const callback = new Route({
             redirect_uri: `${client.config.baseURL}api/v1/auth/discord/callback`
         });
 
-        console.log(formData);
-
         try {
             const output = await client.Axios.post("https://discord.com/api/oauth2/token", formData, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 
