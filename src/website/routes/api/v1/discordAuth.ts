@@ -27,7 +27,7 @@ const callback = new Route({
         const { code } = req.query;
         if (!code) return res.status(400).send("No code provided");
 
-        const formData = new url.URLSearchParams({
+        const formData1 = new url.URLSearchParams({
             client_id: client.user.id,
             client_secret: client.config.credentials.discordClientSecret,
             grant_type: "authorization_code",
@@ -35,19 +35,19 @@ const callback = new Route({
             redirect_uri: `${client.config.baseURL}api/v1/auth/discord/callback`
         });
 
-        try {
-            const output = await client.Axios.post("https://discord.com/api/oauth2/token", formData, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+        const output = await client.Axios.post("https://discord.com/api/oauth2/token", formData1, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+        if (!output.data.access_token) return res.status(500).send("No access token provided");
+        const user = await client.Axios.get("https://discord.com/api/users/@me", { headers: { Authorization: `Bearer ${output.data.access_token}` } });
 
-            if (!output.data.access_token) return res.status(500).send("No access token provided");
+        const formData2 = new url.URLSearchParams({
+            client_id: client.user.id,
+            client_secret: client.config.credentials.discordClientSecret,
+            grant_type: "refresh_token",
+            refresh_token: output.data.refresh_token,
+        });
+        const refresh = await client.Axios.post("https://discord.com/api/oauth2/token", formData2, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 
-            const user = await client.Axios.get("https://discord.com/api/users/@me", { headers: { Authorization: `Bearer ${output.data.access_token}` } });
-
-            res.status(200).send(user.data)
-        } catch (error) {
-            if (!(error instanceof AxiosError)) return res.status(500).send("An unknown error occurred");
-
-            if (error.response?.data) return res.status(error.response.status).send(error.response.data);
-        }
+        res.status(200).send({ user: user.data, refresh: refresh.data });
     }
 });
 
