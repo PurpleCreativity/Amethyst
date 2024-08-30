@@ -44,11 +44,13 @@ const callback = new Route({
         const tokenSet = await issuerClient.callback(
             `http://localhost:${client.config.port}/api/v1/roblox/oauth/callback`,
             params,
-            undefined,
-            undefined
+            {
+                state: req.signedCookies.state,
+                nonce: req.signedCookies.nonce,
+            },
         );
 
-        console.log(tokenSet);
+        console.log(tokenSet.claims());
         res.status(200).send("Account linked successfully");
     }
 })
