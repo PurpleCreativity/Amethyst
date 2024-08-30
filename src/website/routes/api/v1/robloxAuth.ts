@@ -13,10 +13,8 @@ const issuerClient = new issuer.Client({
 });
 issuerClient[custom.clock_tolerance] = 180;
 
-
-
 const redirect = new Route({
-    path: "roblox/oauth/redirect",
+    path: "auth/roblox/redirect",
     method: "GET",
 
     public: true,
@@ -36,7 +34,7 @@ const redirect = new Route({
 });
 
 const callback = new Route({
-    path: "roblox/oauth/callback",
+    path: "auth/roblox/callback",
     method: "GET",
 
     public: true,
@@ -46,7 +44,8 @@ const callback = new Route({
         const tokenSet = await issuerClient.callback(
             `http://localhost:${client.config.port}/api/v1/roblox/oauth/callback`,
             params,
-            { nonce: req.query.nonce as string, state: req.query.state as string }
+            undefined,
+            undefined
         );
 
         console.log(tokenSet);
