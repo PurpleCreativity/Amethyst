@@ -47,7 +47,8 @@ const callback = new Route({
         });
         const refresh = await client.Axios.post("https://discord.com/api/oauth2/token", formData2, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 
-        res.status(200).send({ user: user.data, refresh: refresh.data });
+        res.status(200).send(user.data);
+        console.log(refresh.data);
     }
 });
 
