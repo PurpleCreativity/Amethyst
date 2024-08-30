@@ -175,6 +175,7 @@ export default new SlashCommand({
     name: "linkroblox",
     description: "Link your Roblox account to your Discord account",
 
+    defer: true,
     userApp: true,
     userCooldown: 30000,
 

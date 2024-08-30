@@ -34,6 +34,7 @@ export type CommandOps = {
 	description: string;
 
     dmpermission?: boolean;
+	defer?: boolean;
 	module?: ValidModules;
     userApp?: boolean;
     devOnly?: boolean;
@@ -59,6 +60,7 @@ export default class SlashCommand extends SlashCommandBuilder {
 	permissions: PermissionResolvable[];
 	customPermissions: customPermissionOptions[];
 	subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
+	defer: boolean;
 	devOnly?: boolean;
 	userApp?: boolean;
 	module: string;
@@ -83,6 +85,8 @@ export default class SlashCommand extends SlashCommandBuilder {
 
 		this.permissions = options.permissions ?? [];
 		this.customPermissions = options.customPermissions ?? [];
+
+		this.defer = options.defer ?? true;
 
 		this.module = options.module ?? "miscellaneous";
 		this.devOnly = options.devOnly;
@@ -135,6 +139,8 @@ export default class SlashCommand extends SlashCommandBuilder {
 	}
 
 	async Execute (interaction: ChatInputCommandInteraction) {
+		if (this.defer) await interaction.deferReply();
+
 		if (client.Functions.isDev(interaction.user.id)) {
 			await this.execute(interaction);
 			return;

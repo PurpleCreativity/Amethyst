@@ -6,9 +6,8 @@ export default new SlashCommand({
     name: "robloxprofile",
     description: "Render a Roblox profile",
 
+    defer: true,
     userApp: true,
-    devOnly: false,
-    dmpermission: true,
     options: [
         new SlashCommandStringOption()
             .setName("user")
@@ -19,7 +18,6 @@ export default new SlashCommand({
     execute: async (interaction) => {
         const user = interaction.options.getString("user", true);
 
-        await interaction.deferReply();
         const actualUser = await client.Functions.GetRobloxUser(user);
         if (!actualUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "User not found", description: "Failed to get Roblox user" })] });
 

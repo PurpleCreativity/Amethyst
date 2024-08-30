@@ -60,7 +60,11 @@ export default class StringSelector {
         components.push(this.getSelector());
         for (const row of buttonEmbed.Rows) components.push({ type: ComponentType.ActionRow, components: row });
 
-        await interaction.reply({ embeds: [embed], components: components });
+        if (interaction.deferred) {
+            await interaction.editReply({ embeds: [embed], components: components });
+        } else {
+            await interaction.reply({ embeds: [embed], components: components });
+        }
 
         client.on("selectMenu", async (newInteraction: AnySelectMenuInteraction) => {
             if (!newInteraction.isStringSelectMenu()) return;

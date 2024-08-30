@@ -31,6 +31,8 @@ export default new SlashCommand({
 
     customPermissions: ["Administrator"],
 
+    defer: true,
+
     subcommands: [
         /*
         new SlashCommandSubcommandGroupBuilder()
@@ -179,7 +181,6 @@ export default new SlashCommand({
         const subcommandGroup = interaction.options.getSubcommandGroup(true);
         const subcommand = interaction.options.getSubcommand(true);
 
-        await interaction.deferReply();
         switch (subcommandGroup) {
             case "channels": {
                 switch (subcommand) {

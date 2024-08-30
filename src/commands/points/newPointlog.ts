@@ -11,6 +11,7 @@ export default new SlashCommand({
     name: "newlog",
     description: "Create a new point log",
 
+    defer: true,
     module: "Points",
     customPermissions: ["CreatePointLogs"],
 
@@ -18,7 +19,7 @@ export default new SlashCommand({
         if (!interaction.guild) return;
 
         const creatorUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
-        if (!creatorUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Point Log Creator", description: "You must link your account to use this command" })], ephemeral: true });
+        if (!creatorUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Point Log Creator", description: "You must link your account to use this command" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
 
@@ -262,6 +263,6 @@ export default new SlashCommand({
         buttonEmbed.disableButton(fullData);
         buttonEmbed.disableButton(finishLog);
 
-        interaction.reply(buttonEmbed.getMessageData());
+        interaction.editReply(buttonEmbed.getMessageData());
     }
 })

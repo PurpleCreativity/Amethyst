@@ -8,6 +8,7 @@ export default new SlashCommand({
     name: "getpoints",
     description: "Get a user's points",
 
+    defer: true,
     customPermissions: ["PointsViewer"],
     module: "Points",
 
@@ -23,7 +24,7 @@ export default new SlashCommand({
 
         const user = interaction.options.getString("user", true);
         const robloxUser = await client.Functions.GetRobloxUser(user);
-        if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Set Points", description: "User not found" })], ephemeral: true });
+        if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Set Points", description: "User not found" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         const guildUser = await guildDataProfile.getUser(robloxUser.id);
@@ -65,6 +66,6 @@ export default new SlashCommand({
             }
         })
 
-        return interaction.reply(buttonEmbed.getMessageData());
+        return interaction.editReply(buttonEmbed.getMessageData());
     }
 })

@@ -9,20 +9,20 @@ export default new SlashCommand({
     name: "mylogs",
     description: "Shows your point logs",
 
+    defer: true,
     module: "Points",
     customPermissions: ["CreatePointLogs"],
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
         const robloxUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
-        if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You are not linked to a Roblox account" })], ephemeral: true });
+        if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You are not linked to a Roblox account" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         let pointLogs = await guildDataProfile.getAllPointLogs();
         pointLogs = pointLogs.filter(pointlog => pointlog.creator.id === robloxUser.id);
-        if (pointLogs.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You have no point logs" })], ephemeral: true });
+        if (pointLogs.length === 0) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Logs", description: "You have no point logs" })] });
 
-        await interaction.deferReply();
         const embeds = [] as ButtonEmbed[];
 
         for (const pointlog of pointLogs) {

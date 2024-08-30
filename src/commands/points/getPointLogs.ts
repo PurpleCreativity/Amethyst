@@ -11,6 +11,8 @@ export default new SlashCommand({
 
     customPermissions: ["PointsManager"],
 
+    defer: true,
+
     options: [
         new SlashCommandStringOption()
             .setName("pointlog-id")
@@ -32,13 +34,13 @@ export default new SlashCommand({
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
+
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
 
         const pointlogId = interaction.options.getString("pointlog-id", false);
         const creatorFilter = interaction.options.getString("creator-filter", false);
         const includedFilter = interaction.options.getString("included-filter", false);
 
-        await interaction.deferReply();
         let pointLogs = await guildDataProfile.getAllPointLogs();
 
         if (creatorFilter) {

@@ -6,6 +6,7 @@ export default new SlashCommand({
     name: "botmanager",
     description: "Manages the bot",
 
+    defer: true,
     devOnly: true,
     userApp: true,
 
@@ -40,7 +41,7 @@ export default new SlashCommand({
 
     execute: async (interaction) => {
         const subcommand = interaction.options.getSubcommand(true);
-
+        
         switch (subcommand) {
             case "listguilds": {
                 const guilds = await client.guilds.fetch();
@@ -57,16 +58,14 @@ export default new SlashCommand({
                     embed.setDescription(`${embed.data.description || ""}**${actualGuild.name}** [\`${actualGuild.id}\`]\n(${owner.username}:\`${owner.id}\`)\n\n`);
                 }
 
-                return interaction.reply({ embeds: [embed] });
+                return interaction.editReply({ embeds: [embed] });
             }
 
             case "guildinfo": {
                 const guildId = interaction.options.getString("guild-id", true);
                 const actualGuild = await client.Functions.GetGuild(guildId, false);
-                if (!actualGuild) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild Info", description: "Guild not found" })], ephemeral: true });
+                if (!actualGuild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild Info", description: "Guild not found" })] });
                 const owner = await actualGuild.fetchOwner().then((owner) => owner.user);
-
-                console.log(actualGuild)
 
                 const embed = client.Functions.makeInfoEmbed({
                     title: `Information about \`${actualGuild.name}\``,
@@ -82,17 +81,17 @@ export default new SlashCommand({
                     ]
                 })
 
-                return interaction.reply({ embeds: [embed] });
+                return interaction.editReply({ embeds: [embed] });
             }
 
             case "leaveguild": {
                 const guildId = interaction.options.getString("guild-id", true);
                 const actualGuild = await client.Functions.GetGuild(guildId, false);
-                if (!actualGuild) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Leave Guild", description: "Guild not found" })], ephemeral: true });
+                if (!actualGuild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Leave Guild", description: "Guild not found" })] });
 
                 await actualGuild.leave();
 
-                return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Leave Guild", description: `Left \`${actualGuild.name}\`:\`${actualGuild.id}\`` })] });
+                return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Leave Guild", description: `Left \`${actualGuild.name}\`:\`${actualGuild.id}\`` })] });
             }
         }
     }

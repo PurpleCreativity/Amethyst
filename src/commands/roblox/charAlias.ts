@@ -16,6 +16,7 @@ export default new SlashCommand({
     name: "charalias",
     description: "Get a user's character alias",
 
+    defer: true,
     userApp: true,
     userCooldown: 10000,
 
@@ -29,7 +30,7 @@ export default new SlashCommand({
     execute: async (interaction) => {
         const username = interaction.options.getString("username", true);
         const robloxUser = await client.Functions.GetRobloxUser(username);
-        if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Character Alias", description: "User not found" })], ephemeral: true });
+        if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Character Alias", description: "User not found" })] });
         
         const avatarData = await client.Axios.get(`https://avatar.roblox.com/v2/avatar/users/${robloxUser.id}/avatar`);
 
@@ -73,7 +74,7 @@ export default new SlashCommand({
 
         aliasString = aliasString.slice(0, -3);
 
-        return interaction.reply({ embeds: [
+        return interaction.editReply({ embeds: [
             client.Functions.makeInfoEmbed({
                 title: "Character Alias",
                 description: `\`\`\`${aliasString}\`\`\``,

@@ -21,6 +21,8 @@ export default new SlashCommand({
     name: "manageapi",
     description: "Manage the API",
 
+    defer: true,
+
     customPermissions: ["Administrator"],
     
     subcommands: [
@@ -59,13 +61,14 @@ export default new SlashCommand({
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
+
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         const subcommand = interaction.options.getSubcommand(true);
 
         switch (subcommand) {
             case "generatekey": {
                 const keys = guildDataProfile.API.keys;
-                if (keys.size >= 25) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API", description: "You can only have a maximum of 25 API keys per guild." })] });
+                if (keys.size >= 25) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API", description: "You can only have a maximum of 25 API keys per guild." })] });
 
                 const currentKey = {
                     name: "",
@@ -229,12 +232,12 @@ export default new SlashCommand({
 
                 updateEmbed();
                 buttonEmbed.disableButton(generateKey);
-                return interaction.reply(buttonEmbed.getMessageData());
+                return interaction.editReply(buttonEmbed.getMessageData());
             }
 
             case "managekey": {
                 const existingKey = guildDataProfile.API.keys.get(interaction.options.getString("key", true));
-                if (!existingKey) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Key", description: "Key not found" })], ephemeral: true });
+                if (!existingKey) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Key", description: "Key not found" })] });
                 const currentKey = JSON.parse(JSON.stringify(existingKey));
 
                 const baseEmbed = client.Functions.makeInfoEmbed({ title: "Manage API Key", description: `Created by <@${currentKey.createdBy}> on <t:${Math.round(new Date(currentKey.createdAt).getTime() / 1000)}:F>` });
@@ -361,14 +364,13 @@ export default new SlashCommand({
                 })
 
                 updateEmbed();
-                return interaction.reply(buttonEmbed.getMessageData());
+                return interaction.editReply(buttonEmbed.getMessageData());
             }
 
             case "listkeys": {
                 const keys = Array.from(guildDataProfile.API.keys.values());
-                if (keys.length === 0) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Keys", description: "No keys found" })] });
+                if (keys.length === 0) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Keys", description: "No keys found" })] });
 
-                await interaction.deferReply();
                 const embeds = [];
                 for (const key of keys) {
                     const embed = client.Functions.makeInfoEmbed({
@@ -402,9 +404,9 @@ export default new SlashCommand({
                 await guildDataProfile.save();
 
                 if (enabled) {
-                    return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({ title: "API Enabled", description: "The API has been \`enabled\`" })] });
+                    return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "API Enabled", description: "The API has been \`enabled\`" })] });
                 }
-                return interaction.reply({ embeds: [client.Functions.makeWarnEmbed({ title: "API Disabled", description: "The API has been \`+disabled\`" })] });
+                return interaction.editReply({ embeds: [client.Functions.makeWarnEmbed({ title: "API Disabled", description: "The API has been \`+disabled\`" })] });
             }
         }
     },

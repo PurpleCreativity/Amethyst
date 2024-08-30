@@ -4,10 +4,11 @@ export default new SlashCommand({
     name: "test",
     description: "Test command",
 
+    defer: true,
     userApp: true,
     devOnly: true,
 
     execute: async (interaction) => {
-        await interaction.reply("Test command works!");
+        await interaction.editReply("Test command works!");
     }
 })

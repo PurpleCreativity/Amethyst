@@ -6,6 +6,7 @@ export default new SlashCommand({
     name: "setpoints",
     description: "Sets a user's points",
 
+    defer: true,
     module: "Points",
     customPermissions: ["PointsManager"],
 
@@ -26,20 +27,20 @@ export default new SlashCommand({
         if (!interaction.guild) return;
 
         const modifierUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
-        if (!modifierUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage Notes", description: "You are not linked to a Roblox account" })], ephemeral: true });
+        if (!modifierUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage Notes", description: "You are not linked to a Roblox account" })] });
 
         const user = interaction.options.getString("user", true);
         const amount = interaction.options.getNumber("amount", true);
 
         const robloxUser = await client.Functions.GetRobloxUser(user);
-        if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Set Points", description: "User not found" })], ephemeral: true });
+        if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Set Points", description: "User not found" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
         const oldPoints = (await guildDataProfile.getUser(robloxUser.id)).points;
 
         await guildDataProfile.setPoints(robloxUser.id, amount, modifierUser);
 
-        return interaction.reply({ embeds: [client.Functions.makeSuccessEmbed({
+        return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({
             title: "Set Points",
             description: `Set [${robloxUser.name}](https://www.roblox.com/users/${robloxUser.id}/profile)'s points to \`${amount}\``,
             footer: { text: robloxUser.name, iconURL: await robloxUser.fetchUserHeadshotUrl() },

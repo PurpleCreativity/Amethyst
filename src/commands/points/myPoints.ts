@@ -5,6 +5,7 @@ export default new SlashCommand({
     name: "mypoints",
     description: "Shows your points",
 
+    defer: true,
     module: "Points",
 
     userCooldown: 30000,
@@ -13,7 +14,7 @@ export default new SlashCommand({
         if (!interaction.guild) return;
 
         const robloxUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
-        if (!robloxUser) return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Points", description: "You are not linked to a Roblox account" })], ephemeral: true });
+        if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Points", description: "You are not linked to a Roblox account" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
 
@@ -36,6 +37,6 @@ export default new SlashCommand({
             embed.addFields({ name: linkedGuildData.guild.shortname, value: `${linkedGuildUser.points} points ${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}\n${linkedGuildUser.ranklock.rank !== 0 && !linkedGuildUser.ranklock.shadow ? "**Ranklocked**" : ""}`, inline: true });
         }
 
-        interaction.reply({ embeds: [embed] });
+        interaction.editReply({ embeds: [embed] });
     }
 });
