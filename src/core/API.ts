@@ -107,6 +107,7 @@ export default class API {
 		await this.LoadUIRoutes();
 
 		this.Server.use(express.json())
+		this.Server.use(express.urlencoded({ extended: true }))
 
 		this.Server.use("/api/", this.APIRouter)
 		this.Server.use("/", this.UIRouter)
