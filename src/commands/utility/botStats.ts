@@ -5,6 +5,7 @@ export default new SlashCommand({
     name: "stats",
     description: "Shows the bot statistics",
 
+    defer: true,
     userApp: true,
 
     execute: async (interaction) => {
@@ -49,6 +50,6 @@ export default new SlashCommand({
             ]
         });
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.editReply({ embeds: [embed] });
     }
 })

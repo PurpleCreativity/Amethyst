@@ -8,6 +8,7 @@ export default new SlashCommand({
     name: "epochbuilder",
     description: "Builds an epoch",
 
+    defer: true,
     userApp: true,
 
     execute: async (interaction) => {
@@ -237,6 +238,6 @@ export default new SlashCommand({
             }
         });
 
-        await interaction.reply(buttonEmbed.getMessageData());
+        await interaction.editReply(buttonEmbed.getMessageData());
     }
 })
