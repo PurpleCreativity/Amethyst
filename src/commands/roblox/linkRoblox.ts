@@ -90,14 +90,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
     }
 
     if (method === "OAuth 2.0") {
-        return interaction.editReply({
-            embeds: [
-                client.Functions.makeErrorEmbed({
-                    title: "OAuth 2.0",
-                    description: "This method is still in development, please use a diffrent method."
-                })
-            ], components: []
-        })
+        
     }
 
     if (method === "Profile Description") {

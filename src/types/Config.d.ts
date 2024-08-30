@@ -8,8 +8,12 @@ type Config = {
 
     credentials: {
         discordToken: string;
-        robloxCookie: string;
         databaseURL: string;
+
+        robloxCookie: string;
+        
+        robloxOAuthSecret: string;
+        robloxOauthClientId: string;
     
         encryptionKey: string;
     },
