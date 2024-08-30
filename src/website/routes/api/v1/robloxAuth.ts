@@ -40,11 +40,12 @@ const callback = new Route({
     public: true,
 
     execute: async (req, res) => {
-        console.log(req.query.state, req.query.nonce);
+        console.log(req.session)
         const tokenSet = await issuerClient.callback(
             "https://amethyst-e1050d4a61a7.herokuapp.com/api/v1/auth/roblox/callback",
             issuerClient.callbackParams(req),
-            { state: req.query.state as string, nonce: req.query.nonce as string },
+            // @ts-ignore
+            { state: req.session.state, nonce: req.session.nonce },
             {},
         );
 
