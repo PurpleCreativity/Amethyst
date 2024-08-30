@@ -27,6 +27,7 @@
     "@types/node": "^22.2.0",
     "axios": "^1.7.3",
     "chalk": "^5.3.0",
+    "connect-mongo": "^5.1.0",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
