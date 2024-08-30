@@ -26,6 +26,11 @@ interface userProfileInterface extends mongoose.Document {
     roblox: {
         username: string,
         id: number,
+    },
+
+    session: {
+        accessToken: string,
+        refreshToken: string,
     }
 
     flags: Map<string, Flag>,
@@ -46,6 +51,11 @@ const userProfileSchema = new mongoose.Schema({
     roblox: {
         username: String,
         id: Number,
+    },
+
+    session: {
+        accessToken: String,
+        refreshToken: String,
     },
 
     flags: {
