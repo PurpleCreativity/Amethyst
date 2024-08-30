@@ -108,7 +108,7 @@ export default class API {
 
 		this.Server.use(express.json())
 		this.Server.use(express.urlencoded({ extended: true }))
-		this.Server.enable("trust proxy")
+		//this.Server.enable("trust proxy")
 
 		this.Server.use("/api/", this.APIRouter)
 		this.Server.use("/", this.UIRouter)
