@@ -12,6 +12,7 @@ type RouteOptions = {
 	rateLimit?: any,
     deprecated?: boolean,
 	permissions?: APIPermissions[],
+	middleware?: express.RequestHandler[],
 	description?: string,
 
 	execute(req: express.Request, res: express.Response, guildDataProfile?: guildProfileInterface | undefined): void
@@ -24,6 +25,7 @@ class Route {
 	rateLimit?: any
     deprecated: boolean
 	permissions: APIPermissions[]
+	middleware: express.RequestHandler[]
 	description: string
 
 	execute: (req: express.Request, res: express.Response, guildDataProfile?: guildProfileInterface | undefined) => void
@@ -34,6 +36,7 @@ class Route {
 		this.public = opts.public ?? false
 		this.rateLimit = opts.rateLimit ?? undefined
 		this.permissions = opts.permissions ?? [];
+		this.middleware = opts.middleware ?? []
         this.deprecated = opts.deprecated ?? false
 		this.description = opts.description ?? "None"
 		

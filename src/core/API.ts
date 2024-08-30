@@ -69,7 +69,12 @@ export default class API {
 				for (const route of routesArray) {
 					if (!(route instanceof Route)) continue;
 
-					this.APIRouter[route.method](`/${folder}/${route.path}`, route.Execute())
+					const middleware = [
+						...route.middleware,
+						route.Execute()
+					]
+
+					this.APIRouter[route.method](`/${folder}/${route.path}`, ...middleware)
 					if (route.rateLimit) this.Server.use(`/api/${folder}/${route.path}`, route.rateLimit);
 				}
 			}
@@ -86,7 +91,12 @@ export default class API {
 			for (const route of routesArray) {
 				if (!(route instanceof Route)) continue;
 
-				this.UIRouter[route.method](`/${route.path}`, route.Execute())
+				const middleware = [
+					...route.middleware,
+					route.Execute()
+				]
+
+				this.UIRouter[route.method](`/${route.path}`, ...middleware)
 				if (route.rateLimit) this.Server.use(`/${route.path}`, route.rateLimit);
 			}
 		}
