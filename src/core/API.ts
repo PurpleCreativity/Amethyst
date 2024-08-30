@@ -1,6 +1,6 @@
 import type SuperClient from "../classes/SuperClient.js";
 import express from "express";
-import rateLimit from "express-rate-limit";
+import session from "express-session";
 import fs from "node:fs"
 import path from "node:path"
 import Route from "../classes/Route.js";
@@ -108,6 +108,13 @@ export default class API {
 
 		this.Server.use(express.json())
 		this.Server.use(express.urlencoded({ extended: true }))
+		this.Server.use(session({
+			secret: this.client.config.credentials.sessionSecret,
+			cookie: { secure: true },
+
+			resave: false,
+			saveUninitialized: false
+		}))
 		//this.Server.enable("trust proxy")
 
 		this.Server.use("/api/", this.APIRouter)
