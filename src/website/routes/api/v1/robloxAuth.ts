@@ -6,7 +6,7 @@ const issuer = await Issuer.discover("https://apis.roblox.com/oauth/.well-known/
 const issuerClient = new issuer.Client({
     client_id: client.config.credentials.robloxOauthClientId,
     client_secret: client.config.credentials.robloxOAuthSecret,
-    redirect_uris: [`http://localhost:${client.config.port}/api/v1/roblox/oauth/callback`],
+    redirect_uris: ["https://amethyst-e1050d4a61a7.herokuapp.com/api/v1/auth/roblox/callback"],
     response_types: ["code"],
     scope: "openid profile",
     id_token_signed_response_alg: "ES256",
@@ -42,7 +42,7 @@ const callback = new Route({
     execute: async (req, res) => {
         const params = issuerClient.callbackParams(req);
         const tokenSet = await issuerClient.callback(
-            `http://localhost:${client.config.port}/api/v1/roblox/oauth/callback`,
+            "https://amethyst-e1050d4a61a7.herokuapp.com/api/v1/auth/roblox/callback",
             params,
             {
                 state: req.signedCookies.state,
