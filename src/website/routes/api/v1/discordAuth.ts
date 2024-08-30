@@ -44,7 +44,7 @@ const callback = new Route({
 
             const user = await client.Axios.get("https://discord.com/api/users/@me", { headers: { Authorization: `Bearer ${output.data.access_token}` } });
 
-            res.status(200).send({ output: output.data, user: user.data })
+            res.status(200).send(user.data)
         } catch (error) {
             if (!(error instanceof AxiosError)) return res.status(500).send("An unknown error occurred");
 
