@@ -62,23 +62,23 @@ export default class Logs {
         const baseEmbed = this.client.Functions.makeInfoEmbed({
             title: "Guild joined",
             description: "The bot has joined a new guild",
-            footer: { text: owner.username, iconURL: owner.displayAvatarURL() },
             image: guild.bannerURL() || undefined,
             thumbnail: guild.iconURL() || undefined,
+            fields: [
+                {
+                    name: "Guild",
+                    value: `\`${guild.name}\`:\`${guild.id}\``
+                },
+                {
+                    name: `Invite Links (${inviteLinks.size})`,
+                    value: inviteLinksFormatted || "\`No invite links found\`"
+                },
+                {
+                    name: "Owner",
+                    value: `Name: \`${owner.username}\`\nId: \`${owner.id}\`\n(<@${owner.id}>)`
+                }
+            ]
         })
-
-        baseEmbed.setFields([{
-            name: "Guild",
-            value: `Name: \`${guild.name}\`\nId: \`${guild.id}\``
-        },
-        {
-            name: `Invite Links (${inviteLinks.size})`,
-            value: inviteLinksFormatted
-        },
-        {
-            name: "Owner",
-            value: `Name: \`${owner.username}\`\nId: \`${owner.id}\`\n(<@${owner.id}>)`
-        }])
 
         const buttonEmbed = new ButtonEmbed(baseEmbed)
 
