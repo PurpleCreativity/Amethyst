@@ -35,9 +35,18 @@ export default class Interactables {
 			const files = fs.readdirSync(newPath).filter(file => file.endsWith(".js"))
 			for (const file of files) {
 				const importPath = path.join(process.cwd(), "build/commands", folder, file)
-				const command = await import(`file://${importPath}`)
+				const commands = await import(`file://${importPath}`).then(res => res.default);
+				const routesCommands = Array.isArray(commands) ? commands : [commands];
 
-				this.AddCommand(command.default)
+				for (const command of routesCommands) {
+					if (!(command instanceof SlashCommand)) {
+						console.log(command)
+						this.client.warn("Command that is not a command, skipping")
+						continue;
+					}
+					
+					this.AddCommand(command)
+				}
 			}
 		}
 	}
