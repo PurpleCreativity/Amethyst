@@ -106,6 +106,6 @@ export default class API {
 		
 		this.Server.listen(this.client.config.port)
 
-		this.client.success("Initialized API");
+		this.client.success(`Initialized API on port ${this.client.config.port}`);
 	}
 }
