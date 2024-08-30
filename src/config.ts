@@ -18,6 +18,7 @@ config.devList = [
 config.credentials = {
     discordToken: "",
 	discordClientSecret: "",
+	discordOAuthRedirectLink: "",
 
     databaseURL: "",
 

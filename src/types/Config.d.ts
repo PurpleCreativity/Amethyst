@@ -9,6 +9,7 @@ type Config = {
     credentials: {
         discordToken: string;
         discordClientSecret: string;
+        discordOAuthRedirectLink: string;
 
         databaseURL: string;
 

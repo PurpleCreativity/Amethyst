@@ -122,6 +122,7 @@ class SuperClient extends Client {
 
             this.config.credentials.discordToken = process.env.Dev_discordToken as string;
 			this.config.credentials.discordClientSecret = process.env.Dev_discordClientSecret as string;
+			this.config.credentials.discordOAuthRedirectLink = "https://discord.com/oauth2/authorize?client_id=1271891545527681096&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A3003%2Flogin&scope=identify";
             this.config.credentials.robloxCookie = process.env.robloxCookie as string;
             this.config.credentials.databaseURL = process.env.Dev_databaseURL as string;
         } else {
