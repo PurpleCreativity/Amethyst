@@ -1,13 +1,50 @@
-import { AxiosError } from "axios";
 import Route from "../../../../classes/Route.js";
 import client from "../../../../index.js";
+import passport from "passport";
+import { type Profile, Strategy } from "passport-discord";
+import type { VerifyCallback } from "passport-oauth2";
+import userProfile from "../../../../schemas/userProfile.js";
 
-import url from "node:url";
+passport.serializeUser((user: any, done) => {
+    return done(null, user.id);
+});
+
+passport.deserializeUser(async (id: string, done) => {
+    try {
+        const user = await userProfile.findById(id);
+        console.log(`Deserialized user: ${user}`);
+        return done(null, user);
+    } catch (error) {
+        return done(error, null);
+    }
+})
+
+passport.use(
+    new Strategy(
+        {
+            clientID: client.user?.id as string,
+            clientSecret: client.config.credentials.discordClientSecret,
+            callbackURL: `${client.config.baseURL}api/v1/auth/discord/callback`,
+            scope: ["identify", "guilds"]
+        },
+        async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
+            const userDataProfile = await client.Database.GetUserProfile(profile.id)
+            userDataProfile.user.name = profile.username;
+            userDataProfile.session.accessToken = accessToken;
+            userDataProfile.session.refreshToken = refreshToken
+
+            await userDataProfile.save();
+
+            return done(null, userDataProfile);
+        }
+    )
+);
 
 const redirect = new Route({
     path: "auth/discord/redirect",
     method: "GET",
 
+    middleware: [passport.authenticate("discord")],
     public: true,
 
     execute: async (req, res) => {
@@ -19,36 +56,23 @@ const callback = new Route({
     path: "auth/discord/callback",
     method: "GET",
 
+    middleware: [passport.authenticate("discord")],
     public: true,
 
     execute: async (req, res) => {
-        if (!client.user) return res.status(500).send("Client is not logged in");
-
-        const { code } = req.query;
-        if (!code) return res.status(400).send("No code provided");
-
-        const formData1 = new url.URLSearchParams({
-            client_id: client.user.id,
-            client_secret: client.config.credentials.discordClientSecret,
-            grant_type: "authorization_code",
-            code: code.toString(),
-            redirect_uri: `${client.config.baseURL}api/v1/auth/discord/callback`
-        });
-
-        const output = await client.Axios.post("https://discord.com/api/oauth2/token", formData1, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-        if (!output.data.access_token) return res.status(500).send("No access token provided");
-        const user = await client.Axios.get("https://discord.com/api/users/@me", { headers: { Authorization: `Bearer ${output.data.access_token}` } });
-
-        const formData2 = new url.URLSearchParams({
-            client_id: client.user.id,
-            client_secret: client.config.credentials.discordClientSecret,
-            grant_type: "refresh_token",
-            refresh_token: output.data.refresh_token,
-        });
-        const refresh = await client.Axios.post("https://discord.com/api/oauth2/token", formData2, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-
-        res.status(200).send(user.data);
+        res.send(req.user);
     }
 });
 
-export default [redirect, callback];
+const status = new Route({
+    path: "status",
+    method: "GET",
+
+    public: true,
+
+    execute: async (req, res) => {
+        res.send(req.user);
+    }
+});
+
+export default [redirect, callback, status];
