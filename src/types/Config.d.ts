@@ -19,6 +19,7 @@ type Config = {
         robloxOauthClientId: string;
     
         encryptionKey: string;
+        sessionSecret: string;
     },
 
     channels: {

@@ -27,7 +27,8 @@ config.credentials = {
 	robloxOAuthSecret: "",
 	robloxOauthClientId: "2793559956691610836",
 
-    encryptionKey: ""
+    encryptionKey: "",
+	sessionSecret: "",
 }
 
 config.channels = {

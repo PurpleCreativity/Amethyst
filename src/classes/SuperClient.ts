@@ -133,6 +133,7 @@ class SuperClient extends Client {
             this.config.credentials.databaseURL = process.env.databaseURL as string;
         }
         this.config.credentials.encryptionKey = process.env.encryptionKey as string;
+		this.config.credentials.sessionSecret = process.env.sessionSecret as string;
 		this.config.credentials.robloxOAuthSecret = process.env.robloxOAuthSecret as string;
 
 		await this.login(this.config.credentials.discordToken);
