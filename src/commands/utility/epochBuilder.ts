@@ -121,30 +121,22 @@ export default new SlashCommand({
         buttonEmbed.nextRow();
 
         buttonEmbed.addButton({
-            label: "Export",
-            style: ButtonStyle.Primary,
+            label: "Round up hour",
+            style: ButtonStyle.Secondary,
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
-                await buttonInteraction.reply({
-                    content: epoch.toString(),
-                    embeds: [
-                        client.Functions.makeInfoEmbed({
-                            title: "Epoch Export",
-                            fields: [
-                                { name: "Raw", value: `\`${epoch.toString()}\``, inline: true },
-                                { name: "Default", value: `\`<t:${epoch.toString()}>\`\n<t:${epoch.toString()}>`, inline: true },
-                                { name: "Relative", value: `\`<t:${epoch.toString()}:R>\`\n<t:${epoch.toString()}:R>`, inline: true },
+                buttonInteraction.deferUpdate();
 
-                                { name: "Time", value: `Short: \`<t:${epoch.toString()}:t>\` (<t:${epoch.toString()}:t>)\nLong: \`<t:${epoch.toString()}:T>\` (<t:${epoch.toString()}:T>)`, inline: false },
+                const currentMinute = new Date(epoch * 1000).getMinutes();
+                if (currentMinute >= 30) {
+                    epoch = Math.ceil(epoch / 3600) * 3600;
+                } else {
+                    epoch = Math.floor(epoch / 3600) * 3600;
+                }
 
-                                { name: "Date", value: `Short: \`<t:${epoch.toString()}:d>\` (<t:${epoch.toString()}:d>)\nLong: \`<t:${epoch.toString()}:D>\` (<t:${epoch.toString()}:D>)`, inline: false},
-
-                                { name: "Time/Date", value: `Short: \`<t:${epoch.toString()}:f>\` (<t:${epoch.toString()}:f>)\nLong: \`<t:${epoch.toString()}:F>\` (<t:${epoch.toString()}:F>)`, inline: false},
-                            ]
-                        })
-                    ], ephemeral: true
-                })
+                updateEmbed();
+                await interaction.editReply(buttonEmbed.getMessageData());
             }
         })
 
@@ -199,6 +191,36 @@ export default new SlashCommand({
                 updateEmbed();
 
                 await interaction.editReply(buttonEmbed.getMessageData());
+            }
+        })
+
+        buttonEmbed.nextRow();
+
+        buttonEmbed.addButton({
+            label: "Export",
+            style: ButtonStyle.Primary,
+            allowedUsers: [interaction.user.id],
+
+            function: async (buttonInteraction) => {
+                await buttonInteraction.reply({
+                    content: epoch.toString(),
+                    embeds: [
+                        client.Functions.makeInfoEmbed({
+                            title: "Epoch Export",
+                            fields: [
+                                { name: "Raw", value: `\`${epoch.toString()}\``, inline: true },
+                                { name: "Default", value: `\`<t:${epoch.toString()}>\`\n<t:${epoch.toString()}>`, inline: true },
+                                { name: "Relative", value: `\`<t:${epoch.toString()}:R>\`\n<t:${epoch.toString()}:R>`, inline: true },
+
+                                { name: "Time", value: `Short: \`<t:${epoch.toString()}:t>\` (<t:${epoch.toString()}:t>)\nLong: \`<t:${epoch.toString()}:T>\` (<t:${epoch.toString()}:T>)`, inline: false },
+
+                                { name: "Date", value: `Short: \`<t:${epoch.toString()}:d>\` (<t:${epoch.toString()}:d>)\nLong: \`<t:${epoch.toString()}:D>\` (<t:${epoch.toString()}:D>)`, inline: false},
+
+                                { name: "Time/Date", value: `Short: \`<t:${epoch.toString()}:f>\` (<t:${epoch.toString()}:f>)\nLong: \`<t:${epoch.toString()}:F>\` (<t:${epoch.toString()}:F>)`, inline: false},
+                            ]
+                        })
+                    ], ephemeral: true
+                })
             }
         })
 
