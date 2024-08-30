@@ -128,7 +128,7 @@ class SuperClient extends Client {
         } else {
             this.config.credentials.discordToken = process.env.discordToken as string;
 			this.config.credentials.discordClientSecret = process.env.discordClientSecret as string;
-			this.config.credentials.discordOAuthRedirectLink = "https://discord.com/oauth2/authorize?client_id=1271862480641069179&response_type=code&redirect_uri=https%3A%2F%2Famethyst-e1050d4a61a7.herokuapp.com%2Fapi%2Fv1%2Fauth%2Fdiscord%2Fcallback&scope=identify"
+			this.config.credentials.discordOAuthRedirectLink = "https://discord.com/oauth2/authorize?client_id=1271862480641069179&response_type=code&redirect_uri=https%3A%2F%2Famethyst-e1050d4a61a7.herokuapp.com%2Fapi%2Fv1%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds"
             this.config.credentials.robloxCookie = process.env.robloxCookie as string;
             this.config.credentials.databaseURL = process.env.databaseURL as string;
         }
