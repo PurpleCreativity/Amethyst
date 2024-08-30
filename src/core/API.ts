@@ -63,11 +63,15 @@ export default class API {
 
 			const files = fs.readdirSync(path.join(process.cwd(), "build/website/routes/api", folder)).filter(file => file.endsWith(".js"))
 			for (const file of files) {
-				const route = await import(`file://${path.join(process.cwd(), "build/website/routes/api", folder, file)}`).then(res => res.default);
-				if (!(route instanceof Route)) continue;
+				const routes = await import(`file://${path.join(process.cwd(), "build/website/routes/api", folder, file)}`).then(res => res.default);
+				const routesArray = Array.isArray(routes) ? routes : [routes];
 
-				this.APIRouter[route.method](`/${folder}/${route.path}`, route.Execute())
-				if (route.rateLimit) this.Server.use(`/api/${folder}/${route.path}`, route.rateLimit)
+				for (const route of routesArray) {
+					if (!(route instanceof Route)) continue;
+
+					this.APIRouter[route.method](`/${folder}/${route.path}`, route.Execute())
+					if (route.rateLimit) this.Server.use(`/api/${folder}/${route.path}`, route.rateLimit);
+				}
 			}
 		}
 	}
@@ -76,11 +80,15 @@ export default class API {
 		const files = fs.readdirSync(path.join(process.cwd(), "build/website/routes/ui")).filter(file => file.endsWith(".js"))
 
 		for (const file of files) {
-			const route = await import(`file://${path.join(process.cwd(), "build/website/routes/ui", file)}`).then(res => res.default);
-			if (!(route instanceof Route)) continue;
+			const routes = await import(`file://${path.join(process.cwd(), "build/website/routes/ui", file)}`).then(res => res.default);
+			const routesArray = Array.isArray(routes) ? routes : [routes];
 
-			this.UIRouter[route.method](`/${route.path}`, route.Execute())
-			if (route.rateLimit) this.Server.use(`/${route.path}`, route.rateLimit)
+			for (const route of routesArray) {
+				if (!(route instanceof Route)) continue;
+
+				this.UIRouter[route.method](`/${route.path}`, route.Execute())
+				if (route.rateLimit) this.Server.use(`/${route.path}`, route.rateLimit);
+			}
 		}
 	}
 
