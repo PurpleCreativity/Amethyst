@@ -44,10 +44,8 @@ const callback = new Route({
         const tokenSet = await issuerClient.callback(
             "https://amethyst-e1050d4a61a7.herokuapp.com/api/v1/auth/roblox/callback",
             params,
-            {
-                state: req.signedCookies.state,
-                nonce: req.signedCookies.nonce,
-            },
+            undefined,
+            undefined,
         );
 
         console.log(tokenSet.claims());
