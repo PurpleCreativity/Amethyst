@@ -1,5 +1,6 @@
 import { type AutocompleteInteraction, type ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandGroupBuilder, type PermissionResolvable, type SlashCommandAttachmentOption, type SlashCommandBooleanOption, type SlashCommandChannelOption, type SlashCommandIntegerOption, type SlashCommandMentionableOption, type SlashCommandNumberOption, type SlashCommandRoleOption, type SlashCommandStringOption, type SlashCommandSubcommandBuilder, GuildMember, type SlashCommandUserOption } from "discord.js";
 import client from "../index.js";
+import type { guildProfileInterface } from "../schemas/guildProfile.js";
 
 export type ValidOptions =
  | SlashCommandStringOption
@@ -52,7 +53,7 @@ export type CommandOps = {
 	guildCooldown?: number;
 	userCooldown?: number;
 
-	execute (interaction : ChatInputCommandInteraction): Promise<any>;
+	execute (interaction : ChatInputCommandInteraction, guildDataProfile?: guildProfileInterface): Promise<any>;
 	autocomplete? (interaction : AutocompleteInteraction): Promise<{name : string, value : string}[] | {name : string, value : string} | any>;
 }
 
@@ -75,7 +76,7 @@ export default class SlashCommand extends SlashCommandBuilder {
 	guildCooldowns = new Map<string, number>();
 	lastUsedGlobal = 0;
 
-	execute: (interaction : ChatInputCommandInteraction) => Promise<any>;
+	execute: (interaction : ChatInputCommandInteraction, guildDataProfile?: guildProfileInterface) => Promise<any>;
 	autocomplete?: (interaction : AutocompleteInteraction) => Promise<{name : string, value : string}[] | {name : string, value : string} | any>;
 
 	constructor (options: CommandOps) {
@@ -144,6 +145,16 @@ export default class SlashCommand extends SlashCommandBuilder {
 		if (this.defer) await interaction.deferReply();
 
 		if (client.Functions.isDev(interaction.user.id)) {
+			if (interaction.guild && !this.integration_types.includes(1)) {
+				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+				if (!guildDataProfile) {
+					if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+					return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+				}
+	
+				return await this.execute(interaction, guildDataProfile);
+			}
+
 			await this.execute(interaction);
 			return;
 		}
@@ -190,6 +201,16 @@ export default class SlashCommand extends SlashCommandBuilder {
 				return interaction.reply({ content: `This command is on a global cooldown. Please retry again <t:${Math.round(currentTimestamp / 1000 + remainingCooldown)}:R>`, ephemeral: true });
 			}
 			this.lastUsedGlobal = Date.now();
+		}
+
+		if (interaction.guild && !this.integration_types.includes(1)) {
+			const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+			if (!guildDataProfile) {
+				if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+				return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+			}
+
+			return await this.execute(interaction, guildDataProfile);
 		}
 
 		return await this.execute(interaction);

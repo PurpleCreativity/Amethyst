@@ -10,14 +10,11 @@ export default new SlashCommand({
 
     userCooldown: 30000,
 
-    execute: async (interaction) => {
-        if (!interaction.guild) return;
+    execute: async (interaction, guildDataProfile) => {
+        if (!interaction.guild || !guildDataProfile) return;
 
         const robloxUser = await client.Functions.GetLinkedRobloxUser(interaction.user.id);
         if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Your Points", description: "You are not linked to a Roblox account" })] });
-
-        const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
-        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
 
         const guildUser = await guildDataProfile.getUser(robloxUser.id);
         const guildPendingPoints = await guildDataProfile.calculateUserPendingPoints(robloxUser.id);

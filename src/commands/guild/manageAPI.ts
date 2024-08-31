@@ -59,11 +59,8 @@ export default new SlashCommand({
             )
     ],
 
-    execute: async (interaction) => {
-        if (!interaction.guild) return;
-
-        const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
-        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+    execute: async (interaction, guildDataProfile) => {
+        if (!interaction.guild || !guildDataProfile) return;
 
         const subcommand = interaction.options.getSubcommand(true);
 
