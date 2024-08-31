@@ -59,7 +59,7 @@ const callback = new Route({
     public: true,
 
     execute: async (req, res) => {
-        res.send(req.user);
+        res.status(200).send("You have successfully logged in, contine your previous operation");
     }
 });
 
