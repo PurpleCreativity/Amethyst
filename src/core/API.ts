@@ -6,6 +6,7 @@ import path from "node:path"
 import Route from "../classes/Route.js";
 import MongoStore from "connect-mongo";
 import passport from "passport";
+import cors from "cors";
 import type { APIMethods, APIPermissions } from "../classes/Route.js";
 
 export type RouteOptions = {
@@ -110,6 +111,10 @@ export default class API {
 
 		this.Server.use(express.json())
 		this.Server.use(express.urlencoded({ extended: true }))
+		this.Server.use(cors({
+			origin: this.client.config.baseURL,
+			credentials: true
+		}))
 
 		this.Server.use(session({
 			secret: this.client.config.credentials.sessionSecret,
