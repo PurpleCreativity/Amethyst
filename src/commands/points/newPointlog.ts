@@ -22,6 +22,7 @@ export default new SlashCommand({
         if (!creatorUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Point Log Creator", description: "You must link your account to use this command" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
 
         const currentLog = {
             id: client.Functions.GenerateID(),

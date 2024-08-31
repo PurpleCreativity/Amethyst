@@ -9,7 +9,9 @@ export default new StaticButton({
 
     execute: async (interaction) => {
         if (!interaction.guild) return;
+
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
 
         const args = interaction.customId.split("_"); args.shift(); args.shift();
         const pointLog = await guildDataProfile.getPointLog(args[0]);

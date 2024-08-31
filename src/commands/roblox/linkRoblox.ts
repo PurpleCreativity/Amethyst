@@ -14,7 +14,9 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
         await interaction.deferReply();
 
         if (!interaction.guild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({title: "Account Link", description: "This method is only available in guilds"})], components: [] });
+
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
+        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
 
         if (method === "RoVer") {
             if (!guildDataProfile.roblox.rover_Key) return interaction.editReply({ content: null, embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "This server doesn't have a RoVer key set" })], components: [] });

@@ -117,18 +117,19 @@ export default class Database {
         return newGuildProfile as any as guildProfileInterface;
     }
 
-    GetGuildProfile = async (guildId: string, useCache = true): Promise<guildProfileInterface> => {
+    GetGuildProfile = async (guildId: string, useCache = true): Promise<guildProfileInterface | undefined> => {
         if (useCache) {
             const cachedGuild = this.cache.guilds.get(guildId.toString());
             if (cachedGuild) return cachedGuild;
         }
 
         const guildDataProfile = await guildProfile.findOne({ "guild.id": guildId });
-        if (!guildDataProfile) return await this.CreateGuildProfile(guildId);
+        //if (!guildDataProfile && createIfnull) {
+        //    this.cache.guilds.set(guildId.toString(), guildDataProfile as any as guildProfileInterface);
+        //    return await this.CreateGuildProfile(guildId);
+        //}
 
-        this.cache.guilds.set(guildId.toString(), guildDataProfile as any as guildProfileInterface);
-
-        return guildDataProfile as any as guildProfileInterface;
+        return guildDataProfile as any as guildProfileInterface || undefined;
     }
 
     GetAllGuilds = async (useCache = true): Promise<guildProfileInterface[]> => {

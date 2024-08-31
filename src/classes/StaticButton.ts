@@ -35,6 +35,8 @@ export default class StaticButton {
 			if (this.customPermissions.length > 0) {
 				if (!(interaction.member instanceof GuildMember)) return false;
 				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
+                if (!guildDataProfile) return false;
+
 				const check = await guildDataProfile.customPermissionCheck(interaction.member, this.customPermissions);
 				
 				if (!check) return false;

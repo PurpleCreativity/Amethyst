@@ -36,6 +36,8 @@ export default new SlashCommand({
         if (!robloxUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Set Points", description: "User not found" })] });
 
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
+        if (!guildDataProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
+
         const oldPoints = (await guildDataProfile.getUser(robloxUser.id)).points;
 
         await guildDataProfile.setPoints(robloxUser.id, amount, modifierUser);

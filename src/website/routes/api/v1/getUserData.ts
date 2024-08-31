@@ -49,6 +49,8 @@ export default new Route({
         if (includeLinkedguilds) {
             for (const linkedGuild of guildProfile.linkedGuilds.values()) {
                 const linkedGuildData = await client.Database.GetGuildProfile(linkedGuild.id);
+                if (!linkedGuildData) continue;
+
                 const linkedGuildUser = await linkedGuildData.getUser(user.roblox.id);
                 returnData.push({
                     guild: {

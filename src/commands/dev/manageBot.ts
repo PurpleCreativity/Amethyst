@@ -37,6 +37,22 @@ export default new SlashCommand({
                     .setRequired(true)
             )
         ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("registerguild")
+            .setDescription("Registers a guild")
+            .addStringOption(option =>
+                option
+                    .setName("guild-id")
+                    .setDescription("The guild to register")
+                    .setRequired(true)
+            )
+            .addStringOption(option => 
+                option
+                    .setName("shortname")
+                    .setDescription("The shortname of the guild")
+                    .setRequired(true)
+            )
     ],
 
     execute: async (interaction) => {
@@ -92,6 +108,24 @@ export default new SlashCommand({
                 await actualGuild.leave();
 
                 return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Leave Guild", description: `Left \`${actualGuild.name}\`:\`${actualGuild.id}\`` })] });
+            }
+
+            case "registerguild": {
+                const guildId = interaction.options.getString("guild-id", true);
+                const shortname = interaction.options.getString("shortname", true);
+
+                const actualGuild = await client.Functions.GetGuild(guildId, false);
+                if (!actualGuild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Register Guild", description: "Guild not found" })] });
+
+                await client.Database.CreateGuildProfile(actualGuild);
+                
+                const createdProfile = await client.Database.GetGuildProfile(guildId, false);
+                if (!createdProfile) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Register Guild", description: "Failed to create guild profile" })] });
+
+                createdProfile.guild.shortname = shortname;
+                await createdProfile.save();
+
+                return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Register Guild", description: `Registered \`${actualGuild.name}\`:\`${actualGuild.id}\` with shortname \`${shortname}\`` })] });
             }
         }
     }
