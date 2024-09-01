@@ -160,7 +160,8 @@ export default class SlashCommand extends SlashCommandBuilder {
 		}
 
 		if (!(await this.Check(interaction))) {
-			return interaction.reply({ content: "You do not have permission to run this command", ephemeral: true });
+			if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Restricted", description: "You do not have permission to run this command" })] });
+			return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Restricted", description: "You do not have permission to run this command" })], ephemeral: true });
 		}
 
 		const currentTimestamp = new Date().getTime();
