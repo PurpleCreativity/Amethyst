@@ -1,7 +1,8 @@
-import { SlashCommandSubcommandBuilder } from "discord.js";
+import { type ModalSubmitInteraction, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import type { guildProfileInterface, RobloxPlace } from "../../schemas/guildProfile.js";
+import Modal from "../../classes/Modal.js";
 
 const DurationToSeconds = (durations: string) => {
     const durationRegex = /(\d+)([yMwdhms])/g;
@@ -100,7 +101,7 @@ export default new SlashCommand({
     name: "place",
     description: "Actions to perform on Roblox game places",
 
-    defer: true,
+    defer: false,
     customPermissions: ["RobloxModerator"],
     subcommands: [
         new SlashCommandSubcommandBuilder()
@@ -197,12 +198,54 @@ export default new SlashCommand({
         if (!interaction.guild || !guildDataProfile) return;
 
         const subcommand = interaction.options.getSubcommand(true);
+        if (subcommand !== "add") await interaction.deferReply();
 
         switch (subcommand) {
             case "add": {
                 if (guildDataProfile.roblox.places.size >= 25) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Max places reached", description: "You can only have up to \`25\` places per guild" })] });
 
-                
+                const modal = new Modal({
+                    Title: "Add a place",
+                    Inputs: [
+                        new TextInputBuilder()
+                            .setCustomId("name")
+                            .setLabel("Place Name")
+                            .setStyle(TextInputStyle.Short)
+                            .setMaxLength(10)
+                            .setRequired(true)
+                        ,
+
+                        new TextInputBuilder()
+                            .setCustomId("id")
+                            .setLabel("Place Id")
+                            .setStyle(TextInputStyle.Short)
+                            .setMaxLength(20)
+                            .setRequired(true)
+                        ,
+
+                        new TextInputBuilder()
+                            .setCustomId("key")
+                            .setLabel("Place API Key")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(false)
+                        ,
+                    ]
+                });
+                    
+                const response = await modal.Prompt(interaction) as ModalSubmitInteraction;
+                await response.deferReply();
+
+                const placeName = response.fields.getTextInputValue("name");
+                const placeId = response.fields.getTextInputValue("id");
+                const placeKey = response.fields.getTextInputValue("key") ? client.Functions.Encypt(response.fields.getTextInputValue("key"), guildDataProfile.iv) : undefined;
+
+                const actualPlace = await client.WrapBlox.fetchGame(await client.Functions.ConvertPlaceIDToUniverseID(Number.parseInt(placeId)));
+                if (!actualPlace) return response.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place", description: "The place you provided is invalid" })] });
+
+                guildDataProfile.roblox.places.set(placeName, { name: placeName, id: placeId, key: placeKey ? placeKey : "" });
+                await guildDataProfile.save();
+
+                return response.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Place added", description: `The \`${placeName}\` place has been added to the database` })] });
             }
         }
     },
