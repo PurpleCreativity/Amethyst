@@ -1,6 +1,7 @@
-import { SlashCommandSubcommandBuilder } from "discord.js";
+import { SlashCommandSubcommandBuilder, TextChannel } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
+import Emojis from "../../assets/Emojis.js";
 
 export default new SlashCommand({
     name: "botmanager",
@@ -53,6 +54,17 @@ export default new SlashCommand({
                     .setDescription("The shortname of the guild")
                     .setRequired(true)
             )
+        ,
+
+        new SlashCommandSubcommandBuilder()
+            .setName("sendannouncement")
+            .setDescription("Sends an announcement to all guilds")
+            .addStringOption(option =>
+                option
+                    .setName("message-id")
+                    .setDescription("The content of the announcement")
+                    .setRequired(true)
+            )
     ],
 
     execute: async (interaction) => {
@@ -81,21 +93,24 @@ export default new SlashCommand({
                 const guildId = interaction.options.getString("guild-id", true);
                 const actualGuild = await client.Functions.GetGuild(guildId, false);
                 if (!actualGuild) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild Info", description: "Guild not found" })] });
+
+                const guildDataProfile = await client.Database.GetGuildProfile(guildId, false);
                 const owner = await actualGuild.fetchOwner().then((owner) => owner.user);
 
                 const embed = client.Functions.makeInfoEmbed({
                     title: `Information about \`${actualGuild.name}\``,
-                    footer: { text: owner.username, iconURL: await owner.avatarURL() || undefined },
                     thumbnail: actualGuild.iconURL() || undefined,
                     image: actualGuild.bannerURL() || undefined,
                     fields: [
-                        { name: "Name", value: actualGuild.name, inline: true },
-                        { name: "Id", value: actualGuild.id, inline: true },
+                        { name: "Name", value: `${actualGuild.name}`, inline: true },
+                        { name: "Id", value: `${actualGuild.id}`, inline: true },
                         { name: "Owner", value: `${owner.username}:\`${owner.id}\`\n<@${owner.id}>`, inline: true },
 
                         { name: "Member count", value: actualGuild.memberCount.toString(), inline: false }
                     ]
                 })
+
+                if (guildDataProfile) embed.addField("Database", `Registered with shortname \`${guildDataProfile.guild.shortname}\``, false);
 
                 return interaction.editReply({ embeds: [embed] });
             }
@@ -126,6 +141,32 @@ export default new SlashCommand({
                 await createdProfile.save();
 
                 return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Register Guild", description: `Registered \`${actualGuild.name}\`:\`${actualGuild.id}\` with shortname \`${shortname}\`` })] });
+            }
+
+            case "sendannouncement": {
+                if (!interaction.channel) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Send Announcement", description: "This command can only be used in a guild" })] });
+
+                const messageId = interaction.options.getString("message-id", true);
+                const actualMessage = await interaction.channel.messages.fetch(messageId);
+
+                if (!actualMessage) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Send Announcement", description: "Message not found" })] });
+
+                const messageContent = { content: actualMessage.content, embeds: actualMessage.embeds }
+
+                await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Sending Announcement", description: `${Emojis.thinking} Sending announcement, please wait...` })] })
+
+                const guildDataProfiles = await client.Database.GetAllGuilds();
+                for (const guildDataProfile of guildDataProfiles) {
+                    const channel = await guildDataProfile.getChannel("BotAnnouncements")
+                    if (!channel || !(channel instanceof TextChannel)) continue;
+
+                    try {
+                        channel.send(messageContent);
+                    } catch (error) {
+                    }
+                }
+
+                await interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Send Announcement", description: `Sent announcement to ${guildDataProfiles.length} guilds` })] });
             }
         }
     }

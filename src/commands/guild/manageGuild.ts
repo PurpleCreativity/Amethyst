@@ -5,6 +5,7 @@ import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import Modal from "../../classes/Modal.js";
 
 const channelCommandChoices = [
+    { name: "Bot Announcements", value: "BotAnnouncements" },
     { name: "Points Database Updates", value: "PointsDatabaseUpdates" },
     { name: "Point Log Updates", value: "PointLogUpdates" },
     { name: "Schedule Updates", value: "ScheduleUpdates" },

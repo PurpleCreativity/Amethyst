@@ -26,8 +26,6 @@ export default class Database {
         if (typeof guild === "string") actualGuild = await this.client.Functions.GetGuild(guild, false) as Guild; else actualGuild = guild;
         if (!actualGuild) throw new Error("Guild not found");
 
-        const owner = await actualGuild.fetchOwner().then((owner) => owner.user);
-
         const newGuildProfile = new guildProfile({
             _id: new this.client.Mongoose.Types.ObjectId(),
             iv: crypto.randomBytes(16).toString("hex"),
@@ -37,6 +35,8 @@ export default class Database {
                 shortname: this.client.Functions.CreateAcronym(actualGuild.name),
 
                 channels: new Map()
+                    .set("BotAnnouncements", { name: "BotAnnouncements", id: "0" })
+
                     .set("PointsDatabaseUpdates", { name: "PointsDatabaseUpdates", id: "0" })
                     .set("PointLogUpdates", { name: "PointLogUpdates", id: "0" })
                     .set("ScheduleUpdates", { name: "ScheduleUpdates", id: "0" })
