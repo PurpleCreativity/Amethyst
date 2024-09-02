@@ -120,6 +120,7 @@ export default class API {
 			secret: this.client.config.credentials.sessionSecret,
 			cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
 
+			name: "amethyst.sid",
 			resave: false,
 			saveUninitialized: false,
 
