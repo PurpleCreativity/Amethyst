@@ -256,9 +256,9 @@ export default new SlashCommand({
         const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
         if (!guildDataProfile) return [];
 
-        const currentOption = interaction.options.getFocused();
+        const currentOption = interaction.options.getFocused(true);
 
-        switch (currentOption) {
+        switch (currentOption.name) {
             case "place": {
                 const places = [] as object[];
 
