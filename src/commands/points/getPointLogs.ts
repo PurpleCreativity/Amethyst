@@ -1,4 +1,4 @@
-import { ButtonStyle, type GuildMember, SlashCommandStringOption } from "discord.js";
+import { ButtonStyle, type GuildMember, SlashCommandStringOption, TextChannel } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
@@ -150,9 +150,11 @@ export default new SlashCommand({
         if (creatorFilter || includedFilter) description += " with given filters"
 
         await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "All Logs", description: description })]});
+
+        if (!(interaction.channel instanceof TextChannel)) return;
         for (const embed of embeds) {
             try {
-                await interaction.channel?.send(embed.getMessageData());
+                await interaction.channel.send(embed.getMessageData());
             } catch (error) {
                 if (!(error instanceof Error)) return;
                 client.Logs.LogError(error);

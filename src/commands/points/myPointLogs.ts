@@ -1,4 +1,4 @@
-import { ButtonStyle, type GuildMember } from "discord.js";
+import { ButtonStyle, TextChannel, type GuildMember } from "discord.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
@@ -112,9 +112,11 @@ export default new SlashCommand({
         }
 
         await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Your Point Logs", description: `You have \`${pointLogs.length}\` pending point logs.`}) ]})
+        
+        if (!(interaction.channel instanceof TextChannel)) return;
         for (const embed of embeds) {
             try {
-                await interaction.channel?.send(embed.getMessageData());
+                await interaction.channel.send(embed.getMessageData());
             } catch (error) {
                 if (!(error instanceof Error)) return;
                 client.Logs.LogError(error);

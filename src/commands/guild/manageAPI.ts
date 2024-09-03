@@ -1,4 +1,4 @@
-import { ButtonStyle, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, type StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ButtonStyle, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, type StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import type { APIKey } from "../../schemas/guildProfile.js";
@@ -386,9 +386,11 @@ export default new SlashCommand({
 
                 
                 await interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Key List", description: `Found ${keys.length} keys` })] });
+
+                if (!(interaction.channel instanceof TextChannel)) return;
                 for (const embed of embeds) {
                     try {
-                        await interaction.channel?.send({ embeds: [embed] });
+                        await interaction.channel.send({ embeds: [embed] });
                     } catch (error) {
                         await interaction.followUp({ embeds: [client.Functions.makeErrorEmbed({ title: "Manage API Keys", description: "Could not send embed for a key" })], ephemeral: true });
                     }
