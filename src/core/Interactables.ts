@@ -40,7 +40,6 @@ export default class Interactables {
 
 				for (const command of routesCommands) {
 					if (!(command instanceof SlashCommand)) {
-						console.log(command)
 						this.client.warn("Command that is not a command, skipping")
 						continue;
 					}
