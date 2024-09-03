@@ -287,7 +287,7 @@ export default new SlashCommand({
                 for (const place of guildDataProfile.roblox.places.values()) {
                     places.push({
                         name: place.name,
-                        value: place.id
+                        value: place.name
                     });
                 }
 
