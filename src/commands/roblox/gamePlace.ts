@@ -247,6 +247,28 @@ export default new SlashCommand({
 
                 return response.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Place added", description: `The \`${placeName}\` place has been added to the database` })] });
             }
+
+            case "remove": {
+                const place = interaction.options.getString("place", true);
+                if (!guildDataProfile.roblox.places.has(place)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place", description: "The place you provided is invalid" })] });
+
+                guildDataProfile.roblox.places.delete(place);
+                await guildDataProfile.save();
+
+                return interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Place removed", description: `The \`${place}\` place has been removed from the database` })] });
+            }
+
+            case "list": {
+                if (guildDataProfile.roblox.places.size === 0) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "No places", description: "There are no places in the database" })] });
+
+                const places = [] as string[];
+
+                for (const place of guildDataProfile.roblox.places.values()) {
+                    places.push(`[${place.name}:${place.id}](https://www.roblox.com/games/${place.id})`);
+                }
+
+                return interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Places in the database", description: places.join("\n") })] });
+            }
         }
     },
 
