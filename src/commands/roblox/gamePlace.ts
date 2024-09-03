@@ -1,8 +1,11 @@
-import { type ModalSubmitInteraction, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ButtonStyle, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import type { guildProfileInterface, RobloxPlace } from "../../schemas/guildProfile.js";
 import Modal from "../../classes/Modal.js";
+import { AxiosError } from "axios";
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
+import Emojis from "../../assets/Emojis.js";
 
 const DurationToSeconds = (durations: string) => {
     const durationRegex = /(\d+)([yMwdhms])/g;
@@ -249,13 +252,13 @@ export default new SlashCommand({
             }
 
             case "remove": {
-                const place = interaction.options.getString("place", true);
-                if (!guildDataProfile.roblox.places.has(place)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place", description: "The place you provided is invalid" })] });
+                const placeName = interaction.options.getString("place", true);
+                if (!guildDataProfile.roblox.places.has(placeName)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place", description: "The place you provided is invalid" })] });
 
-                guildDataProfile.roblox.places.delete(place);
+                guildDataProfile.roblox.places.delete(placeName);
                 await guildDataProfile.save();
 
-                return interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Place removed", description: `The \`${place}\` place has been removed from the database` })] });
+                return interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Place removed", description: `The \`${placeName}\` place has been removed from the database` })] });
             }
 
             case "list": {
@@ -269,6 +272,127 @@ export default new SlashCommand({
 
                 return interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Places in the database", description: places.join("\n") })] });
             }
+
+            case "ban": {
+                const placeName = interaction.options.getString("place", true);
+                const username = interaction.options.getString("username", true);
+                const displayReason = interaction.options.getString("display-reason", true);
+                const privateReason = `${interaction.options.getString("private-reason", true)}\nModerator: ${interaction.user.username}\nBanned via Amethyst`;
+                const duration = DurationToSeconds(interaction.options.getString("duration", true));
+                const excludeAltAccounts = interaction.options.getBoolean("exclude-alt-accounts", false) || false;
+                const inherited = interaction.options.getBoolean("inherited", false) || true;
+
+                if (!guildDataProfile.roblox.places.has(placeName)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place", description: "The place you provided is invalid" })] });
+                const place = guildDataProfile.roblox.places.get(placeName);
+                if (!place?.key || place.key === "") return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid place key", description: "The place key is missing" })] });
+
+                const actualUser = await client.Functions.GetRobloxUser(username);
+                if (!actualUser) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid user", description: "The user you provided is invalid" })] });
+
+                //await placeBan(guildDataProfile, place, actualUser.id, false);
+
+                try {
+                    const existingBan = await checkBan(guildDataProfile, place, actualUser.id);
+
+                    if (existingBan.data.gameJoinRestriction.active) {
+                        const banDuration = existingBan.data.gameJoinRestriction.duration ? Number.parseInt(existingBan.data.gameJoinRestriction.duration.slice(0, -1)) : 0;
+                        const bannedOn = Math.floor(new Date(existingBan.data.gameJoinRestriction.startTime).getTime() / 1000);
+                        const expiresOn = (banDuration && banDuration !== 0) ? Math.floor(bannedOn + banDuration) : 0;
+
+                        const buttonEmbed = new ButtonEmbed(
+                            client.Functions.makeWarnEmbed({
+                                title: "User already banned",
+                                description: `[${actualUser.name}](https://www.roblox.com/users/${actualUser.id}/profile) is already banned from the \`${placeName}\` place`,
+
+                                fields: [
+                                    { name: "Banned", value: `<t:${bannedOn}:F>\n<t:${bannedOn}:R>`, inline: true },
+                                    { name: "Expires", value: banDuration !== 0 ? `<t:${expiresOn}:F>\n<t:${expiresOn}:R>` : "\`(Permanent)\`", inline: true },
+                                    { name: "Display Reason", value: `\`${existingBan.data.gameJoinRestriction.displayReason}\``, inline: false },
+                                    { name: "Private Reason", value: `\`${existingBan.data.gameJoinRestriction.privateReason}\``, inline: false },
+                                    { name: "Excludes Alt Accounts", value: `\`${existingBan.data.gameJoinRestriction.excludeAltAccounts}\``, inline: true },
+                                    { name: "Inherited", value: `\`${existingBan.data.gameJoinRestriction.inherited}\``, inline: true },
+                                ]
+                            }),
+                        );
+
+                        buttonEmbed.addButton({
+                            label: "Overwrite",
+                            style: ButtonStyle.Success,
+                            emoji: Emojis.import,
+                            allowedUsers: [interaction.user.id],
+
+                            function: async (buttonInteraction) => {
+                                await buttonInteraction.deferUpdate();
+
+                                const ban = await placeBan(guildDataProfile, place, actualUser.id, true, displayReason, privateReason, duration, excludeAltAccounts, inherited);
+                                if (ban.status !== 200) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Request Error", description: ban.data.error || ban.statusText })] });
+
+                                const banDuration = ban.data.gameJoinRestriction.duration ? Number.parseInt(ban.data.gameJoinRestriction.duration.slice(0, -1)) : 0;
+                                const bannedOn = Math.floor(new Date(ban.data.gameJoinRestriction.startTime).getTime() / 1000);
+                                const expiresOn = (banDuration && banDuration !== 0) ? Math.floor(bannedOn + banDuration) : 0;
+
+                                return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({
+                                    title: "User banned (Overwritten)",
+                                    description: `[${actualUser.name}](https://www.roblox.com/users/${actualUser.id}/profile) has been banned from the \`${placeName}\` place`,
+
+                                    fields: [
+                                        { name: "Banned", value: `<t:${bannedOn}:F>\n<t:${bannedOn}:R>`, inline: true },
+                                        { name: "Expires", value: duration !== 0 ? `<t:${expiresOn}:F>\n<t:${expiresOn}:R>` : "\`(Permanent)\`", inline: true },
+                                        { name: "Display Reason", value: `\`${displayReason}\``, inline: false },
+                                        { name: "Private Reason", value: `\`${privateReason}\``, inline: false },
+                                        { name: "Excludes Alt Accounts", value: `\`${excludeAltAccounts}\``, inline: true },
+                                        { name: "Inherited", value: `\`${inherited}\``, inline: true },
+                                    ]
+                                })], components: [] });
+                            }
+                        });
+
+                        buttonEmbed.addButton({
+                            label: "Cancel",
+                            style: ButtonStyle.Danger,
+                            emoji: Emojis.delete,
+                            allowedUsers: [interaction.user.id],
+
+                            function: async (buttonInteraction) => {
+                                await buttonInteraction.deferUpdate();
+                                interaction.editReply({ embeds: [client.Functions.makeInfoEmbed({ title: "Action cancelled", description: "The action has been cancelled" })], components: [] });
+                            }
+                        })
+
+                        return interaction.editReply(buttonEmbed.getMessageData());
+                    }
+
+                    const ban = await placeBan(guildDataProfile, place, actualUser.id, true, displayReason, privateReason, duration, excludeAltAccounts, inherited);
+                    if (ban.status !== 200) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Request Error", description: ban.data.error || ban.statusText })] });
+
+                    const banDuration = ban.data.gameJoinRestriction.duration ? Number.parseInt(ban.data.gameJoinRestriction.duration.slice(0, -1)) : 0;
+                    const bannedOn = Math.floor(new Date(ban.data.gameJoinRestriction.startTime).getTime() / 1000);
+                    const expiresOn = (banDuration && banDuration !== 0) ? Math.floor(bannedOn + banDuration) : 0;
+
+                    return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({
+                        title: "User banned",
+                        description: `[${actualUser.name}](https://www.roblox.com/users/${actualUser.id}/profile) has been banned from the \`${placeName}\` place`,
+
+                        fields: [
+                            { name: "Banned", value: `<t:${bannedOn}:F>\n<t:${bannedOn}:R>`, inline: true },
+                            { name: "Expires", value: duration !== 0 ? `<t:${expiresOn}:F>\n<t:${expiresOn}:R>` : "\`(Permanent)\`", inline: true },
+                            { name: "Display Reason", value: `\`${displayReason}\``, inline: false },
+                            { name: "Private Reason", value: `\`${privateReason}\``, inline: false },
+                            { name: "Excludes Alt Accounts", value: `\`${excludeAltAccounts}\``, inline: true },
+                            { name: "Inherited", value: `\`${inherited}\``, inline: true },
+                        ]
+                    })] });
+                } catch (error) {
+                   if (error instanceof AxiosError) {
+                        return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Request Error", description: error.response?.data.error || error.message })] });
+                   } 
+
+                   if (error instanceof Error) {
+                        return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Internal Error", description: error.message })] });
+                   }
+                }
+
+            }   
         }
     },
 
