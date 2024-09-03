@@ -179,7 +179,7 @@ export default new SlashCommand({
 
     defer: true,
     userApp: true,
-    userCooldown: 30000,
+    userCooldown: 10000,
 
     execute: async (interaction) => {
         const options = [
