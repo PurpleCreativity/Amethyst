@@ -702,7 +702,7 @@ guildProfileSchema.methods.incrementPoints = async function (robloxId: number, a
 // Channels
 guildProfileSchema.methods.getChannel = async function (type: string) {
     const channel = this.guild.channels.get(type);
-    if (!channel) throw new Error("Channel not found");
+    if (!channel) return undefined;
 
     if (channel.id === "0") return undefined;
 
