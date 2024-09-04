@@ -12,10 +12,8 @@ export default new Route({
 
         if (!placeId) return res.status(400).json({ error: { name: "Missing placeId query parameter", message: "Input a placeId query parameter" } });
 
-        if (gameInstanceId) {
-            res.status(200).redirect(`roblox://experiences/start?placeId=${placeId}&gameInstanceId=${gameInstanceId}`);
-        } else {
-            res.status(200).redirect(`roblox://experiences/start?placeId=${placeId}`)
-        }
+        if (gameInstanceId) return res.status(200).redirect(`roblox://experiences/start?placeId=${placeId}&gameInstanceId=${gameInstanceId}`);
+        
+        return res.status(200).redirect(`roblox://experiences/start?placeId=${placeId}`);
     }
 })
