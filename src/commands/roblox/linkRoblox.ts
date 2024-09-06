@@ -169,6 +169,19 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
             }
         });
 
+        buttonEmbed.nextRow();
+
+        buttonEmbed.addButton({
+            label: "Mobile friendly copy",
+            style: ButtonStyle.Secondary,
+            emoji: Emojis.phone,
+            allowedUsers: [interaction.user.id],
+
+            function: async (buttonInteraction) => {
+                buttonInteraction.reply({ content: randomString, ephemeral: true });
+            }
+        })
+
         response.editReply(buttonEmbed.getMessageData());
     }
 }
