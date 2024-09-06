@@ -1,5 +1,3 @@
-import client from "../index.js";
-
 export default {
     "thinking": "<a:thinking:1280155082146578514>",
     
