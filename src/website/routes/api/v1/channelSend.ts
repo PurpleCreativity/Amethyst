@@ -35,6 +35,7 @@ export default new Route({
                 const actualEmbed = client.Functions.makeInfoEmbed({});
 
                 if (embedData.title) actualEmbed.setTitle(embedData.title);
+                if (embedData.url) actualEmbed.setURL(embedData.url);
                 if (embedData.description) actualEmbed.setDescription(embedData.description);
                 if (embedData.color) actualEmbed.setColor(embedData.color);
                 if (embedData.timestamp) actualEmbed.setTimestamp(embedData.timestamp);
