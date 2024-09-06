@@ -16,5 +16,6 @@ export default {
     "add": "<:add:1280154783579373642>",
     "description": "<:description:1280154907189444628>",
     "check": "<:check:1280154582131146762>",
-    "permissions": "<:permissions:1280154866655821858>"
+    "permissions": "<:permissions:1280154866655821858>",
+    "phone": "<:phone:1281636775399526542>"
 }
