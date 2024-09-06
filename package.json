@@ -1,6 +1,6 @@
 {
   "name": "amethyst",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Amethyst a multipurpose discord bot",
   "main": "./build/index.js",
   "exports": {
