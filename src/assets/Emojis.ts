@@ -5,8 +5,13 @@ export default {
     "bloxlink": "<:BloxLink:1280155259687276546>",
     "roblox": "<:Roblox:1280155154749849673>",
     
+    "warning2" : "<:warning2:1281990344304627805>",
+    "moderation2" : "<:moderation2:1281990496855658676>",
+    "information2" : "<:information2:1281990576295903282>",
+    "check2" : "<:check2:1281990660014080183>",
+    "close2" : "<:close2:1281990746936971284>",
+
     "warning": "<:warning:1280156078000308355>",
-    
     "delete": "<:delete:1280155041054982216>",
     "import": "<:import:1280154991025459260>",
     "upload": "<:upload:1280154960985853982>",
