@@ -24,7 +24,7 @@ export default new SlashCommand({
             }
         });
 
-        const pageEmbed = new PageEmbed({ allowedUsers: [interaction.user.id], baseEmbed: infoEmbed, fieldsPerPage: 10, fields: fields });
+        const pageEmbed = new PageEmbed({ allowedUsers: [interaction.user.id], baseEmbed: infoEmbed, fieldsPerPage: 10, fields: fields, PageFooter: true });
 
         interaction.editReply(pageEmbed.getMessageData());
     }
