@@ -58,6 +58,10 @@ class PageEmbed extends ButtonEmbed {
 				this.nextPage(interaction)
 			}
 		})
+
+		if (this.embeds.length < 2) {
+			this.disableButton(this.nextButton);
+		}
 	}
 	
 	async previousPage(interaction: ButtonInteraction) {
