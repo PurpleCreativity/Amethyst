@@ -1,3 +1,7 @@
+/*
+	@SuperCater Athena
+*/
+
 /**
  * Creates a signal that can be connected to
  * @class Signal

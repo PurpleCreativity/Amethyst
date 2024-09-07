@@ -1,3 +1,7 @@
+/*
+	@SuperCater Athena
+*/
+
 import { type ColorResolvable, type APIEmbedField, EmbedBuilder } from "discord.js"
 
 export type EmbedOptions = {

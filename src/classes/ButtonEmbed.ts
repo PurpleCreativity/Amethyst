@@ -1,3 +1,7 @@
+/*
+	@SuperCater Athena
+*/
+
 import { type APIButtonComponentWithCustomId, ButtonBuilder, type ButtonInteraction, ButtonStyle, type ComponentEmojiResolvable, ComponentType, type EmbedBuilder } from "discord.js";
 import client from "../index.js";
 

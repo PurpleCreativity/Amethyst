@@ -1,3 +1,7 @@
+/*
+	@SuperCater Athena
+*/
+
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import ButtonEmbed from "./ButtonEmbed.js";
 
