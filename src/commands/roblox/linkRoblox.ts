@@ -120,7 +120,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
         const robloxUser = await client.Functions.GetRobloxUser(response.fields.getTextInputValue("user"));
         if (!robloxUser) return response.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Account Link", description: "User not found" })] });
 
-        const baseEmbed = client.Functions.makeInfoEmbed({ title: `Hello, \`${robloxUser.name}\``, description: `### Your account has not been linked just yet!\n\nPlease set your profile description to the following value: \`\`\`${randomString}\`\`\`` });
+        const baseEmbed = client.Functions.makeInfoEmbed({ title: `Hello, \`${robloxUser.name}\``, description: `### Your account has not been linked just yet!\n\nPlease set your profile description to the following: \`\`\`${randomString}\`\`\``, thumbnail: await robloxUser.fetchUserHeadshotUrl() });
         const buttonEmbed = new ButtonEmbed(baseEmbed);
 
         buttonEmbed.addButton({
