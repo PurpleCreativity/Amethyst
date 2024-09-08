@@ -424,8 +424,8 @@ export default new SlashCommand({
                                     fields: [
                                         { name: "Banned", value: `<t:${bannedOn}:F>\n<t:${bannedOn}:R>`, inline: true },
                                         { name: "Expires", value: duration !== 0 ? `<t:${expiresOn}:F>\n<t:${expiresOn}:R>` : "\`(Permanent)\`", inline: true },
-                                        { name: "Display Reason", value: `\`${displayReason}\``, inline: false },
-                                        { name: "Private Reason", value: `\`${privateReason}\``, inline: false },
+                                        { name: "Display Reason", value: `\`\`\`${displayReason}\`\`\``, inline: false },
+                                        { name: "Private Reason", value: `\`\`\`${privateReason}\`\`\``, inline: false },
                                         { name: "Excludes Alt Accounts", value: `\`${excludeAltAccounts}\``, inline: true },
                                         { name: "Inherited", value: `\`${inherited}\``, inline: true },
                                     ]
@@ -467,8 +467,8 @@ export default new SlashCommand({
                         fields: [
                             { name: "Banned", value: `<t:${bannedOn}:f>`, inline: true },
                             { name: "Expires", value: duration !== 0 ? `<t:${expiresOn}:f>` : "\`(Permanent)\`", inline: true },
-                            { name: "Display Reason", value: `\`${displayReason}\``, inline: false },
-                            { name: "Private Reason", value: `\`${privateReason}\``, inline: false },
+                            { name: "Display Reason", value: `\`\`\`${displayReason}\`\`\``, inline: false },
+                            { name: "Private Reason", value: `\`\`\`${privateReason}\`\`\``, inline: false },
                             { name: "Excludes Alt Accounts", value: `\`${excludeAltAccounts}\``, inline: true },
                             { name: "Inherited", value: `\`${inherited}\``, inline: true },
                         ]
