@@ -6,7 +6,7 @@ dotenv.config();
 
 const config = {} as Config;
 
-config.version = "1.1.0"
+config.version = "1.1.1"
 
 config.baseURL = "https://amethyst-e1050d4a61a7.herokuapp.com/"
 config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3003
