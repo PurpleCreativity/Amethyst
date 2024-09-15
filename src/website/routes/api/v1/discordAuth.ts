@@ -3,7 +3,7 @@ import client from "../../../../index.js";
 import passport from "passport";
 import { type Profile, Strategy } from "passport-discord";
 import type { VerifyCallback } from "passport-oauth2";
-import userProfile from "../../../../schemas/userProfile.js";
+import userProfile, { type userProfileInterface } from "../../../../schemas/userProfile.js";
 
 passport.serializeUser((user: any, done) => {
     return done(null, user.id);
@@ -59,7 +59,13 @@ const callback = new Route({
     public: true,
 
     execute: async (req, res) => {
-        res.status(200).send("You have successfully logged in, contine your previous operation");
+        const user = req.user as userProfileInterface;
+        
+        if (user.roblox.id === 0) {
+            return res.status(401).redirect("/api/v1/auth/roblox/redirect");
+        }
+
+        res.status(200).redirect("/home");
     }
 });
 

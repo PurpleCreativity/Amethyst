@@ -7,6 +7,8 @@ import Route from "../classes/Route.js";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import type { APIMethods, APIPermissions } from "../classes/Route.js";
 
 export type RouteOptions = {
@@ -129,6 +131,7 @@ export default class API {
 			})
 		}))
 
+		this.Server.use(cookieParser(this.client.config.credentials.sessionSecret))
 		this.Server.use(passport.initialize())
 		this.Server.use(passport.session())
 		//this.Server.enable("trust proxy")

@@ -92,13 +92,13 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
     }
 
     if (method === "OAuth 2.0") {
-        interaction.deferReply();
+        await interaction.deferReply();
 
         return interaction.editReply({
             embeds: [
-                client.Functions.makeErrorEmbed({
-                    title: "OAuth 2.0",
-                    description: "This method is still in development, please use a diffrent method."
+                client.Functions.makeInfoEmbed({
+                    title: "OAuth 2.0 Verification",
+                    description: `Visit [this link](${client.config.baseURL}login) to link your roblox account.`
                 })
             ], components: []
         })
