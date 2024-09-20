@@ -34,7 +34,7 @@ export default new SlashCommand({
                 },
                 {
                     name: "Bot Ping",
-                    value: `${Math.floor(client.ws.ping)} ms`,
+                    value: `${Math.floor(client.ws.ping)}ms`,
                     inline: true
                 },
                 {
