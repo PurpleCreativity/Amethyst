@@ -98,7 +98,7 @@ const linkRoblox = async (method: "OAuth 2.0" | "RoVer" | "BloxLink" | "Profile 
             embeds: [
                 client.Functions.makeInfoEmbed({
                     title: "OAuth 2.0 Verification",
-                    description: `Visit [this link](${client.config.baseURL}login) to link your roblox account.`
+                    description: `Visit [this link](${client.config.baseURL}api/v1/auth/roblox/redirect) to link your roblox account.`
                 })
             ], components: []
         })
