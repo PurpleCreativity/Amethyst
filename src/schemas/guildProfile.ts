@@ -815,6 +815,26 @@ guildProfileSchema.methods.deletePointLog = async function (id: string) {
     await this.save();
 }
 
+// Schedule
+guildProfileSchema.methods.makeScheduleEmbed = async function (eventData: ScheduledEvent) {
+    const eventType = this.schedule.types.get(eventData.event);
+    if (!eventType) throw new Error("Event type not found");
+
+    return client.Functions.makeInfoEmbed({
+        title: `\`${eventData.id}\``,
+        footer: { text: eventData.id },
+        color: eventType.color,
+
+        fields: [
+            { name: "Type", value: `\`${eventType.name}\``, inline: true },
+			{ name: "Time", value: `<t:${Math.round(new Date(eventData.time).getTime() / 1000)}:F>`, inline: true },
+			{ name: "Duration", value: `${eventData.duration} minutes`, inline: true },
+			{ name: "Host", value: `[${eventData.host.username}](https://www.roblox.com/users/${eventData.host.id}/profile)`, inline: true },
+			{ name: "Notes", value: `${eventData.notes || "\`No notes\`"}`, inline: false }
+        ]
+    })
+}
+
 // Roblox
 guildProfileSchema.methods.linkGroup = async function (groupID:number) {
     this.roblox.group = groupID;
