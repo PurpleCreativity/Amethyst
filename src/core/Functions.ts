@@ -3,7 +3,7 @@ import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
 import Icons from "../assets/Icons.js";
-import type { PointLog } from "../schemas/guildProfile.js";
+import type { PointLog, ScheduledEvent, ScheduleEventType } from "../schemas/guildProfile.js";
 import Emojis from "../assets/Emojis.js";
 
 export default class Functions {
@@ -298,6 +298,21 @@ export default class Functions {
 		}
 
 		return embed;
+	}
+
+	makeScheduleEventEmbed = (eventData: ScheduledEvent, eventType: ScheduleEventType) => {
+		return this.makeInfoEmbed({
+			title: `\`${eventData.id}\``,
+			footer: { text: eventData.id },
+			color: eventType.color || 0xffffff,
+			fields: [
+				{ name: "Type", value: `\`${eventType.name}\``, inline: true },
+				{ name: "Time", value: `<t:${Math.round(new Date(eventData.time).getTime() / 1000)}:F>`, inline: true },
+				{ name: "Duration", value: `${eventData.duration} minutes`, inline: true },
+				{ name: "Host", value: `[${eventData.host.username}](https://www.roblox.com/users/${eventData.host.id}/profile)`, inline: true },
+				{ name: "Notes", value: `${eventData.notes || "\`No notes\`"}`, inline: false }
+			]
+		})
 	}
 
 	startThread = async (starter: Message | TextChannel, options: StartThreadOptions) => {
