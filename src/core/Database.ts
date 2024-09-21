@@ -106,6 +106,7 @@ export default class Database {
 
             settings: new Map()
                 .set("PublicSchedule", { name: "PublicSchedule", description: "Whether or not the schedule is publicly avaible via the API", devOnly: false, value: true })
+                .set("ScheduleGroupShout", { name: "ScheduleGroupShout", description: "Whether or not to shout schedule updates to the group", devOnly: false, value: true })
             ,
 
             linkedGuilds: new Map(),
