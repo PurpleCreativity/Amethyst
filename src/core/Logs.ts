@@ -50,6 +50,23 @@ export default class Logs {
         await channel.send({ embeds: [errorEmbed] });
     }
 
+    LogDiscord = async (message: string | object) => {
+			const channel = this.client.BotChannels.logs;
+			if (!channel) return;
+
+			let fullMessage = message as string;
+			if (typeof message === "object") {
+				fullMessage = JSON.stringify(message, null, 2);
+			}
+
+			if (fullMessage.length  > 1024) {
+				fullMessage = fullMessage.slice(0, 1000);
+				fullMessage += "\nMessage too long";
+			}
+
+			await channel.send({ embeds: [this.client.Functions.makeInfoEmbed({ title: "New log", description: fullMessage })] });
+    }
+
     guildCreate = async (guild: Guild) => {
         const channel = this.client.BotChannels.logs;
         if (!channel) return;

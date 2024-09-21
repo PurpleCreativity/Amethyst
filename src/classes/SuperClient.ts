@@ -41,7 +41,6 @@ class SuperClient extends Client {
     //? Variables
     devMode: boolean = this.Arguments.includes("--dev");
 	redeployCommands: boolean = this.Arguments.includes("--rc");
-	started = false;
 	maintenanceMode: false;
 	MemoryUsage: number[] = [];
 	BotChannels: { [key: string]: TextChannel } = {};
@@ -94,23 +93,6 @@ class SuperClient extends Client {
 
 	log = async (message: unknown, useDate?: boolean) => {
 		this.Log("info", message, useDate);
-
-		if (this.started) {
-			const channel = this.BotChannels.logs;
-			if (!channel) return;
-
-			let fullMessage = message as string;
-			if (typeof message === "object") {
-				fullMessage = JSON.stringify(message, null, 2);
-			}
-
-			if (fullMessage.length  > 1024) {
-				fullMessage = fullMessage.slice(0, 1000);
-				fullMessage += "\nMessage too long";
-			}
-
-			await channel.send({ embeds: [this.Functions.makeInfoEmbed({ title: "New log", description: fullMessage })] });
-		}
 	};
 
 	warn = async (message: unknown, useDate?: boolean) => {
@@ -187,9 +169,9 @@ class SuperClient extends Client {
 		this.Functions.SetActivity({ name: `on v${this.config.version}`, type: ActivityType.Playing });
 
         this.success(`Started up in ${new Date().getTime() - this.Start.getTime()}ms`);
-		this.started = true;
 
 		this.log("Amethyst is now online");
+		this.Logs.LogDiscord(`Amethyst is now online on v${this.config.version}`);
     }
 
     constructor(options: ClientOptions) {
