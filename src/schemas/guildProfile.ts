@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import client from "../index.js";
 import type { Group, User } from "wrapblox";
-import { ButtonStyle, type Guild, type GuildMember } from "discord.js";
+import { ButtonStyle, type ColorResolvable, type Guild, type GuildMember } from "discord.js";
 import type { customPermissionOptions } from "../classes/SlashCommand.js";
 import ButtonEmbed from "../classes/ButtonEmbed.js";
 import Emojis from "../assets/Emojis.js";
@@ -126,7 +126,7 @@ type PointLog = {
 type ScheduleEventType = {
     name : string,
     icon : string,
-    color : string,
+    color : ColorResolvable,
 
     description : string,
 
