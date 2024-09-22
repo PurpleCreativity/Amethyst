@@ -1,4 +1,4 @@
-import { ButtonStyle, type Guild, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ButtonStyle, ChannelType, type Guild, type ModalSubmitInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
@@ -11,7 +11,7 @@ const channelCommandChoices = [
     { name: "Schedule Updates", value: "ScheduleUpdates" },
     { name: "Game Logs", value: "GameLogs" },
     { name: "Game Calls", value: "GameCalls" },
-    { name: "Roblox Group Logs", value: "RobloxGroupLogs" }
+    { name: "Roblox Group Logs", value: "RobloxGroupLogs" },
 ] as { name: string, value: string }[];
 
 const permissionCommandChoices = [
@@ -196,8 +196,16 @@ export default new SlashCommand({
                         const type = interaction.options.getString("type", true);
                         const channel = interaction.options.getChannel("channel", true);
 
+                        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid channel type", description: "The channel you provided is not a text channel" })] });
+
+                        if (!channelCommandChoices.map(choice => choice.name).includes(type)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid channel type", description: "The channel type you provided is invalid" })] });
                         const channelData = guildDataProfile.guild.channels.get(type);
-                        if (!channelData) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid channel type", description: "The channel type you provided is invalid" })] });
+                        if (!channelData) {
+                            guildDataProfile.guild.channels.set(type, { name: type, id: channel.id });
+                            await guildDataProfile.save();
+
+                            return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Channel Set", description: `The \`${type}\` channel has been set to <#${channel.id}>` })] })
+                        }
 
                         channelData.id = channel.id;
                         await guildDataProfile.save();
@@ -208,8 +216,9 @@ export default new SlashCommand({
                     case "remove": {
                         const type = interaction.options.getString("type", true);
 
+                        if (!channelCommandChoices.map(choice => choice.name).includes(type)) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid channel type", description: "The channel type you provided is invalid" })] });
                         const channelData = guildDataProfile.guild.channels.get(type);
-                        if (!channelData) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Invalid channel type", description: "The channel type you provided is invalid" })] });
+                        if (!channelData) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Channel not set", description: "The channel type you provided is unset" })] });
 
                         channelData.id = "0";
                         await guildDataProfile.save();
