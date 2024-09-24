@@ -201,13 +201,12 @@ export default class Functions {
 	}
 
 	GetColor = (string: string) => {
+		if (string.startsWith("#") || string.startsWith("0x")) return string;
+
 		const isRGB = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
 		if (isRGB) {
 			return this.StringRGBToColorHex(string);
 		}
-
-		if (string.startsWith("#")) return string;
-		if (string.startsWith("0x")) return string;
 
 		const brickColor = BrickColor.fromName(string as BrickColorName);
 		if (brickColor) {
