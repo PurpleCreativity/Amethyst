@@ -1,10 +1,11 @@
-import { type ActivityOptions, type Guild, type GuildScheduledEventCreateOptions, Message, type Snowflake, type StartThreadOptions, type TextChannel, type User } from "discord.js";
+import { type ActivityOptions, Colors, type Guild, type GuildScheduledEventCreateOptions, Message, type Snowflake, type StartThreadOptions, type TextChannel, type User } from "discord.js";
 import type SuperClient from "../classes/SuperClient.js";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
 import Icons from "../assets/Icons.js";
-import type { PointLog, ScheduledEvent, ScheduleEventType } from "../schemas/guildProfile.js";
+import type { PointLog } from "../schemas/guildProfile.js";
 import Emojis from "../assets/Emojis.js";
+import { BrickColor, BrickColorName } from "@daw588/roblox-brick-color";
 
 export default class Functions {
     client: SuperClient;
@@ -199,13 +200,29 @@ export default class Functions {
 		return hexColor;
 	}
 
-	ConvertStringToHexColor = (string : string) => {
-		const isRGBString = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
-		if (isRGBString) {
+	GetColor = (string: string) => {
+		const isRGB = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
+		if (isRGB) {
 			return this.StringRGBToColorHex(string);
 		}
 
-		return string;
+		if (string.startsWith("#")) return string;
+		if (string.startsWith("0x")) return string;
+
+		const brickColor = BrickColor.fromName(string as BrickColorName);
+		if (brickColor) {
+			const rgb = brickColor.toRGB();
+			return this.StringRGBToColorHex(`${rgb.r},${rgb.g},${rgb.b}`);
+		}
+
+		for (const color of Object.keys(Colors)) {
+			if (color.toLowerCase() === string.toLowerCase()) {
+				const colorValue = (Colors as any)[color];
+				return `#${colorValue.toString(16).padStart(6, "0")}`;
+			}
+		}
+
+		return undefined;
 	}
 
     Encypt = (text : string, iv : any) => {
