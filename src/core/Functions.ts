@@ -5,7 +5,7 @@ import BaseEmbed, { type EmbedOptions } from "../classes/BaseEmbed.js";
 import Icons from "../assets/Icons.js";
 import type { PointLog } from "../schemas/guildProfile.js";
 import Emojis from "../assets/Emojis.js";
-import { BrickColor, BrickColorName } from "@daw588/roblox-brick-color";
+import { BrickColor, type BrickColorName } from "@daw588/roblox-brick-color";
 
 export default class Functions {
     client: SuperClient;
