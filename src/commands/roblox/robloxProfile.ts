@@ -1,4 +1,4 @@
-import { APIEmbed, APIEmbedField, ButtonStyle, SlashCommandStringOption } from "discord.js";
+import { type APIEmbedField, ButtonStyle, SlashCommandStringOption } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
 import ButtonEmbed from "../../classes/ButtonEmbed.js";
