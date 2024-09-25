@@ -9,7 +9,7 @@ import Emojis from "../../assets/Emojis.js";
 import PageEmbed from "../../classes/PageEmbed.js";
 import Icons from "../../assets/Icons.js";
 
-type placeBan = {
+type placeBanInfo = {
     userId: number,
 
     active: boolean,
@@ -118,7 +118,7 @@ const placeBanList = async (guildDataProfile: guildProfileInterface, place: Robl
     const universeId = await client.Functions.ConvertPlaceIDToUniverseID(Number.parseInt(place.id))
     const placeKey = client.Functions.Decrypt(place.key, guildDataProfile.iv);
 
-    const bans = [] as placeBan[];
+    const bans = [] as placeBanInfo[];
     const request = await client.Axios.request({
         method: 'GET',
         url: `https://apis.roblox.com/cloud/v2/universes/${universeId}/user-restrictions`,
