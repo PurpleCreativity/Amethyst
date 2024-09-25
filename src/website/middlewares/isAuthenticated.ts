@@ -19,7 +19,7 @@ const isAuthenticatedDiscord = (req: Request, res: Response, next: NextFunction)
     const user = req.user as userProfileInterface;
 
     if (!user) {
-        res.status(401).send("/api/v1/auth/discord/redirect");
+        res.status(401).redirect("/api/v1/auth/discord/redirect");
     }
 
     return next();
