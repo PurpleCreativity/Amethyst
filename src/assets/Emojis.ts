@@ -4,6 +4,13 @@ export default {
     "rover": "<:RoVer:1280155243191205971>",
     "bloxlink": "<:BloxLink:1280155259687276546>",
     "roblox": "<:Roblox:1280155154749849673>",
+
+    "discord_offline": "<:discord_offline:1288501650511757396>",
+    "discord_online": "<:discord_online:1288501687165911141>",
+    "discord_idle": "<:discord_idle:1288501719319445584>",
+    "discord_dnd": "<:discord_dnd:1288501746347540581>",
+
+    "roblox_verified": "<:roblox_verified:1288502180017471590>",
     
     "warning2" : "<:warning2:1281990344304627805>",
     "moderation2" : "<:moderation2:1281990496855658676>",
