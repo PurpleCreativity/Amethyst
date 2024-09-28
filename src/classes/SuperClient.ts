@@ -4,7 +4,7 @@ import type { Config } from "../types/Config.js";
 import config from "../config.js";
 import Functions from "../core/Functions.js";
 
-import axios, { AxiosError, type Axios } from "axios";
+import axios, { type Axios } from "axios";
 import mongoose, { type Mongoose } from "mongoose";
 import NoBlox from "noblox.js";
 import WrapBlox from "wrapblox";
