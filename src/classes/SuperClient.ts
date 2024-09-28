@@ -34,6 +34,7 @@ class SuperClient extends Client {
     //? Dependencies
     Axios: Axios = axios;
     Mongoose: Mongoose = mongoose;
+	WrapBlox: WrapBlox = new WrapBlox();
 	NoBlox = NoBlox
 
     //? Properties
@@ -144,6 +145,9 @@ class SuperClient extends Client {
 			const authuser = await this.NoBlox.setCookie(this.config.credentials.robloxCookie);
 			this.config.credentials.robloxCSRF_Token = await this.NoBlox.getGeneralToken();
 			this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
+
+			// wrapblox is deprecated in this project now.
+			await this.WrapBlox.login(this.config.credentials.robloxCookie)
 		} catch (error) {
 			client.error("Failed to login to Roblox");
 			client.error(error);
