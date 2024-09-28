@@ -146,7 +146,6 @@ class SuperClient extends Client {
 			this.config.credentials.robloxCSRF_Token = await this.NoBlox.getGeneralToken();
 			this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
 
-			// wrapblox is deprecated in this project now.
 			await this.WrapBlox.login(this.config.credentials.robloxCookie)
 		} catch (error) {
 			client.error("Failed to login to Roblox");
