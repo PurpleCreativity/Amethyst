@@ -7,6 +7,17 @@ import type { PointLog } from "../schemas/guildProfile.js";
 import Emojis from "../assets/Emojis.js";
 import { BrickColor, type BrickColorName } from "@daw588/roblox-brick-color";
 
+type ExperienceScheduleOptions = {
+	title: string,
+    description: string,
+    eventTime: {
+        startTime: Date,
+        endTime: Date
+    },
+    universeId: number,
+	groupId?: number
+}
+
 export default class Functions {
     client: SuperClient;
 
@@ -155,6 +166,95 @@ export default class Functions {
 		if (!userDataProfile || !userDataProfile.roblox.id || userDataProfile.roblox.id === 0) return undefined;
 
 		return await this.GetRobloxUser(userDataProfile.roblox.id);
+	}
+
+	DeleteScheduledExperienceEvent = async (eventId: number) => {
+		const csrfToken = await this.client.NoBlox.getGeneralToken();
+
+		return await this.client.Axios.request({
+			method: "DELETE",
+			url: `https://apis.roblox.com/virtual-events/v1/virtual-events/${eventId}`,
+			headers: {
+				"X-Csrf-Token": csrfToken,
+				"Cookie": `.ROBLOSECURITY=${this.client.config.credentials.robloxCookie}`
+			},
+		})
+	}
+
+	EditScheduledExperienceEvent = async (eventId: number, options: ExperienceScheduleOptions) => {
+		const csrfToken = await this.client.NoBlox.getGeneralToken();
+
+		return await this.client.Axios.request({
+			method: "PATCH",
+			url: `https://apis.roblox.com/virtual-events/v1/virtual-events/${eventId}`,
+			headers: {
+				"X-Csrf-Token": csrfToken,
+				"Cookie": `.ROBLOSECURITY=${this.client.config.credentials.robloxCookie}`
+			},
+			data: {
+				"title": options.title,
+				"description": options.description,
+				"eventTime": {
+        			"startTime": options.eventTime.startTime.toISOString(),
+        			"endTime": options.eventTime.endTime.toISOString(),
+    			},
+    			"universeId": options.universeId,
+    			"groupId": options.groupId || null,
+    			"eventCategories": [
+        			{
+            			"category": "activity",
+            			"rank": 0
+        			}
+    			],
+    			"thumbnails": []
+			}
+		})
+	}
+
+	SetExperienceEventStatus = async (eventId: number, status: "active" | "unpublished") => {
+		const csrfToken = await this.client.NoBlox.getGeneralToken();
+
+		return await this.client.Axios.request({
+			method: "PATCH",
+			url: `https://apis.roblox.com/virtual-events/v1/virtual-events/${eventId}/status`,
+			headers: {
+				"X-Csrf-Token": csrfToken,
+				"Cookie": `.ROBLOSECURITY=${this.client.config.credentials.robloxCookie}`
+			},
+			data: {
+				"eventStatus": status
+			}
+		})
+	}
+
+	ScheduleExperienceEvent = async (options: ExperienceScheduleOptions) => {
+		const csrfToken = await this.client.NoBlox.getGeneralToken();
+
+		return await this.client.Axios.request({
+			method: "POST",
+			url: "https://apis.roblox.com/virtual-events/v1/virtual-events/create",
+			headers: {
+				"X-Csrf-Token": csrfToken,
+				"Cookie": `.ROBLOSECURITY=${this.client.config.credentials.robloxCookie}`
+			},
+			data: {
+				"title": options.title,
+				"description": options.description,
+				"eventTime": {
+        			"startTime": options.eventTime.startTime.toISOString(),
+        			"endTime": options.eventTime.endTime.toISOString(),
+    			},
+    			"universeId": options.universeId,
+    			"groupId": options.groupId || null,
+    			"eventCategories": [
+        			{
+            			"category": "activity",
+            			"rank": 0
+        			}
+    			],
+    			"thumbnails": []
+			}
+		})
 	}
 
     GenerateID = () => {
