@@ -14,7 +14,6 @@ type Config = {
         databaseURL: string;
 
         robloxCookie: string;
-        robloxCSRF_Token: string;
         
         robloxOAuthSecret: string;
         robloxOauthClientId: string;

@@ -23,7 +23,6 @@ config.credentials = {
     databaseURL: "",
 
 	robloxCookie: "",
-	robloxCSRF_Token: "",
 
 	robloxOAuthSecret: "",
 	robloxOauthClientId: "2793559956691610836",

@@ -135,18 +135,15 @@ class SuperClient extends Client {
         this.config.credentials.encryptionKey = process.env.encryptionKey as string;
 		this.config.credentials.sessionSecret = process.env.sessionSecret as string;
 		this.config.credentials.robloxCookie = process.env.robloxCookie as string;
-		this.config.credentials.robloxCSRF_Token = process.env.robloxCSRF_Token as string;
 		this.config.credentials.robloxOAuthSecret = process.env.robloxOAuthSecret as string;
 
 		await this.login(this.config.credentials.discordToken);
 		this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
 
 		try {
-			const authuser = await this.NoBlox.setCookie(this.config.credentials.robloxCookie);
-			this.config.credentials.robloxCSRF_Token = await this.NoBlox.getGeneralToken();
+			const authuser = await this.WrapBlox.login(this.config.credentials.robloxCookie)
+			await this.NoBlox.setCookie(this.config.credentials.robloxCookie);
 			this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
-
-			await this.WrapBlox.login(this.config.credentials.robloxCookie)
 		} catch (error) {
 			client.error("Failed to login to Roblox");
 			client.error(error);
