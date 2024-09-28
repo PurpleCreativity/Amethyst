@@ -126,7 +126,7 @@ type PointLog = {
 type ScheduleEventType = {
     name : string,
     icon : string,
-    color : ColorResolvable,
+    color : string,
 
     description : string,
 
@@ -145,7 +145,6 @@ type ScheduledEvent = {
         username: string,
         id: number,
     },
-    interested: string[];
 
     eventType: string;
     ongoing : boolean;
@@ -350,7 +349,6 @@ const guildProfileSchema = new mongoose.Schema({
                     id: Number,
                 },
 
-                interested: mongoose.Types.Array<string>,
                 eventType : String,
                 ongoing : Boolean,
 
@@ -830,19 +828,27 @@ guildProfileSchema.methods.makeScheduleEmbed = async function (eventData: Schedu
     const eventType = this.schedule.types.get(eventData.eventType);
     if (!eventType) throw new Error("Event type not found");
 
-    return client.Functions.makeInfoEmbed({
+    const embed = client.Functions.makeInfoEmbed({
         title: `\`${eventData.id}\``,
         footer: { text: eventData.id },
-        color: eventType.color,
-
-        fields: [
-            { name: "Type", value: `\`${eventType.name}\``, inline: true },
-			{ name: "Time", value: `<t:${Math.round(new Date(eventData.time).getTime() / 1000)}:F>`, inline: true },
-			{ name: "Duration", value: `${eventData.duration} minutes`, inline: true },
-			{ name: "Host", value: `[${eventData.host.username}](https://www.roblox.com/users/${eventData.host.id}/profile)`, inline: true },
-			{ name: "Notes", value: `${eventData.notes || "\`No notes\`"}`, inline: false }
-        ]
+        color: eventType.color as ColorResolvable,
     })
+
+    embed.addField("Type", `\`${eventType.name}\``, true)
+    embed.addField("Time", `<t:${Math.round(new Date(eventData.time).getTime() / 1000)}:F>`, true)
+    embed.addField("Duration", `${eventData.duration} minutes`, true)
+    embed.addField("Host", `[${eventData.host.username}](https://www.roblox.com/users/${eventData.host.id}/profile)`, true)
+
+    if (eventData.placeId !== 0) {
+        const place = await client.WrapBlox.fetchGame(await client.Functions.ConvertPlaceIDToUniverseID(eventData.placeId as number))
+        if (!place) throw new Error(`Couldn't find place with id ${eventData.placeId}`);
+
+        embed.addField("Game", `[${place.name}](https://www.roblox.com/games/${place.id})`, true)
+    }
+
+    embed.addField("Notes", `${eventData.notes || "\`No notes\`"}`, false)
+
+    return embed;
 }
 
 // Roblox
