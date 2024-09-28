@@ -130,6 +130,9 @@ type ScheduleEventType = {
 
     description : string,
 
+    useRobloxSchedule : boolean,
+    useDiscordSchedule : boolean,
+
     canSchedule : { roles : string[], users : string[] },
 }
 
@@ -360,6 +363,9 @@ const guildProfileSchema = new mongoose.Schema({
                 color : String,
 
                 description : String,
+
+                useRobloxSchedule : Boolean,
+                useDiscordSchedule : Boolean,
 
                 canSchedule : {
                     roles : [String],
