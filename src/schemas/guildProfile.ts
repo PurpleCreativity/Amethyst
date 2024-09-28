@@ -139,13 +139,14 @@ type ScheduleEventType = {
 type ScheduledEvent = {
 	time : number;
 	duration : number;
+    placeId? : number,
 	notes? : string;
 	host: {
         username: string,
         id: number,
     },
 
-    event: string;
+    eventType: string;
     ongoing : boolean;
 
     discordEventId: string;
@@ -342,12 +343,13 @@ const guildProfileSchema = new mongoose.Schema({
                 time : Number,
                 duration : Number,
                 notes : String,
+                placeId : Number,
                 host: {
                     username: String,
                     id: Number,
                 },
 
-                event : String,
+                eventType : String,
                 ongoing : Boolean,
 
                 discordEventId: String,
@@ -823,7 +825,7 @@ guildProfileSchema.methods.deletePointLog = async function (id: string) {
 
 // Schedule
 guildProfileSchema.methods.makeScheduleEmbed = async function (eventData: ScheduledEvent) {
-    const eventType = this.schedule.types.get(eventData.event);
+    const eventType = this.schedule.types.get(eventData.eventType);
     if (!eventType) throw new Error("Event type not found");
 
     return client.Functions.makeInfoEmbed({
