@@ -447,7 +447,7 @@ export default new SlashCommand({
                 switch (subcommand) {
                     case "export": {
                         try {
-                            await interaction.user.send({ content: "Here is your guild data", files: [{ attachment: Buffer.from(JSON.stringify(guildDataProfile.toJSON(), null, 2), "utf-8"), name: `guild_${interaction.guild.id}_data.json` }] })
+                            await interaction.user.send({ content: "Here is your guild data", files: [{ attachment: Buffer.from(JSON.stringify(guildDataProfile.toJSON(), null, 4), "utf-8"), name: `guild_${interaction.guild.id}_data.json` }] })
 
                             return interaction.editReply({ embeds: [client.Functions.makeSuccessEmbed({ title: "Export successful", description: "Please check your DMs"}) ]});
                         } catch (error) {
