@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../index.js";
-import { guildProfileInterface } from "../../schemas/guildProfile.js";
+import type { guildProfileInterface } from "../../schemas/guildProfile.js";
 
 const _function = async (interaction: ChatInputCommandInteraction, guildDataProfile: guildProfileInterface | undefined) => {
     if (!interaction.guild || !guildDataProfile) return;
