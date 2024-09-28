@@ -4,8 +4,9 @@ import type { Config } from "../types/Config.js";
 import config from "../config.js";
 import Functions from "../core/Functions.js";
 
-import axios, { type Axios } from "axios";
+import axios, { AxiosError, type Axios } from "axios";
 import mongoose, { type Mongoose } from "mongoose";
+import NoBlox from "noblox.js";
 import WrapBlox from "wrapblox";
 import Threader from "../core/Threader.js";
 import Events from "../core/Events.js";
@@ -33,7 +34,7 @@ class SuperClient extends Client {
     //? Dependencies
     Axios: Axios = axios;
     Mongoose: Mongoose = mongoose;
-    WrapBlox: WrapBlox = new WrapBlox();
+	NoBlox = NoBlox
 
     //? Properties
     Arguments: string[] = process.argv.slice(2);
@@ -140,9 +141,9 @@ class SuperClient extends Client {
 		this.success("Logged in to Discord");
 
 		try {
-			await this.WrapBlox.login(this.config.credentials.robloxCookie);
-			this.WrapBlox.fetchHandler.CsrfToken = this.config.credentials.robloxCSRF_Token;
-			this.success("Logged in to Roblox");
+			const authuser = await this.NoBlox.setCookie(this.config.credentials.robloxCookie);
+			this.config.credentials.robloxCSRF_Token = await this.NoBlox.getGeneralToken();
+			this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
 		} catch (error) {
 			client.error("Failed to login to Roblox");
 			client.error(error);
