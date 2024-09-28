@@ -139,7 +139,7 @@ class SuperClient extends Client {
 		this.config.credentials.robloxOAuthSecret = process.env.robloxOAuthSecret as string;
 
 		await this.login(this.config.credentials.discordToken);
-		this.success("Logged in to Discord");
+		this.success(`Logged in to Discord as ${this.user?.username}:${this.user?.id}`);
 
 		try {
 			const authuser = await this.NoBlox.setCookie(this.config.credentials.robloxCookie);
