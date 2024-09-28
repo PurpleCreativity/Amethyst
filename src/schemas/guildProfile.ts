@@ -145,6 +145,7 @@ type ScheduledEvent = {
         username: string,
         id: number,
     },
+    interested: string[];
 
     eventType: string;
     ongoing : boolean;
@@ -349,6 +350,7 @@ const guildProfileSchema = new mongoose.Schema({
                     id: Number,
                 },
 
+                interested: mongoose.Types.Array<string>,
                 eventType : String,
                 ongoing : Boolean,
 
