@@ -3,46 +3,48 @@ import Plugin from "../../classes/Plugin.ts";
 import SlashCommand from "../../classes/SlashCommand.ts";
 
 export default new Plugin({
-  name: "capeId",
-  version: "1.0.0",
-  author: "@purple_creativity",
+    name: "capeId",
+    version: "1.0.0",
+    author: "@purple_creativity",
 
-  Init: async (client) => {
-    client.Interactables.addCommand(
-      new SlashCommand({
-        name: "capeid",
-        description: "Returns the image Id of the passed asset Id",
+    Init: async (client) => {
+        client.Interactables.addCommand(
+            new SlashCommand({
+                name: "capeid",
+                description: "Returns the image Id of the passed asset Id",
 
-        user_installable: true,
-        ephemeral: true,
+                user_installable: true,
+                ephemeral: true,
 
-        options: [
-          new SlashCommandStringOption()
-            .setName("assetid")
-            .setDescription("The asset id to get the image id of")
-            .setRequired(true),
-        ],
+                options: [
+                    new SlashCommandStringOption()
+                        .setName("assetid")
+                        .setDescription("The asset id to get the image id of")
+                        .setRequired(true),
+                ],
 
-        function: async (client, interaction) => {
-          const assetId = interaction.options.getString("assetid", true);
+                function: async (client, interaction) => {
+                    const assetId = interaction.options.getString("assetid", true);
 
-          const rbxRequest = await client.Axios.get(`https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`);
-          const image = await client.Axios.get(
-            `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&size=420x420&format=Png&isCircular=false`,
-          );
-          const imageId = /(\d+)<\/url>/.exec(rbxRequest.data)?.[1];
+                    const rbxRequest = await client.Axios.get(
+                        `https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`,
+                    );
+                    const image = await client.Axios.get(
+                        `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&size=420x420&format=Png&isCircular=false`,
+                    );
+                    const imageId = /(\d+)<\/url>/.exec(rbxRequest.data)?.[1];
 
-          return await interaction.editReply({
-            embeds: [
-              client.Functions.makeInfoEmbed({
-                title: "Cape Id",
-                description: `The image Id of asset Id \`${assetId}\` is \`${imageId}\``,
-                image: image.data.data[0].imageUrl,
-              }),
-            ],
-          });
-        },
-      }),
-    );
-  },
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeInfoEmbed({
+                                title: "Cape Id",
+                                description: `The image Id of asset Id \`${assetId}\` is \`${imageId}\``,
+                                image: image.data.data[0].imageUrl,
+                            }),
+                        ],
+                    });
+                },
+            }),
+        );
+    },
 });

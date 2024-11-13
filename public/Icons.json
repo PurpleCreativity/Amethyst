@@ -1,9 +1,9 @@
 {
-  "check": "https://i.imgur.com/BgX5cHh.png",
-  "close": "https://i.imgur.com/hWiYfes.png",
-  "warn": "https://i.imgur.com/M0TnCDL.png",
-  "info": "https://i.imgur.com/8LQ3T0i.png",
-  "settings": "https://i.imgur.com/3rxTB8Z.png",
-  "reload": "https://i.imgur.com/NhuLaE0.png",
-  "moderation": "https://i.imgur.com/B8V2mpN.png"
+    "check": "https://i.imgur.com/BgX5cHh.png",
+    "close": "https://i.imgur.com/hWiYfes.png",
+    "warn": "https://i.imgur.com/M0TnCDL.png",
+    "info": "https://i.imgur.com/8LQ3T0i.png",
+    "settings": "https://i.imgur.com/3rxTB8Z.png",
+    "reload": "https://i.imgur.com/NhuLaE0.png",
+    "moderation": "https://i.imgur.com/B8V2mpN.png"
 }

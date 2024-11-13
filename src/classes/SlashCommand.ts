@@ -1,22 +1,22 @@
 import {
-  ApplicationIntegrationType,
-  type AutocompleteInteraction,
-  type ChatInputCommandInteraction,
-  InteractionContextType,
-  type LocalizationMap,
-  type PermissionResolvable,
-  type SlashCommandAttachmentOption,
-  type SlashCommandBooleanOption,
-  SlashCommandBuilder,
-  type SlashCommandChannelOption,
-  type SlashCommandIntegerOption,
-  type SlashCommandMentionableOption,
-  type SlashCommandNumberOption,
-  type SlashCommandRoleOption,
-  type SlashCommandStringOption,
-  SlashCommandSubcommandBuilder,
-  type SlashCommandSubcommandGroupBuilder,
-  type SlashCommandUserOption,
+    ApplicationIntegrationType,
+    type AutocompleteInteraction,
+    type ChatInputCommandInteraction,
+    InteractionContextType,
+    type LocalizationMap,
+    type PermissionResolvable,
+    type SlashCommandAttachmentOption,
+    type SlashCommandBooleanOption,
+    SlashCommandBuilder,
+    type SlashCommandChannelOption,
+    type SlashCommandIntegerOption,
+    type SlashCommandMentionableOption,
+    type SlashCommandNumberOption,
+    type SlashCommandRoleOption,
+    type SlashCommandStringOption,
+    SlashCommandSubcommandBuilder,
+    type SlashCommandSubcommandGroupBuilder,
+    type SlashCommandUserOption,
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.ts";
@@ -24,164 +24,168 @@ import type { ValidPermissions } from "../types/global.d.ts";
 import type Client from "./Client.ts";
 
 export type ValidSlashCommandOptions =
-  | SlashCommandStringOption
-  | SlashCommandNumberOption
-  | SlashCommandIntegerOption
-  | SlashCommandBooleanOption
-  | SlashCommandRoleOption
-  | SlashCommandUserOption
-  | SlashCommandChannelOption
-  | SlashCommandMentionableOption
-  | SlashCommandAttachmentOption;
+    | SlashCommandStringOption
+    | SlashCommandNumberOption
+    | SlashCommandIntegerOption
+    | SlashCommandBooleanOption
+    | SlashCommandRoleOption
+    | SlashCommandUserOption
+    | SlashCommandChannelOption
+    | SlashCommandMentionableOption
+    | SlashCommandAttachmentOption;
 
 export type AutocompleteEntry = {
-  name: string;
-  value: string | number;
+    name: string;
+    value: string | number;
 };
 
 export type SlashCommandOptions = {
-  name: string;
-  name_localizations?: LocalizationMap;
+    name: string;
+    name_localizations?: LocalizationMap;
 
-  description: string;
-  description_localizations?: LocalizationMap;
+    description: string;
+    description_localizations?: LocalizationMap;
 
-  nsfw?: boolean;
-  module?: CommandModule;
-  selected_guilds?: string[];
-  ephemeral?: boolean;
-  user_installable?: boolean;
+    nsfw?: boolean;
+    module?: CommandModule;
+    selected_guilds?: string[];
+    ephemeral?: boolean;
+    user_installable?: boolean;
 
-  discord_permissions?: PermissionResolvable[];
-  permissions?: ValidPermissions[];
-  developer_only?: boolean;
+    discord_permissions?: PermissionResolvable[];
+    permissions?: ValidPermissions[];
+    developer_only?: boolean;
 
-  options?: ValidSlashCommandOptions[];
-  subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
+    options?: ValidSlashCommandOptions[];
+    subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
-  function: (client: Client, interaction: ChatInputCommandInteraction) => Promise<unknown>;
-  autocomplete?: (
-    client: Client,
-    interaction: AutocompleteInteraction,
-  ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    function: (client: Client, interaction: ChatInputCommandInteraction) => Promise<unknown>;
+    autocomplete?: (
+        client: Client,
+        interaction: AutocompleteInteraction,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 export default class SlashCommand extends SlashCommandBuilder {
-  readonly module: CommandModule | undefined;
-  readonly selected_guilds: string[];
-  readonly ephemeral: boolean;
+    readonly module: CommandModule | undefined;
+    readonly selected_guilds: string[];
+    readonly ephemeral: boolean;
 
-  readonly discord_permissions: PermissionResolvable[];
-  readonly permissions: ValidPermissions[];
-  readonly developer_only: boolean;
+    readonly discord_permissions: PermissionResolvable[];
+    readonly permissions: ValidPermissions[];
+    readonly developer_only: boolean;
 
-  private function: (client: Client, interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
-  autocomplete?: (
-    client: Client,
-    interaction: AutocompleteInteraction,
-  ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    private function: (client: Client, interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
+    autocomplete?: (
+        client: Client,
+        interaction: AutocompleteInteraction,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
-  disabled = false;
+    disabled = false;
 
-  constructor(options: SlashCommandOptions) {
-    super();
+    constructor(options: SlashCommandOptions) {
+        super();
 
-    this.setName(options.name);
-    if (options.name_localizations) {
-      this.setNameLocalizations(options.name_localizations);
-    }
-
-    this.setDescription(options.description);
-    if (options.description_localizations) {
-      this.setDescriptionLocalizations(options.description_localizations);
-    }
-
-    this.setNSFW(options.nsfw || false);
-
-    this.module = options.module;
-    this.selected_guilds = options.selected_guilds || [];
-    this.ephemeral = options.ephemeral || false;
-
-    this.discord_permissions = options.discord_permissions || [];
-    this.permissions = options.permissions || [];
-    this.developer_only = options.developer_only || false;
-
-    if (options.options && options.options.length > 0) {
-      for (const option of options.options) {
-        this.options.push(option);
-      }
-    }
-
-    if (options.subcommands && options.subcommands.length > 0) {
-      for (const subcommand of options.subcommands) {
-        if (subcommand instanceof SlashCommandSubcommandBuilder) {
-          this.addSubcommand(subcommand);
-          continue;
+        this.setName(options.name);
+        if (options.name_localizations) {
+            this.setNameLocalizations(options.name_localizations);
         }
 
-        this.addSubcommandGroup(subcommand);
-      }
-    }
-
-    this.function = options.function;
-    this.autocomplete = options.autocomplete;
-
-    this.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel);
-
-    if (options.user_installable && !options.selected_guilds) {
-      this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
-    } else {
-      this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
-    }
-  }
-
-  private check = async (
-    client: Client,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<CommandError | undefined> => {
-    if (client.Functions.isDev(interaction.user.id)) return undefined;
-
-    if (this.disabled) return CommandError.DISABLED_GLOBAL;
-    if (this.developer_only) return CommandError.DEVELOPER_ONLY;
-
-    if (interaction.guild) {
-      if (!interaction.member) return CommandError.UNKNOWN;
-
-      //! Amethyst Custom Permission here later
-
-      if (this.discord_permissions.length > 0) {
-        if (typeof interaction.member.permissions === "string") {
-          return CommandError.UNKNOWN;
+        this.setDescription(options.description);
+        if (options.description_localizations) {
+            this.setDescriptionLocalizations(options.description_localizations);
         }
-        if (!interaction.member.permissions.has("Administrator")) {
-          for (const permission of this.discord_permissions) {
-            if (!interaction.member.permissions.has(permission)) {
-              return CommandError.MISSING_DISCORD_PERMISSIONS;
+
+        this.setNSFW(options.nsfw || false);
+
+        this.module = options.module;
+        this.selected_guilds = options.selected_guilds || [];
+        this.ephemeral = options.ephemeral || false;
+
+        this.discord_permissions = options.discord_permissions || [];
+        this.permissions = options.permissions || [];
+        this.developer_only = options.developer_only || false;
+
+        if (options.options && options.options.length > 0) {
+            for (const option of options.options) {
+                this.options.push(option);
             }
-          }
         }
-      }
+
+        if (options.subcommands && options.subcommands.length > 0) {
+            for (const subcommand of options.subcommands) {
+                if (subcommand instanceof SlashCommandSubcommandBuilder) {
+                    this.addSubcommand(subcommand);
+                    continue;
+                }
+
+                this.addSubcommandGroup(subcommand);
+            }
+        }
+
+        this.function = options.function;
+        this.autocomplete = options.autocomplete;
+
+        this.setContexts(
+            InteractionContextType.Guild,
+            InteractionContextType.BotDM,
+            InteractionContextType.PrivateChannel,
+        );
+
+        if (options.user_installable && !options.selected_guilds) {
+            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
+        } else {
+            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
+        }
     }
 
-    return undefined;
-  };
+    private check = async (
+        client: Client,
+        interaction: ChatInputCommandInteraction,
+    ): Promise<CommandError | undefined> => {
+        if (client.Functions.isDev(interaction.user.id)) return undefined;
 
-  execute = async (client: Client, interaction: ChatInputCommandInteraction): Promise<unknown> => {
-    await interaction.deferReply({ ephemeral: this.ephemeral });
+        if (this.disabled) return CommandError.DISABLED_GLOBAL;
+        if (this.developer_only) return CommandError.DEVELOPER_ONLY;
 
-    const error = await this.check(client, interaction);
-    if (error) {
-      return await interaction.editReply({
-        embeds: [
-          client.Functions.makeErrorEmbed({
-            title: `Error while executing command: \`${error}\``,
-            description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
-            thumbnail: Icons.moderation,
-          }),
-        ],
-      });
-    }
+        if (interaction.guild) {
+            if (!interaction.member) return CommandError.UNKNOWN;
 
-    return await this.function(client, interaction);
-  };
+            //! Amethyst Custom Permission here later
+
+            if (this.discord_permissions.length > 0) {
+                if (typeof interaction.member.permissions === "string") {
+                    return CommandError.UNKNOWN;
+                }
+                if (!interaction.member.permissions.has("Administrator")) {
+                    for (const permission of this.discord_permissions) {
+                        if (!interaction.member.permissions.has(permission)) {
+                            return CommandError.MISSING_DISCORD_PERMISSIONS;
+                        }
+                    }
+                }
+            }
+        }
+
+        return undefined;
+    };
+
+    execute = async (client: Client, interaction: ChatInputCommandInteraction): Promise<unknown> => {
+        await interaction.deferReply({ ephemeral: this.ephemeral });
+
+        const error = await this.check(client, interaction);
+        if (error) {
+            return await interaction.editReply({
+                embeds: [
+                    client.Functions.makeErrorEmbed({
+                        title: `Error while executing command: \`${error}\``,
+                        description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
+                        thumbnail: Icons.moderation,
+                    }),
+                ],
+            });
+        }
+
+        return await this.function(client, interaction);
+    };
 }
