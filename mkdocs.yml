@@ -1,0 +1,24 @@
+site_name: My Docs
+site_author: PurpleCreativity
+
+repo_name: Amethyst
+repo_url: https://github.com/PurpleCreativity/Amethyst
+
+theme:
+  name: material
+  palette: 
+# Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Dark mode
+      primary: deep purple
+      accent: purple
+
+    # Light Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Light mode
+      primary: deep purple
+      accent: purple

@@ -1,219 +1,187 @@
-import { type AutocompleteInteraction, type ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandGroupBuilder, type PermissionResolvable, type SlashCommandAttachmentOption, type SlashCommandBooleanOption, type SlashCommandChannelOption, type SlashCommandIntegerOption, type SlashCommandMentionableOption, type SlashCommandNumberOption, type SlashCommandRoleOption, type SlashCommandStringOption, type SlashCommandSubcommandBuilder, GuildMember, type SlashCommandUserOption } from "discord.js";
-import client from "../index.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.js";
+import {
+  ApplicationIntegrationType,
+  type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+  type LocalizationMap,
+  type PermissionResolvable,
+  type SlashCommandAttachmentOption,
+  type SlashCommandBooleanOption,
+  SlashCommandBuilder,
+  type SlashCommandChannelOption,
+  type SlashCommandIntegerOption,
+  type SlashCommandMentionableOption,
+  type SlashCommandNumberOption,
+  type SlashCommandRoleOption,
+  type SlashCommandStringOption,
+  SlashCommandSubcommandBuilder,
+  type SlashCommandSubcommandGroupBuilder,
+  type SlashCommandUserOption,
+} from "discord.js";
+import Icons from "../../public/Icons.json" with { type: "json" };
+import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.ts";
+import type { ValidPermissions } from "../types/global.d.ts";
+import type Client from "./Client.ts";
 
-export type ValidOptions =
- | SlashCommandStringOption
- | SlashCommandNumberOption
- | SlashCommandIntegerOption
- | SlashCommandBooleanOption
- | SlashCommandRoleOption
- | SlashCommandUserOption
- | SlashCommandChannelOption
- | SlashCommandMentionableOption
- | SlashCommandAttachmentOption;
+export type ValidSlashCommandOptions =
+  | SlashCommandStringOption
+  | SlashCommandNumberOption
+  | SlashCommandIntegerOption
+  | SlashCommandBooleanOption
+  | SlashCommandRoleOption
+  | SlashCommandUserOption
+  | SlashCommandChannelOption
+  | SlashCommandMentionableOption
+  | SlashCommandAttachmentOption;
 
-export type ValidModules =
- | "Moderation"
- | "Utility"
- | "Points"
- | "Schedule"
+export type AutocompleteEntry = {
+  name: string;
+  value: string | number;
+};
 
-export type customPermissionOptions =
- | "Administrator"
- | "Moderator"
- | "RobloxModerator"
- | "RobloxGroupManager"
- | "PointsManager"
- | "PointsViewer"
- | "CreatePointLogs"
- | "EventScheduler"
- | "ScheduleManager";
+export type SlashCommandOptions = {
+  name: string;
+  name_localizations?: LocalizationMap;
 
-export type CommandOps = {
-	name: string;
-	description: string;
+  description: string;
+  description_localizations?: LocalizationMap;
 
-    dmpermission?: boolean;
-	defer?: boolean;
-	module?: ValidModules;
-    userApp?: boolean;
-    devOnly?: boolean;
+  nsfw?: boolean;
+  module?: CommandModule;
+  selected_guilds?: string[];
+  ephemeral?: boolean;
+  user_installable?: boolean;
 
-    permissions?: PermissionResolvable[];
-    customPermissions?: customPermissionOptions[];
+  discord_permissions?: PermissionResolvable[];
+  permissions?: ValidPermissions[];
+  developer_only?: boolean;
 
-    subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
-    options?: ValidOptions[];
+  options?: ValidSlashCommandOptions[];
+  subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
-	integration_types?: number[];
-	contexts?: number[]
-
-	globalCooldown?: number;
-	guildCooldown?: number;
-	userCooldown?: number;
-
-	execute (interaction : ChatInputCommandInteraction, guildDataProfile?: guildProfileInterface): Promise<any>;
-	autocomplete? (interaction : AutocompleteInteraction): Promise<{name : string, value : string}[] | {name : string, value : string} | any>;
-}
+  function: (client: Client, interaction: ChatInputCommandInteraction) => Promise<unknown>;
+  autocomplete?: (
+    client: Client,
+    interaction: AutocompleteInteraction,
+  ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+};
 
 export default class SlashCommand extends SlashCommandBuilder {
-	permissions: PermissionResolvable[];
-	customPermissions: customPermissionOptions[];
-	subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
-	defer: boolean;
-	devOnly?: boolean;
-	userApp?: boolean;
-	module: string;
-	globalCooldown?: number;
-	guildCooldown?: number;
-	userCooldown?: number;
+  readonly module: CommandModule | undefined;
+  readonly selected_guilds: string[];
+  readonly ephemeral: boolean;
 
-	integration_types = [0] as number[];
-	contexts = [0, 1, 2] as number[];
+  readonly discord_permissions: PermissionResolvable[];
+  readonly permissions: ValidPermissions[];
+  readonly developer_only: boolean;
 
-	userCooldowns = new Map<string, number>();
-	guildCooldowns = new Map<string, number>();
-	lastUsedGlobal = 0;
+  private function: (client: Client, interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
+  autocomplete?: (
+    client: Client,
+    interaction: AutocompleteInteraction,
+  ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
-	execute: (interaction : ChatInputCommandInteraction, guildDataProfile?: guildProfileInterface) => Promise<any>;
-	autocomplete?: (interaction : AutocompleteInteraction) => Promise<{name : string, value : string}[] | {name : string, value : string} | any>;
+  disabled = false;
 
-	constructor (options: CommandOps) {
-		super();
-		this.setName(options.name);
-		this.setDescription(options.description);
+  constructor(options: SlashCommandOptions) {
+    super();
 
-		this.permissions = options.permissions ?? [];
-		this.customPermissions = options.customPermissions ?? [];
+    this.setName(options.name);
+    if (options.name_localizations) {
+      this.setNameLocalizations(options.name_localizations);
+    }
 
-		this.defer = options.defer ?? true;
+    this.setDescription(options.description);
+    if (options.description_localizations) {
+      this.setDescriptionLocalizations(options.description_localizations);
+    }
 
-		this.module = options.module ?? "miscellaneous";
-		this.devOnly = options.devOnly;
-		this.globalCooldown = options.globalCooldown;
-		this.guildCooldown = options.guildCooldown;
-		this.userCooldown = options.userCooldown;
+    this.setNSFW(options.nsfw || false);
 
-		this.autocomplete = options.autocomplete;
-		this.execute = options.execute;
+    this.module = options.module;
+    this.selected_guilds = options.selected_guilds || [];
+    this.ephemeral = options.ephemeral || false;
 
-		if (options.options) {
-			for (const option of options.options) {
-				this.options.push(option)
-			}
-		}
+    this.discord_permissions = options.discord_permissions || [];
+    this.permissions = options.permissions || [];
+    this.developer_only = options.developer_only || false;
 
-		if (options.subcommands) {
-			for (const subcommand of options.subcommands) {
-				if (subcommand instanceof SlashCommandSubcommandGroupBuilder) {
-					this.addSubcommandGroup(subcommand);
-					continue
-				}
+    if (options.options && options.options.length > 0) {
+      for (const option of options.options) {
+        this.options.push(option);
+      }
+    }
 
-				this.addSubcommand(subcommand)
-			}
-		}
-		
-		if (options.userApp) this.integration_types.push(1);
-		this.setDMPermission(options.dmpermission || false);
-	}
+    if (options.subcommands && options.subcommands.length > 0) {
+      for (const subcommand of options.subcommands) {
+        if (subcommand instanceof SlashCommandSubcommandBuilder) {
+          this.addSubcommand(subcommand);
+          continue;
+        }
 
-	async Check (interaction: ChatInputCommandInteraction) {
-		if (this.devOnly && !client.Functions.isDev(interaction.user.id)) return false;
+        this.addSubcommandGroup(subcommand);
+      }
+    }
 
-		if (interaction.guild) {
-			if (!interaction.member) return false;
-			if (this.permissions.length === 0 && this.customPermissions.length === 0) return true;
-			if (this.customPermissions.length > 0) {
-				if (!(interaction.member instanceof GuildMember)) return false;
-				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id);
-				if (!guildDataProfile) return false;
-				
-				const check = await guildDataProfile.customPermissionCheck(interaction.member, this.customPermissions);
-				
-				if (!check) return false;
-			}
+    this.function = options.function;
+    this.autocomplete = options.autocomplete;
 
-			if (typeof interaction.member.permissions === "string" || !interaction.member.permissions.has(this.permissions)) return false;
-		}
+    this.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel);
 
-		return true
-	}
+    if (options.user_installable && !options.selected_guilds) {
+      this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
+    } else {
+      this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
+    }
+  }
 
-	async Execute (interaction: ChatInputCommandInteraction) {
-		if (this.defer) await interaction.deferReply();
+  private check = async (
+    client: Client,
+    interaction: ChatInputCommandInteraction,
+  ): Promise<CommandError | undefined> => {
+    if (client.Functions.isDev(interaction.user.id)) return undefined;
 
-		if (client.Functions.isDev(interaction.user.id)) {
-			if (interaction.guild && !this.integration_types.includes(1)) {
-				const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
-				if (!guildDataProfile) {
-					if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
-					return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
-				}
-	
-				return await this.execute(interaction, guildDataProfile);
-			}
+    if (this.disabled) return CommandError.DISABLED_GLOBAL;
+    if (this.developer_only) return CommandError.DEVELOPER_ONLY;
 
-			await this.execute(interaction);
-			return;
-		}
+    if (interaction.guild) {
+      if (!interaction.member) return CommandError.UNKNOWN;
 
-		if (!(await this.Check(interaction))) {
-			if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Restricted", description: "You do not have permission to run this command" })] });
-			return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Restricted", description: "You do not have permission to run this command" })], ephemeral: true });
-		}
+      //! Amethyst Custom Permission here later
 
-		const currentTimestamp = new Date().getTime();
+      if (this.discord_permissions.length > 0) {
+        if (typeof interaction.member.permissions === "string") {
+          return CommandError.UNKNOWN;
+        }
+        if (!interaction.member.permissions.has("Administrator")) {
+          for (const permission of this.discord_permissions) {
+            if (!interaction.member.permissions.has(permission)) {
+              return CommandError.MISSING_DISCORD_PERMISSIONS;
+            }
+          }
+        }
+      }
+    }
 
-		if (this.userCooldown) {
-			const user = this.userCooldowns.has(interaction.user.id);
-			const currentCooldown = this.userCooldowns.get(interaction.user.id);
+    return undefined;
+  };
 
-			if (user && currentCooldown) {
-				const remainingCooldown = Math.ceil((this.userCooldown - (currentTimestamp - currentCooldown)) / 1000);
+  execute = async (client: Client, interaction: ChatInputCommandInteraction): Promise<unknown> => {
+    await interaction.deferReply({ ephemeral: this.ephemeral });
 
-				if (currentTimestamp - currentCooldown < this.userCooldown) {
-					return interaction.reply({ content: `You've used this command recently. Please retry again <t:${Math.round(currentTimestamp / 1000 + remainingCooldown)}:R>.`, ephemeral: true });
-				}
-			}
-			this.userCooldowns.set(interaction.user.id, Date.now());
-		}
+    const error = await this.check(client, interaction);
+    if (error) {
+      return await interaction.editReply({
+        embeds: [
+          client.Functions.makeErrorEmbed({
+            title: `Error while executing command: \`${error}\``,
+            description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
+            thumbnail: Icons.moderation,
+          }),
+        ],
+      });
+    }
 
-		if (interaction.guild) {
-			if (this.guildCooldown) {
-				const guild = this.guildCooldowns.has(interaction.guild.id);
-				const currentCooldown = this.guildCooldowns.get(interaction.guild.id);
-	
-				if (guild && currentCooldown) {
-					const remainingCooldown = Math.ceil((this.guildCooldown - (currentTimestamp - currentCooldown)) / 1000);
-	
-					if (currentTimestamp - currentCooldown < this.guildCooldown) {
-						return interaction.reply({ content: `This command is on a guild cooldown. Please retry again <t:${Math.round(currentTimestamp / 1000 + remainingCooldown)}:R>.`, ephemeral: true });
-					}
-				}
-				this.guildCooldowns.set(interaction.guild.id, Date.now());
-			}
-		}
-
-		if (this.globalCooldown) {
-			if (currentTimestamp - this.lastUsedGlobal < this.globalCooldown) {
-				const remainingCooldown = Math.ceil((this.globalCooldown - (currentTimestamp - this.lastUsedGlobal)) / 1000);
-				return interaction.reply({ content: `This command is on a global cooldown. Please retry again <t:${Math.round(currentTimestamp / 1000 + remainingCooldown)}:R>`, ephemeral: true });
-			}
-			this.lastUsedGlobal = Date.now();
-		}
-
-		if (interaction.guild && !this.integration_types.includes(1)) {
-			const guildDataProfile = await client.Database.GetGuildProfile(interaction.guild.id, false);
-			if (!guildDataProfile) {
-				if (interaction.deferred) return interaction.editReply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
-				return interaction.reply({ embeds: [client.Functions.makeErrorEmbed({ title: "Guild unregistered", description: "This guild is not registered in the database", footer: { text: "Contact the bot developer to register your guild" } })] });
-			}
-
-			return await this.execute(interaction, guildDataProfile);
-		}
-
-		return await this.execute(interaction);
-	}
+    return await this.function(client, interaction);
+  };
 }

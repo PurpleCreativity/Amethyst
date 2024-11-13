@@ -1,124 +1,263 @@
-import { type ButtonInteraction, REST, Collection, Routes } from "discord.js";
-import type SuperClient from "../classes/SuperClient.js";
-import fs from "node:fs"
-import path from "node:path"
-import SlashCommand from "../classes/SlashCommand.js";
-import type StaticButton from "../classes/StaticButton.js";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { Collection, REST, Routes } from "discord.js";
+import type Client from "../classes/Client.ts";
+import { MessageContextMenuCommand, UserContextMenuCommand } from "../classes/ContextCommand.ts";
+import SlashCommand from "../classes/SlashCommand.ts";
+import type StaticButton from "../classes/StaticButton.ts";
 
 export default class Interactables {
-    client: SuperClient;
+  client: Client;
+  REST: REST = new REST();
 
-    REST: REST
+  stored: {
+    SlashCommands: Collection<string, SlashCommand>;
+    StaticButtons: Collection<string, StaticButton>;
+    UserContextMenuCommands: Collection<string, UserContextMenuCommand>;
+    MessageContextMenuCommands: Collection<string, MessageContextMenuCommand>;
+  } = {
+    SlashCommands: new Collection(),
+    StaticButtons: new Collection(),
+    UserContextMenuCommands: new Collection(),
+    MessageContextMenuCommands: new Collection(),
+  };
 
-    StoredCommands = new Collection<string, SlashCommand>();
-	StaticButtons = new Map<string, StaticButton>();
+  constructor(client: Client) {
+    this.client = client;
+  }
 
-    constructor(client: SuperClient) {
-        this.client = client;
-    }
+  toggleCommandAvaiblityGlobally = (
+    commandType: "SlashCommand" | "UserContextMenuCommand" | "MessageContextMenuCommand",
+    name: string,
+    disabled: boolean,
+  ): void => {
+    switch (commandType) {
+      case "SlashCommand": {
+        const command = this.stored.SlashCommands.get(name);
 
-    AddCommand = (command : SlashCommand) => {
-		this.StoredCommands.set(command.name, command)
-	}
-
-	RemoveCommand = async (commandName : string) => {
-		this.StoredCommands.delete(commandName)
-	}
-
-	GetCommand = (commandName : string) => {
-		return this.StoredCommands.get(commandName)
-	}
-
-    LoadCommandFiles = async () => {
-		for (const folder of fs.readdirSync(path.join(process.cwd(), "build/commands"))) {
-			const newPath = path.join(process.cwd(), "build/commands", folder)
-			const files = fs.readdirSync(newPath).filter(file => file.endsWith(".js"))
-			for (const file of files) {
-				const importPath = path.join(process.cwd(), "build/commands", folder, file)
-				const commands = await import(`file://${importPath}`).then(res => res.default);
-				const routesCommands = Array.isArray(commands) ? commands : [commands];
-
-				for (const command of routesCommands) {
-					if (!(command instanceof SlashCommand)) {
-						this.client.warn("Command that is not a command, skipping")
-						continue;
-					}
-					
-					this.AddCommand(command)
-				}
-			}
-		}
-	}
-
-    DeleteCommands = async () => {
-		await this.REST.put(
-			Routes.applicationCommands(this.client.application?.id as string),
-			{
-				body: []
-			}
-		)
-
-		for (const guild of this.client.guilds.cache.values()) {
-			await this.REST.put(
-				Routes.applicationGuildCommands(this.client.application?.id as string, guild.id),
-				{
-					body: []
-				}
-			)
-		}
-
-		this.client.warn("Deleted all commands")
-	}
-
-	DeployCommands = async () => {
-		if (!this.client.application) throw new Error("No application(????????????)")
-		
-		this.client.warn("Deploying commands")
-		await this.REST.put(
-			Routes.applicationCommands(this.client.application.id),
-			{
-				body: this.StoredCommands.map((command) => {
-					if (!(command instanceof SlashCommand)) {
-						this.client.warn("Command that is not a command, skipping")
-						return;
-					}
-
-					return command.toJSON()
-				})
-			}
-		);
-
-		this.client.success("Finished deploying commands")
-	}
-
-    AddStaticButton = (StaticButton : StaticButton) => {
-		this.StaticButtons.set(StaticButton.customId, StaticButton)
-	}
-
-	GetStaticButton = (customId : string) => {
-		return this.StaticButtons.get(customId)
-	}
-
-    LoadStaticButtons = async () => {
-		const buttons = fs.readdirSync(path.join(process.cwd(), "build/staticButtons")).filter(file => file.endsWith(".js"))
-		for (const button of buttons) {
-			const buttonData = await import(`file://${path.join(process.cwd(), "build/staticButtons", button)}`)
-			this.AddStaticButton(buttonData.default)
-		}
-	}
-
-    Init = async () => {
-        this.REST = new REST().setToken(this.client.config.credentials.discordToken);
-
-        await this.LoadCommandFiles()
-        await this.LoadStaticButtons()
-
-        if (this.client.redeployCommands) {
-            this.client.warn("Reloading commands")
-            await this.DeleteCommands()
-            await this.DeployCommands()
+        if (!command) {
+          this.client.warn(`Slash Command [${name}] does not exist, skipping...`);
+          return;
         }
 
-        this.client.success("Initialized Commands");
+        command.disabled = disabled;
+
+        break;
+      }
+      case "UserContextMenuCommand": {
+        const command = this.stored.UserContextMenuCommands.get(name);
+
+        if (!command) {
+          this.client.warn(`User Context Menu Command [${name}] does not exist, skipping...`);
+          return;
+        }
+
+        command.disabled = disabled;
+
+        break;
+      }
+      case "MessageContextMenuCommand": {
+        const command = this.stored.MessageContextMenuCommands.get(name);
+
+        if (!command) {
+          this.client.warn(`Message Context Menu Command [${name}] does not exist, skipping...`);
+          return;
+        }
+
+        command.disabled = disabled;
+
+        break;
+      }
+
+      default: {
+        this.client.warn(`Unknown command type: [${commandType}]`);
+        break;
+      }
     }
+  };
+
+  addCommand = (command: SlashCommand | UserContextMenuCommand | MessageContextMenuCommand): void => {
+    if (command instanceof SlashCommand) {
+      if (this.stored.SlashCommands.has(command.name)) {
+        this.client.warn(`Slash Command [${command.name}] already exists, skipping...`);
+        return;
+      }
+
+      this.stored.SlashCommands.set(command.name, command);
+    } else if (command instanceof UserContextMenuCommand) {
+      if (this.stored.UserContextMenuCommands.has(command.name)) {
+        this.client.warn(`User Context Menu Command [${command.name}] already exists, skipping...`);
+        return;
+      }
+
+      this.stored.UserContextMenuCommands.set(command.name, command);
+    } else if (command instanceof MessageContextMenuCommand) {
+      if (this.stored.MessageContextMenuCommands.has(command.name)) {
+        this.client.warn(`Message Context Menu Command [${command.name}] already exists, skipping...`);
+        return;
+      }
+
+      this.stored.MessageContextMenuCommands.set(command.name, command);
+    } else {
+      this.client.warn(`Unknown command type: ${(command as object).constructor.name}`);
+    }
+  };
+
+  removeCommand = (
+    commandType: "SlashCommand" | "UserContextMenuCommand" | "MessageContextMenuCommand",
+    name: string,
+  ): void => {
+    switch (commandType) {
+      case "SlashCommand": {
+        if (!this.stored.SlashCommands.has(name)) {
+          this.client.warn(`Slash Command [${name}] does not exist, skipping...`);
+          return;
+        }
+
+        this.stored.SlashCommands.delete(name);
+
+        break;
+      }
+      case "UserContextMenuCommand": {
+        if (!this.stored.UserContextMenuCommands.has(name)) {
+          this.client.warn(`User Context Menu Command [${name}] does not exist, skipping...`);
+          return;
+        }
+
+        this.stored.UserContextMenuCommands.delete(name);
+
+        break;
+      }
+      case "MessageContextMenuCommand": {
+        if (!this.stored.MessageContextMenuCommands.has(name)) {
+          this.client.warn(`Message Context Menu Command [${name}] does not exist, skipping...`);
+          return;
+        }
+
+        this.stored.MessageContextMenuCommands.delete(name);
+
+        break;
+      }
+
+      default: {
+        this.client.warn(`Unknown command type: [${commandType}]`);
+        break;
+      }
+    }
+  };
+
+  loadCommandFiles = async (Filespath: string): Promise<void> => {
+    const commandsDir = path.join(process.cwd(), Filespath);
+
+    for (const folderEntry of fs.readdirSync(commandsDir)) {
+      if (fs.statSync(path.join(commandsDir, folderEntry)).isDirectory()) {
+        for (const fileEntry of fs.readdirSync(path.join(commandsDir, folderEntry))) {
+          if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || fileEntry.endsWith(".ts"))) {
+            this.client.warn(`Skipping [${fileEntry}] as it is not a valid command file.`);
+            continue;
+          }
+
+          const moduleImport = await import(`file://${path.join(commandsDir, folderEntry, fileEntry)}`).then(
+            (module) => module.default,
+          );
+          const commands = Array.isArray(moduleImport) ? moduleImport : [moduleImport];
+
+          for (const command of commands) {
+            this.addCommand(command);
+          }
+        }
+        return;
+      }
+
+      if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || folderEntry.endsWith(".ts"))) {
+        this.client.warn(`Skipping [${folderEntry}] as it is not a valid command file.`);
+        continue;
+      }
+
+      const moduleImport = await import(`file://${path.join(commandsDir, folderEntry)}`).then(
+        (module) => module.default,
+      );
+      const commands = Array.isArray(moduleImport) ? moduleImport : [moduleImport];
+
+      for (const command of commands) {
+        this.addCommand(command);
+      }
+    }
+  };
+
+  deployCommands = async (): Promise<void> => {
+    if (!this.client.user) throw new Error("Client user is not defined.");
+
+    this.client.warn(
+      `Deploying [${
+        this.stored.SlashCommands.size +
+        this.stored.UserContextMenuCommands.size +
+        this.stored.MessageContextMenuCommands.size
+      }] commands...`,
+    );
+
+    await this.REST.put(Routes.applicationCommands(this.client.user.id), {
+      body: [
+        ...this.stored.SlashCommands.map((command) => {
+          if (command.selected_guilds.length > 0) {
+            return undefined;
+          }
+          return command.toJSON();
+        }),
+
+        ...this.stored.UserContextMenuCommands.map((command) => command.toJSON()),
+        ...this.stored.MessageContextMenuCommands.map((command) => command.toJSON()),
+      ],
+    });
+
+    for (const command of this.stored.SlashCommands.values()) {
+      if (!command.selected_guilds || command.selected_guilds.length === 0) continue;
+
+      for (const guildId of command.selected_guilds) {
+        await this.REST.put(Routes.applicationGuildCommands(this.client.user.id, guildId), {
+          body: this.stored.SlashCommands.map((command) => {
+            if (!command.selected_guilds.includes(guildId)) {
+              return undefined;
+            }
+
+            return command.toJSON();
+          }),
+        });
+      }
+    }
+
+    this.client.success(`Successfully deployed [${this.stored.SlashCommands.size}] commands!`);
+  };
+
+  clearCommands = async (): Promise<void> => {
+    if (!this.client.user) throw new Error("Client user is not defined.");
+
+    await this.REST.put(Routes.applicationCommands(this.client.user.id), {
+      body: [],
+    });
+
+    for (const command of this.stored.SlashCommands.values()) {
+      if (command.selected_guilds.length === 0) continue;
+
+      for (const guildId of command.selected_guilds) {
+        await this.REST.put(Routes.applicationGuildCommands(this.client.user.id, guildId), {
+          body: [],
+        });
+      }
+    }
+
+    this.client.warn("Cleared all commands.");
+  };
+
+  afterInit = async (): Promise<void> => {
+    this.REST.setToken(this.client.config.credentials.discordToken);
+
+    await this.loadCommandFiles("src/commands");
+
+    if (this.client.redeployCommands) {
+      await this.clearCommands();
+      await this.deployCommands();
+    }
+  };
 }

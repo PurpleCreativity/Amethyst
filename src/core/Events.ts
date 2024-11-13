@@ -1,74 +1,80 @@
 import EventEmitter from "node:events";
-import type SuperClient from "../classes/SuperClient.js";
+import process from "node:process";
+import type Client from "../classes/Client.ts";
 
 export default class Events {
-	client : SuperClient;
-	
-	constructor(client : SuperClient) {
-		this.client = client;
-	}
+  client: Client;
 
-    ConnectedEvents = [] as { type: "client" | "process" | "custom", event?: string, emiiter: EventEmitter }[];
+  constructor(client: Client) {
+    this.client = client;
+  }
 
-	AddEvent = (type: "client" | "process" | "custom", event?: string, callback?: (...any: any[]) => void) => {
-        let emiiter: EventEmitter
-		switch (type) {
-			case "client":
-				if (!callback) throw new Error("No callback");
-				if (!event) throw new Error("No event");
-				emiiter = this.client.on(event, callback) as any;
-				break;
-			case "process":
-				if (!callback) throw new Error("No callback");
-				if (!event) throw new Error("No event");
-				emiiter = process.on(event, callback)
-				break;
-			case "custom":
-				emiiter = new EventEmitter();
+  ConnectedEvents = [] as {
+    type: "client" | "process" | "custom";
+    event?: string;
+    emiiter: EventEmitter;
+  }[];
 
-				if (callback && event) {
-					emiiter.on(event, callback);
-				};
-				break;
-			default:
-				throw new Error("Invalid event type");
-		}
+  AddEvent = (
+    type: "client" | "process" | "custom",
+    event?: string,
+    callback?: (...any: unknown[]) => void,
+  ): EventEmitter => {
+    let emiiter: EventEmitter;
+    switch (type) {
+      case "client":
+        if (!callback) throw new Error("No callback");
+        if (!event) throw new Error("No event");
+        emiiter = this.client.on(event, callback) as unknown as EventEmitter;
+        break;
+      case "process":
+        if (!callback) throw new Error("No callback");
+        if (!event) throw new Error("No event");
+        emiiter = process.on(event, callback);
+        break;
+      case "custom":
+        emiiter = new EventEmitter();
 
-        this.client.log(`Added event ${event} to ${type} events`);
-
-		this.ConnectedEvents.push({
-			type: type,
-			event: event,
-			//callback : callback,
-			emiiter: emiiter
-		})
-		return emiiter;
+        if (callback && event) {
+          emiiter.on(event, callback);
+        }
+        break;
+      default:
+        throw new Error("Invalid event type");
     }
 
-    RemoveEvent = (emitter: EventEmitter, name?: string) => {
-		emitter.removeAllListeners(name);
+    this.client.log(`Added event ${event} to ${type} events`);
 
-		const index = this.ConnectedEvents.findIndex((event) => event.emiiter === emitter);
-		if (index !== -1) {
-			this.ConnectedEvents.splice(index, 1);
-		} else {
-			this.client.warn(`Could not find event ${name} in ${emitter}`);
-		}
+    this.ConnectedEvents.push({
+      type: type,
+      event: event,
+      emiiter: emiiter,
+    });
+    return emiiter;
+  };
 
-		if (!name) {
-			for (const name of emitter.eventNames()) {
-				this.client.log(`Removed event ${String(name)}`);
-			}
-		} else this.client.log(`Removed event ${name}`);
+  RemoveEvent = (emitter: EventEmitter, name?: string): EventEmitter => {
+    emitter.removeAllListeners(name);
 
-		return emitter;
-	};
+    const index = this.ConnectedEvents.findIndex((event) => event.emiiter === emitter);
+    if (index !== -1) {
+      this.ConnectedEvents.splice(index, 1);
+    } else {
+      this.client.warn(`Could not find event ${name} in ${emitter}`);
+    }
 
+    if (!name) {
+      for (const name of emitter.eventNames()) {
+        this.client.log(`Removed event ${String(name)}`);
+      }
+    } else this.client.log(`Removed event ${name}`);
 
-    Init = async () => {
-		// @ts-ignore
-		this.client.setMaxListeners(0); // DEBUG
+    return emitter;
+  };
 
-		this.client.success("Initialized Events");
-	};
+  Init = (): void => {
+    this.client.setMaxListeners(0);
+
+    this.client.success("Initialized Events");
+  };
 }

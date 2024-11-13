@@ -1,2 +1,2 @@
-worker: npm run full
-web: npm run full
+worker: deno task prod
+web: deno task prod

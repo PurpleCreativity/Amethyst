@@ -1,0 +1,23 @@
+name: Typescript
+
+on:
+    push:
+        branches-ignore:
+            - release
+    pull_request:
+        branches-ignore:
+            - release
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Set up Deno
+              uses: denoland/setup-deno@v2
+              with:
+                  deno-version: "v2.x"
+
+            - name: Deno Check
+              run: deno check ./src --config ./deno.json

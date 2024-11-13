@@ -1,0 +1,51 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to fill out this bug report! Please make sure that you include all necessary details in your post so we can reach a resolution as painlessly as possible. Also note that not recieving a response does not mean that your issue has been ignored.
+      validations:
+          required: false
+    - type: input
+      id: version
+      attributes:
+          label: Version
+          description: The version of Amethyst you are using/encountering the bug on.
+      validations:
+          required: true
+    - type: dropdown
+      id: related-to
+      attributes:
+          label: Related to
+          description: What is this bug related to?
+          options:
+              - Command
+              - API
+              - Documentation
+              - Other
+      validations:
+          required: true
+    - type: textarea
+      id: what-happened
+      attributes:
+          label: What happened?
+          description: What would've you expected to happen instead?
+          placeholder: ex. When I ran /mypoints, I expected to see my points, but instead...
+      validations:
+          required: true
+    - type: textarea
+      id: reproduce
+      attributes:
+          label: Steps to reproduce
+          description: What are the steps to reproduce this issue?
+          placeholder: ex. 1. Attempt to remove the server owner's Amethyst permissions 2. Get banned instead 3. Have your disappointment be immeasurable
+      validations:
+          required: true
+    - type: textarea
+      id: logs
+      attributes:
+          label: Relevant log output
+          description: Please copy and paste any relevant log output, if any. If Amethyst produced an error on discord, please include the error message.
+          render: js

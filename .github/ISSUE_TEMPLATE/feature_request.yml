@@ -1,0 +1,29 @@
+name: Feature request
+description: Request a feature
+labels: ["enhancement"]
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to fill out this feature request! Also note that not recieving a response does not mean that your request has been ignored.
+      validations:
+          required: false
+    - type: dropdown
+      id: related-to
+      attributes:
+          label: Related to
+          description: What is this bug related to?
+          options:
+              - Command
+              - API
+              - Documentation
+              - Other
+      validations:
+          required: true
+    - type: textarea
+      id: suggestion
+      attributes:
+          label: What are you suggesting?
+          placeholder: ex. Add a new command that does XYZ
+      validations:
+          required: true

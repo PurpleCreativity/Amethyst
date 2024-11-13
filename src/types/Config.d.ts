@@ -1,37 +1,39 @@
-type Config = {
-    version: string;
+import type { ChalkInstance } from "chalk";
 
-    baseURL: string;
-    port: number;
+type configType = {
+  version: string;
 
-    devList: string[];
+  baseURL: string;
+  port: number;
 
-    credentials: {
-        discordToken: string;
-        discordClientSecret: string;
-        discordOAuthRedirectLink: string;
+  devList: string[];
 
-        databaseURL: string;
+  credentials: {
+    discordToken: string;
+    discordClientSecret: string;
+    discordOAuthRedirectLink: string;
 
-        robloxCookie: string;
-        
-        robloxOAuthSecret: string;
-        robloxOauthClientId: string;
-    
-        encryptionKey: string;
-        sessionSecret: string;
-    },
+    databaseURI: string;
 
-    channels: {
-		[key: string]: string
-	};
-    
-    logConfig: {
-		[key: string]: {
-			color: ChalkInstance
-			name: string;
-		};
-	}
+    robloxCookie: string;
+
+    robloxOAuthSecret: string;
+    robloxOauthClientId: string;
+
+    encryptionKey: string;
+    sessionSecret: string;
+  };
+
+  channels: {
+    [key: string]: string;
+  };
+
+  logConfig: {
+    [key: string]: {
+      color: ChalkInstance;
+      name: string;
+    };
+  };
 };
 
-export type { Config };
+export type { configType };
