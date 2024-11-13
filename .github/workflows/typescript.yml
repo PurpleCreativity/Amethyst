@@ -20,4 +20,4 @@ jobs:
                   deno-version: "v2.x"
 
             - name: Deno Check
-              run: deno check ./src --config ./deno.json
+              run: deno task check-build

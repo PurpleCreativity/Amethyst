@@ -19,7 +19,9 @@
     "organized-imports:fix": "deno run -A npm:@biomejs/biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
 
     "check": "deno run -A npm:@biomejs/biome check .",
-    "check:fix": "deno run -A npm:@biomejs/biome check --write ."
+    "check:fix": "deno run -A npm:@biomejs/biome check --write .",
+
+    "check-build": "deno check ./src --config ./deno.json"
   },
   "nodeModulesDir": "auto",
   "license": "MIT",
