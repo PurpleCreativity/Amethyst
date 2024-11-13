@@ -27,7 +27,7 @@
     "enabled": true,
 
     "indentStyle": "space",
-    "indentWidth": 2,
+    "indentWidth": 4,
     "lineWidth": 120,
 
     "formatWithErrors": true

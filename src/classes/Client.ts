@@ -3,7 +3,7 @@ import axios, { type Axios } from "axios";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
 import mongoose, { type Mongoose } from "mongoose";
-import Wrapblox from "wrapblox";
+//import Wrapblox from "wrapblox";
 import config from "../config.ts";
 import type { configType } from "../types/config.d.ts";
 dotenv.config();
@@ -47,7 +47,7 @@ export default class Client extends DiscordClient {
   //? Dependencies
   Axios: Axios = axios;
   Mongoose: Mongoose = mongoose;
-  Wrapblox: Wrapblox = new Wrapblox();
+  //Wrapblox: Wrapblox = new Wrapblox();
 
   constructor(options: ClientOptions) {
     super(options);
@@ -162,6 +162,7 @@ export default class Client extends DiscordClient {
     await this.login(this.config.credentials.discordToken);
     this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
 
+    /*
     try {
       const authuser = await this.Wrapblox.login(this.config.credentials.robloxCookie);
       this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
@@ -169,6 +170,7 @@ export default class Client extends DiscordClient {
       this.error("Failed to login to Roblox:");
       this.error(error);
     }
+    */
 
     for (const channel in this.config.channels) {
       const channelId = this.config.channels[channel];
