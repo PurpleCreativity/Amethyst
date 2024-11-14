@@ -38,7 +38,7 @@ export default new Plugin({
                         embeds: [
                             client.Functions.makeInfoEmbed({
                                 title: "Cape Id",
-                                description: `The image Id of asset Id \`${assetId}\` is \`${imageId}\``,
+                                description: `The image Id of asset Id [${assetId}](https://www.roblox.com/catalog/${assetId}) is __**[${imageId}](https://www.roblox.com/catalog/${imageId})**__`,
                                 image: image.data.data[0].imageUrl,
                             }),
                         ],
