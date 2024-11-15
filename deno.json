@@ -5,7 +5,7 @@
         ".": "./src/main.ts"
     },
     "tasks": {
-        "install": "deno install --allow-scripts=npm:@biomejs/biome@1.9.4",
+        "build": "deno install --allow-scripts=npm:@biomejs/biome@1.9.4",
         "dev": "deno run -A --watch ./src/main.ts --dev",
         "prod": "deno run -A ./src/main.ts",
 
