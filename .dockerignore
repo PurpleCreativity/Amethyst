@@ -1,0 +1,15 @@
+# OS directory info files
+.DS_Store
+desktop.ini
+
+# node
+node_modules
+
+# docker
+docker-compose.yml
+
+# secrets
+.env
+
+# ide
+.vscode
