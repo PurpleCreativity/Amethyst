@@ -110,7 +110,7 @@ interface guildProfileInterface extends mongoose.Document {
     };
 
     roblox: {
-        groupId: number;
+        groupId: number | undefined;
 
         places: Map<string, robloxPlace>;
     };
@@ -124,7 +124,14 @@ interface guildProfileInterface extends mongoose.Document {
     };
 
     users: Map<string, guildUser>;
+
+    schedule: {
+        types: Map<string, ScheduleEventType>;
+        events: Map<string, ScheduledEvent>;
+    };
+
     permissions: Map<string, Permission>;
+    channels: Map<string, string>;
 
     FFlags: Map<string, unknown>;
     settings: Map<string, unknown>;
@@ -132,29 +139,36 @@ interface guildProfileInterface extends mongoose.Document {
 
 const guildProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    iv: String,
+    iv: { type: String, unique: true, required: true },
 
     guild: {
-        id: String,
-        name: String,
+        id: { type: String, unique: true, required: true },
+        name: { type: String, required: true },
     },
 
     roblox: {
-        groupId: Number,
+        groupId: { type: Number, required: false, default: undefined },
 
         places: Map,
     },
 
     API: {
-        rover_Key: String,
-        bloxlink_Key: String,
+        rover_Key: { type: String, default: undefined },
+        bloxlink_Key: { type: String, default: undefined },
 
         enabled: { type: Boolean, default: false },
         keys: Map,
     },
 
     users: Map,
+
+    schedule: {
+        types: Map,
+        events: Map,
+    },
+
     permissions: Map,
+    channels: Map,
 
     FFlags: Map,
     settings: Map,

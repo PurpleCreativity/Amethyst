@@ -10,10 +10,12 @@ interface userProfileInterface extends mongoose.Document {
     };
 
     roblox: {
-        user: {
-            id: string;
-            name: string;
-        };
+        user:
+            | {
+                  id: string;
+                  name: string;
+              }
+            | undefined;
         updatedAt: Date | undefined;
     };
 
@@ -23,17 +25,17 @@ interface userProfileInterface extends mongoose.Document {
 
 const userProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    iv: String,
+    iv: { type: String, unique: true, required: true },
 
     user: {
-        id: String,
-        name: String,
+        id: { type: String, unique: true, required: true },
+        name: { type: String, required: true },
     },
 
     roblox: {
         user: {
-            id: String,
-            name: String,
+            id: { type: String, unique: true, required: false },
+            name: { type: String, required: false },
         },
         updatedAt: { type: Date, default: undefined, required: false },
     },

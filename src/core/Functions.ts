@@ -1,7 +1,7 @@
 //! Rewrite
 
 import { Buffer } from "node:buffer";
-import { createCipheriv, createDecipheriv } from "node:crypto";
+import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import process from "node:process";
 import { Colors, Message, type StartThreadOptions, type TextChannel } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
@@ -43,6 +43,10 @@ export default class Functions {
 */
     GenerateID = () => {
         return crypto.randomUUID();
+    };
+
+    GenerateIV = () => {
+        return randomBytes(16).toString("hex");
     };
 
     MemoryUsage = () => {
