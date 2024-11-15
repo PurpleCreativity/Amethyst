@@ -8,6 +8,7 @@ import config from "../config.ts";
 import type { configType } from "../types/config.d.ts";
 dotenv.config();
 
+import API from "../core/API.ts";
 import Events from "../core/Events.ts";
 import Functions from "../core/Functions.ts";
 import Interactables from "../core/Interactables.ts";
@@ -31,6 +32,7 @@ export default class Client extends DiscordClient {
         "Threader",
         "Events",
         "Process",
+        "API",
         "Interactables",
 
         "Plugins",
@@ -41,6 +43,7 @@ export default class Client extends DiscordClient {
     Threader: Threader;
     Events: Events;
     Process: Process;
+    API: API;
     Interactables: Interactables;
     Plugins: Plugins;
 
@@ -56,6 +59,7 @@ export default class Client extends DiscordClient {
         this.Threader = new Threader(this);
         this.Events = new Events(this);
         this.Process = new Process(this);
+        this.API = new API(this);
         this.Interactables = new Interactables(this);
         this.Plugins = new Plugins(this);
     }
