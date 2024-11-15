@@ -1,2 +1,2 @@
-worker: deno task prod
-web: deno task prod
+worker: npm run start
+web: npm run start
