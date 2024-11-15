@@ -24,6 +24,8 @@ export default new Event({
             } catch (error) {
                 if (!(error instanceof Error)) return;
 
+                client.error(error.stack);
+
                 if (interaction.deferred) {
                     return await interaction.editReply({
                         embeds: [
