@@ -1,3 +1,8 @@
+/*
+    Mongoose really does not seem to like Deno
+    Types in your IDE will not work,
+    but the code will still run and pass the typescript compiler
+*/
 
 import mongoose from "mongoose";
 
@@ -12,5 +17,5 @@ export default class Database {
 
     Init = async () => {
         console.log(await mongoose.connect(this.client.config.credentials.databaseURI));
-    }
+    };
 }
