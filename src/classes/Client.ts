@@ -249,14 +249,5 @@ export default class Client extends DiscordClient {
         }
 
         this.success(`Amethyst online, startup took ${new Date().getTime() - this.startTime.getTime()}ms`);
-
-        for (let i = 0; i < 100000; i++) {
-            this.verbose("This is a verbose message");
-            this.verbose("This is a verbose message");
-            this.verbose("This is a verbose message");
-            this.verbose("This is a verbose message");
-            this.verbose("This is a verbose message");
-        }
-        console.log(await this.Logs.readLogFile());
     };
 }
