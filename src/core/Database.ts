@@ -11,6 +11,6 @@ export default class Database {
     }
 
     Init = async () => {
-        console.log(mongoose.connect(this.client.config.credentials.databaseURI));
+        console.log(await mongoose.connect(this.client.config.credentials.databaseURI));
     }
 }
