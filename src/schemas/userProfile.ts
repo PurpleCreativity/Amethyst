@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface userInterface extends mongoose.Document {
+interface userProfileInterface extends mongoose.Document {
     _id: mongoose.Types.ObjectId;
     iv: string;
 
@@ -21,7 +21,7 @@ interface userInterface extends mongoose.Document {
     settings: Map<string, unknown>;
 }
 
-const userSchema = new mongoose.Schema({
+const userProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     iv: String,
 
@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     settings: { type: Map, of: mongoose.Schema.Types.Mixed },
 });
 
-const User = mongoose.model<userInterface>("User", userSchema);
+const userProfile = mongoose.model<userProfileInterface>("User", userProfileSchema);
 
-export default User;
-export type { userInterface, userSchema };
+export default userProfile;
+export type { userProfileInterface, userProfileSchema };

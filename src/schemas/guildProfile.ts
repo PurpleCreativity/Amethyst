@@ -2,7 +2,7 @@ import type { ColorResolvable } from "discord.js";
 import mongoose from "mongoose";
 import client from "../main.ts";
 
-type guildUser = {
+export type guildUser = {
     user: {
         name: string;
         id: string;
@@ -26,13 +26,13 @@ type guildUser = {
     };
 };
 
-type Permission = {
+export type Permission = {
     name: string;
     roles: string[];
     users: string[];
 };
 
-type APIKey = {
+export type APIKey = {
     name: string;
     key: string;
 
@@ -43,13 +43,13 @@ type APIKey = {
     createdBy: string;
 };
 
-type robloxPlace = {
+export type robloxPlace = {
     name: string;
     id: string; // placeId, not UniverseId
     key: string; // API Key
 };
 
-type PointLog = {
+export type PointLog = {
     id: string;
     creator: {
         name: string;
@@ -67,7 +67,7 @@ type PointLog = {
     createdAt: Date;
 };
 
-type ScheduleEventType = {
+export type ScheduleEventType = {
     name: string;
     icon: string;
     color: ColorResolvable;
@@ -80,7 +80,7 @@ type ScheduleEventType = {
     canSchedule: { roles: string[]; users: string[] };
 };
 
-type ScheduledEvent = {
+export type ScheduledEvent = {
     time: number; // In Minutes
     duration: number; // In Minutes
 
@@ -100,7 +100,7 @@ type ScheduledEvent = {
     id: string;
 };
 
-interface guildInterface extends mongoose.Document {
+interface guildProfileInterface extends mongoose.Document {
     _id: mongoose.Types.ObjectId;
     iv: string;
 
@@ -130,7 +130,7 @@ interface guildInterface extends mongoose.Document {
     settings: Map<string, unknown>;
 }
 
-const guildSchema = new mongoose.Schema({
+const guildProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     iv: String,
 
@@ -160,11 +160,11 @@ const guildSchema = new mongoose.Schema({
     settings: Map,
 });
 
-guildSchema.methods.fetchGuild = async function () {
+guildProfileSchema.methods.fetchGuild = async function () {
     return await client.guilds.fetch(this.guild.id);
 };
 
-const Guild = mongoose.model<guildInterface>("Guild", guildSchema);
+const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
 
-export default Guild;
-export type { guildInterface, guildUser, APIKey, PointLog };
+export default guildProfile;
+export type { guildProfileInterface, guildProfileSchema };
