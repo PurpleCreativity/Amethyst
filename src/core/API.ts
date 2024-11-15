@@ -12,7 +12,7 @@ export default class API {
 
     Init = async () => {
         this.server.listen(this.client.config.port, () => {
-            console.log(`Server is running on port ${this.client.config.port}`);
+            this.client.success(`Server is running on port ${this.client.config.port}`);
         });
     };
 }
