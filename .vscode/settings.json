@@ -1,7 +1,4 @@
 {
-    "deno.enable": true,
-    "deno.lint": false,
-
     "biome.enabled": true,
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {

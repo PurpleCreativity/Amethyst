@@ -6,7 +6,7 @@ import process from "node:process";
 import { Colors, Message, type StartThreadOptions, type TextChannel } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import Embed, { type EmbedOptions } from "../classes/Embed.ts";
+import Embed, { type EmbedOptions } from "../classes/Embed.js";
 
 export default class Functions {
     client: Client;

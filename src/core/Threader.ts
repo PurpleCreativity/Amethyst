@@ -1,5 +1,5 @@
-import type Client from "../classes/Client.ts";
-import Signal from "../classes/Signal.ts";
+import type Client from "../classes/Client.js";
+import Signal from "../classes/Signal.js";
 
 export class Thread<V extends (...args: unknown[]) => unknown> {
     Name: string;

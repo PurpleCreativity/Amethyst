@@ -1,5 +1,5 @@
 import { BaseInteraction } from "discord.js";
-import Event from "../classes/Event.ts";
+import Event from "../classes/Event.js";
 
 export default new Event({
     type: "client",

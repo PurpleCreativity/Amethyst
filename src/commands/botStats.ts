@@ -1,4 +1,4 @@
-import SlashCommand from "../classes/SlashCommand.ts";
+import SlashCommand from "../classes/SlashCommand.js";
 
 export default new SlashCommand({
     name: "stats",

@@ -1,0 +1,48 @@
+{
+    "name": "amethyst",
+    "version": "2.0.0",
+    "description": "A discord bot written in Typescript, inspired by PB Kronos.",
+    "main": "./build/main.js",
+    "type": "module",
+    "exports": {
+        ".": "./build/main.js"
+    },
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "npm run build && node . --dev",
+        "start": "npm run build && node .",
+
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+
+        "format": "biome format .",
+        "format:fix": "biome format --write .",
+
+        "organized-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true .",
+        "organized-imports:fix": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
+
+        "check": "biome check .",
+        "check:fix": "biome check --write ."
+    },
+    "author": "Purple_Creativity",
+    "license": "MIT",
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@types/express": "^5.0.0",
+        "@types/express-session": "^1.18.0",
+        "@types/node": "^22.9.0",
+        "typescript": "^5.6.3"
+    },
+    "dependencies": {
+        "axios": "^1.7.7",
+        "chalk": "^5.3.0",
+        "discord.js": "^14.16.3",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "express-rate-limit": "^7.4.1",
+        "mongoose": "^8.8.1"
+    }
+}

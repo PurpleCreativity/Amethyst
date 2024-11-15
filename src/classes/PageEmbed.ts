@@ -1,6 +1,6 @@
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
-import ButtonEmbed from "./ButtonEmbed.ts";
-import type Client from "./Client.ts";
+import ButtonEmbed from "./ButtonEmbed.js";
+import type Client from "./Client.js";
 
 export type PageEmbedOptions = {
     baseEmbed: EmbedBuilder;

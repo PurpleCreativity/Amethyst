@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import type Client from "../classes/Client.ts";
-import Plugin from "../classes/Plugin.ts";
+import type Client from "../classes/Client.js";
+import Plugin from "../classes/Plugin.js";
 
 export default class Plugins {
     client: Client;
@@ -18,7 +18,7 @@ export default class Plugins {
 
     loadPlugin = async (pluginPath: string): Promise<void> => {
         if (!fs.existsSync(pluginPath)) {
-            this.client.warn(`Skipping [${pluginPath}] Plugin as it does not have a main.ts file.`);
+            this.client.warn(`Skipping [${pluginPath}] Plugin as it does not have a main.js file.`);
             return;
         }
 
@@ -40,7 +40,7 @@ export default class Plugins {
                 const pluginPath = path.join(dir, plugin);
                 if (fs.statSync(pluginPath).isDirectory()) {
                     await loadPluginFromDir(pluginPath);
-                } else if (plugin === "main.ts") {
+                } else if (plugin === "main.js") {
                     await this.loadPlugin(pluginPath);
                 }
             }

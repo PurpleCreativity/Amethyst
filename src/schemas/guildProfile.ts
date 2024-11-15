@@ -1,6 +1,6 @@
 import type { ColorResolvable } from "discord.js";
 import mongoose from "mongoose";
-import client from "../main.ts";
+import client from "../main.js";
 
 export type guildUser = {
     user: {

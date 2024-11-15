@@ -8,9 +8,9 @@ import {
     type UserContextMenuCommandInteraction,
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
-import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.ts";
-import type { ValidPermissions } from "../types/global.d.ts";
-import type Client from "./Client.ts";
+import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
+import type { ValidPermissions } from "../types/global.d.js";
+import type Client from "./Client.js";
 
 export type BaseContextMenuCommandOptions = {
     name: string;

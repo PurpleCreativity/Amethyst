@@ -9,4 +9,4 @@ services:
       - .env
     ports:
       - "8000:8000"
-    command: "deno task prod"
+    command: "node ."

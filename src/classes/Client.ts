@@ -4,25 +4,25 @@ import { type ClientOptions, Client as DiscordClient, TextChannel } from "discor
 import dotenv from "dotenv";
 import mongoose, { type Mongoose } from "mongoose";
 //import Wrapblox from "wrapblox";
-import config from "../config.ts";
-import type { configType } from "../types/config.d.ts";
+import config from "../config.js";
+import type { configType } from "../types/config.d.js";
 dotenv.config();
 
-import API from "../core/API.ts";
-import Database from "../core/Database.ts";
-import Events from "../core/Events.ts";
-import Functions from "../core/Functions.ts";
-import Interactables from "../core/Interactables.ts";
-import Plugins from "../core/Plugins.ts";
-import Process from "../core/Process.ts";
-import Threader from "../core/Threader.ts";
+import API from "../core/API.js";
+import Database from "../core/Database.js";
+import Events from "../core/Events.js";
+import Functions from "../core/Functions.js";
+import Interactables from "../core/Interactables.js";
+import Plugins from "../core/Plugins.js";
+import Process from "../core/Process.js";
+import Threader from "../core/Threader.js";
 
 export default class Client extends DiscordClient {
     readonly startTime: Date = new Date();
 
     readonly config: configType = config;
 
-    readonly args: string[] = Deno.args;
+    readonly args: string[] = process.argv.slice(2);
     readonly devMode: boolean = this.args.includes("--dev");
     readonly redeployCommands: boolean = this.args.includes("--redeployCommands") || this.args.includes("--rc");
 

@@ -1,5 +1,5 @@
 import { GatewayIntentBits } from "discord-api-types/v10";
-import Client from "./classes/Client.ts";
+import Client from "./classes/Client.js";
 
 const client: Client = new Client({
     intents: [

@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import type Client from "../classes/Client.ts";
-import Event from "../classes/Event.ts";
+import type Client from "../classes/Client.js";
+import Event from "../classes/Event.js";
 
 export default class Process {
     client: Client;
@@ -11,17 +11,24 @@ export default class Process {
         this.client = client;
     }
 
-    Init = async (): Promise<void> => {
-        for (const file of fs.readdirSync(path.join(process.cwd(), "src/events"))) {
-            if (!file.endsWith(".ts")) continue;
+    loadEventFiles = async (Filespath: string): Promise<void> => {
+        const eventsDir = path.join(process.cwd(), Filespath);
 
-            const eventClass = await import(`file://${path.join(process.cwd(), "src/events", file)}`);
+        for (const file of fs.readdirSync(eventsDir)) {
+            if (file.endsWith(".map")) continue;
+            if (!file.endsWith(".js")) continue;
+
+            const eventClass = await import(`file://${path.join(eventsDir, file)}`);
             if (!(eventClass.default || eventClass.default instanceof Event)) continue;
 
             this.client.Events.AddEvent(eventClass.default.type, file.slice(0, -3), (...args: unknown[]) =>
                 eventClass.default.callback(this.client, ...args),
             );
         }
+    };
+
+    Init = async (): Promise<void> => {
+        await this.loadEventFiles("build/events");
 
         if (this.client.devMode) {
             this.client.Events.AddEvent("client", "debug", (message: unknown) => this.client.verbose(message));

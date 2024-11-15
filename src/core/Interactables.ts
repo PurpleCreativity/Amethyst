@@ -2,10 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { Collection, REST, Routes } from "discord.js";
-import type Client from "../classes/Client.ts";
-import { MessageContextMenuCommand, UserContextMenuCommand } from "../classes/ContextCommand.ts";
-import SlashCommand from "../classes/SlashCommand.ts";
-import type StaticButton from "../classes/StaticButton.ts";
+import type Client from "../classes/Client.js";
+import { MessageContextMenuCommand, UserContextMenuCommand } from "../classes/ContextCommand.js";
+import SlashCommand from "../classes/SlashCommand.js";
+import type StaticButton from "../classes/StaticButton.js";
 
 export default class Interactables {
     client: Client;
@@ -152,8 +152,11 @@ export default class Interactables {
 
         for (const folderEntry of fs.readdirSync(commandsDir)) {
             if (fs.statSync(path.join(commandsDir, folderEntry)).isDirectory()) {
-                for (const fileEntry of fs.readdirSync(path.join(commandsDir, folderEntry))) {
-                    if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || fileEntry.endsWith(".ts"))) {
+                for (const fileEntry of fs
+                    .readdirSync(path.join(commandsDir, folderEntry))
+                    .filter((file) => file.endsWith(".js"))) {
+                    if (fileEntry.endsWith(".map")) continue;
+                    if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || fileEntry.endsWith(".js"))) {
                         this.client.warn(`Skipping [${fileEntry}] as it is not a valid command file.`);
                         continue;
                     }
@@ -170,7 +173,8 @@ export default class Interactables {
                 return;
             }
 
-            if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || folderEntry.endsWith(".ts"))) {
+            if (folderEntry.endsWith(".map")) continue;
+            if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || folderEntry.endsWith(".js"))) {
                 this.client.warn(`Skipping [${folderEntry}] as it is not a valid command file.`);
                 continue;
             }
@@ -253,7 +257,7 @@ export default class Interactables {
     afterInit = async (): Promise<void> => {
         this.REST.setToken(this.client.config.credentials.discordToken);
 
-        await this.loadCommandFiles("src/commands");
+        await this.loadCommandFiles("build/commands");
 
         if (this.client.redeployCommands) {
             await this.clearCommands();
