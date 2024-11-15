@@ -14,16 +14,12 @@
         "build": "tsc",
         "dev": "npm run build && node . --dev",
         "start": "npm run build && node .",
-
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
-
         "format": "biome format .",
         "format:fix": "biome format --write .",
-
         "organized-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true .",
         "organized-imports:fix": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
-
         "check": "biome check .",
         "check:fix": "biome check --write ."
     },
@@ -34,6 +30,7 @@
         "@types/express": "^5.0.0",
         "@types/express-session": "^1.18.0",
         "@types/node": "^22.9.0",
+        "ts-node": "^10.9.2",
         "typescript": "^5.6.3"
     },
     "dependencies": {
