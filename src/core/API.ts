@@ -14,5 +14,5 @@ export default class API {
         this.server.listen(this.client.config.port, () => {
             console.log(`Server is running on port ${this.client.config.port}`);
         });
-    }
+    };
 }
