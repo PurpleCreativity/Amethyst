@@ -22,7 +22,6 @@ export default class Plugins {
             return;
         }
 
-        console.log(`Loading plugin from ${pluginPath}`);
         const plugin = await import(`file://${pluginPath}`).then((module) => module.default);
 
         if (!(plugin instanceof Plugin)) {
@@ -52,7 +51,6 @@ export default class Plugins {
 
     Init = async (): Promise<void> => {
         await this.loadPlugins();
-        console.log(this.loadedPlugins);
 
         for (const plugin of this.loadedPlugins) {
             await plugin.Init(this.client);
