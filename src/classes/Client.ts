@@ -9,6 +9,7 @@ import type { configType } from "../types/config.d.ts";
 dotenv.config();
 
 import API from "../core/API.ts";
+import Database from "../core/Database.ts";
 import Events from "../core/Events.ts";
 import Functions from "../core/Functions.ts";
 import Interactables from "../core/Interactables.ts";
@@ -32,6 +33,8 @@ export default class Client extends DiscordClient {
         "Threader",
         "Events",
         "Process",
+
+        "Database",
         "API",
         "Interactables",
 
@@ -43,13 +46,13 @@ export default class Client extends DiscordClient {
     Threader: Threader;
     Events: Events;
     Process: Process;
+    Database: Database;
     API: API;
     Interactables: Interactables;
     Plugins: Plugins;
 
     //? Dependencies
-    Axios: Axios = axios.create();
-    Mongoose: Mongoose = mongoose;
+    axios: Axios = axios.create();
     //Wrapblox: Wrapblox = new Wrapblox();
 
     constructor(options: ClientOptions) {
@@ -59,6 +62,7 @@ export default class Client extends DiscordClient {
         this.Threader = new Threader(this);
         this.Events = new Events(this);
         this.Process = new Process(this);
+        this.Database = new Database(this);
         this.API = new API(this);
         this.Interactables = new Interactables(this);
         this.Plugins = new Plugins(this);
