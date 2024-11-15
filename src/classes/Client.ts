@@ -45,7 +45,7 @@ export default class Client extends DiscordClient {
     Plugins: Plugins;
 
     //? Dependencies
-    Axios: Axios = axios;
+    Axios: Axios = axios.create();
     Mongoose: Mongoose = mongoose;
     //Wrapblox: Wrapblox = new Wrapblox();
 
