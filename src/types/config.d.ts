@@ -24,6 +24,10 @@ type configType = {
         sessionSecret: string;
     };
 
+    logs: {
+        max_file_size: number; // in MB
+    };
+
     channels: {
         [key: string]: string;
     };

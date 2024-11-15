@@ -35,6 +35,10 @@ config.channels = {
     logs: "1276658150291804160",
 };
 
+config.logs = {
+    max_file_size: 7,
+};
+
 config.logConfig = {
     info: {
         color: chalk.bold.blue,

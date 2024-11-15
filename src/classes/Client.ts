@@ -13,6 +13,7 @@ import Database from "../core/Database.js";
 import Events from "../core/Events.js";
 import Functions from "../core/Functions.js";
 import Interactables from "../core/Interactables.js";
+import Logs from "../core/Logs.js";
 import Plugins from "../core/Plugins.js";
 import Process from "../core/Process.js";
 import Threader from "../core/Threader.js";
@@ -33,6 +34,7 @@ export default class Client extends DiscordClient {
         "Threader",
         "Events",
         "Process",
+        "Logs",
 
         "Database",
         "API",
@@ -46,6 +48,7 @@ export default class Client extends DiscordClient {
     Threader: Threader;
     Events: Events;
     Process: Process;
+    Logs: Logs;
     Database: Database;
     API: API;
     Interactables: Interactables;
@@ -62,6 +65,7 @@ export default class Client extends DiscordClient {
         this.Threader = new Threader(this);
         this.Events = new Events(this);
         this.Process = new Process(this);
+        this.Logs = new Logs(this);
         this.Database = new Database(this);
         this.API = new API(this);
         this.Interactables = new Interactables(this);
@@ -107,7 +111,7 @@ export default class Client extends DiscordClient {
             }
             let fullMessage = `[${type.toUpperCase()}] (${infoline}) ${message}`;
             if (useDate === true || useDate === undefined) {
-                fullMessage = `[${new Date().toLocaleTimeString()}] ${fullMessage}`;
+                fullMessage = `[${new Date().toISOString().replace("T", " ").replace("Z", "")}] ${fullMessage}`;
                 fullMessage += ` at ${new Date().toLocaleString()}`;
             }
             if (this.config.logConfig[type] === undefined) {
@@ -216,6 +220,16 @@ export default class Client extends DiscordClient {
             }
         }
 
+        const originalLog = this.Log;
+        this.Log = (
+            type: "error" | "success" | "info" | "verbose" | "warn" | "deprecated",
+            message: unknown,
+            useDate?: boolean,
+        ): void => {
+            originalLog(type, message, useDate);
+            this.Logs.writeLogFile(type, message);
+        };
+
         for (const moduleName of Client.loadingOrder) {
             const moduleObject = this[moduleName];
             if (!(moduleObject instanceof Object)) {
@@ -235,5 +249,14 @@ export default class Client extends DiscordClient {
         }
 
         this.success(`Amethyst online, startup took ${new Date().getTime() - this.startTime.getTime()}ms`);
+
+        for (let i = 0; i < 100000; i++) {
+            this.verbose("This is a verbose message");
+            this.verbose("This is a verbose message");
+            this.verbose("This is a verbose message");
+            this.verbose("This is a verbose message");
+            this.verbose("This is a verbose message");
+        }
+        console.log(await this.Logs.readLogFile());
     };
 }
