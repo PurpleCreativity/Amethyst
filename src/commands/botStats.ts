@@ -36,9 +36,13 @@ export default new SlashCommand({
                 },
                 {
                     name: "Plugins",
-                    value: client.Plugins.loadedPlugins
-                        .map((plugin) => `"**${plugin.name}**" ${plugin.author} - v${plugin.version}`)
-                        .join("\n"),
+                    value:
+                        client.Plugins.loadedPlugins.length > 0
+                            ? client.Plugins.loadedPlugins
+                                  .map((plugin) => `**${plugin.name}** ${plugin.author} - v${plugin.version}`)
+                                  .join("\n")
+                            : "No plugins loaded",
+                    inline: false,
                 },
                 {
                     name: "Caches",
