@@ -99,7 +99,7 @@ export default new SlashCommand({
             emoji: Emojis.check,
 
             function: async (buttonInteraction) => {
-                await buttonInteraction.deferUpdate();
+                await buttonInteraction.deferReply();
 
                 const user = await client.Functions.fetchRobloxUser(username, false);
                 if (!user) {
@@ -112,6 +112,7 @@ export default new SlashCommand({
 
                     buttonEmbed.setButtons([]);
                     await interaction.editReply(buttonEmbed.getMessageData());
+                    await buttonInteraction.deleteReply();
 
                     return;
                 }
@@ -126,12 +127,10 @@ export default new SlashCommand({
 
                     buttonEmbed.setButtons([]);
                     await interaction.editReply(buttonEmbed.getMessageData());
+                    await buttonInteraction.deleteReply();
 
                     return;
                 }
-
-                const userProffile = await client.Database.fetchUserProfile(interaction.user.id);
-                await userProffile.linkRoblox({ id: user.id, name: user.name });
 
                 buttonEmbed.setEmbed(
                     client.Functions.makeSuccessEmbed({
@@ -141,8 +140,12 @@ export default new SlashCommand({
                     }),
                 );
 
+                const userProffile = await client.Database.fetchUserProfile(interaction.user.id);
+                await userProffile.linkRoblox({ id: user.id, name: user.name });
+
                 buttonEmbed.setButtons([]);
                 await interaction.editReply(buttonEmbed.getMessageData());
+                await buttonInteraction.deleteReply();
             },
         });
 
