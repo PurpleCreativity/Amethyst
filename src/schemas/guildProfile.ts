@@ -213,7 +213,7 @@ const guildProfileSchema = new mongoose.Schema({
     },
 
     roblox: {
-        groupId: { type: String, required: true, default: "0" },
+        groupId: { type: String, required: false },
         places: {
             type: Map,
             of: {
@@ -224,8 +224,8 @@ const guildProfileSchema = new mongoose.Schema({
     },
 
     API: {
-        rover_Key: { type: String, required: true, default: "" },
-        bloxlink_Key: { type: String, required: true, default: "" },
+        rover_Key: { type: String, required: false },
+        bloxlink_Key: { type: String, required: false },
         enabled: { type: Boolean, required: true, default: false },
         keys: {
             type: Map,
