@@ -187,6 +187,12 @@ interface guildProfileInterface extends mongoose.Document {
     removeScheduleType: (name: string) => Promise<guildProfileInterface>;
     updateScheduleType: (name: string, scheduleType: ScheduleEventType) => Promise<guildProfileInterface>;
     getScheduleTypes: () => ScheduleEventType[];
+
+    getAPIKey: (keyName: string) => APIKey;
+    addAPIKey: (key: APIKey) => Promise<guildProfileInterface>;
+    removeAPIKey: (keyName: string) => Promise<guildProfileInterface>;
+    updateAPIKey: (keyName: string, key: APIKey) => Promise<guildProfileInterface>;
+    validateAPIKey: (key: string) => boolean;
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -520,6 +526,34 @@ guildProfileSchema.methods.updateScheduleType = async function (name: string, sc
 
 guildProfileSchema.methods.getScheduleTypes = function () {
     return Array.from(this.schedule.types.values());
+};
+
+//? API
+
+guildProfileSchema.methods.getAPIKey = function (keyName: string) {
+    return this.API.keys.get(keyName);
+};
+
+guildProfileSchema.methods.addAPIKey = async function (key: APIKey) {
+    this.API.keys.push(key);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.removeAPIKey = async function (keyName: string) {
+    this.API.keys = this.API.keys.filter((key: APIKey) => key.name !== keyName);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.updateAPIKey = async function (keyName: string, key: APIKey) {
+    this.API.keys = this.API.keys.map((key: APIKey) => (key.name === keyName ? key : key));
+
+    return this.save();
+};
+
+guildProfileSchema.methods.validateAPIKey = async function (key: string) {
+    return this.API.keys.some((apiKey: APIKey) => apiKey.key === client.Functions.Decrypt(key, this.iv));
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
