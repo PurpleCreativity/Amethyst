@@ -56,27 +56,27 @@ userProfileSchema.methods.linkRoblox = async function (robloxUser: { id: number;
     this.roblox.user = robloxUser;
     this.roblox.updatedAt = new Date();
 
-    return this.save();
+    return await this.save();
 };
 
 userProfileSchema.methods.getFFlag = function (name: string) {
     return this.FFlags.get(name);
 };
 
-userProfileSchema.methods.setFFlag = function (name: string, value: unknown) {
+userProfileSchema.methods.setFFlag = async function (name: string, value: unknown) {
     this.FFlags.set(name, value);
 
-    return this.save();
+    return await this.save();
 };
 
 userProfileSchema.methods.getSetting = function (name: string) {
     return this.settings.get(name);
 };
 
-userProfileSchema.methods.setSetting = function (name: string, value: unknown) {
+userProfileSchema.methods.setSetting = async function (name: string, value: unknown) {
     this.settings.set(name, value);
 
-    return this.save();
+    return await this.save();
 };
 
 const userProfile = mongoose.model<userProfileInterface>("User", userProfileSchema);

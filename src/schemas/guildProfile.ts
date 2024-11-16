@@ -145,6 +145,9 @@ interface guildProfileInterface extends mongoose.Document {
     getSetting: (settingName: string) => unknown;
     setSetting: (settingName: string, value: unknown) => Promise<guildProfileInterface>;
 
+    getChannel: (channelName: string) => Promise<TextChannel>;
+    setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
+
     getPermission: (permissionName: string) => Permission;
     checkPermissions: (user: GuildMember, requiredPermissions: string[]) => boolean;
 
@@ -156,11 +159,9 @@ interface guildProfileInterface extends mongoose.Document {
     removeRoleFromPermission: (permissionName: string, roleId: string) => Promise<guildProfileInterface>;
     setRolesToPermission: (permissionName: string, roleIds: string[]) => Promise<guildProfileInterface>;
 
-    getChannel: (channelName: string) => Promise<TextChannel>;
-    setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
-
     addUser: (robloxUser: { id: string; name: string }) => Promise<guildProfileInterface>;
-    getUser: (robloxId: string) => Promise<guildUser>;
+    getUser: (robloxId: string) => Promise<guildProfileInterface>;
+
     calculatePendingPoints: (robloxId: string) => number;
     setNote: (robloxId: string, note: string, visible?: boolean) => Promise<guildProfileInterface>;
     setRankLock: (
@@ -171,19 +172,19 @@ interface guildProfileInterface extends mongoose.Document {
     ) => Promise<guildProfileInterface>;
 
     addPointLog: (log: PointLog) => Promise<guildProfileInterface>;
-    getPointLog: (logId: string) => Promise<PointLog>;
+    getPointLog: (logId: string) => PointLog;
     removePointLog: (logId: string) => Promise<guildProfileInterface>;
     updatePointLog: (logId: string, log: PointLog) => Promise<guildProfileInterface>;
-    getPointLogs: (query?: { creatorId: string; targetId: string }) => PointLog[];
+    getPointLogs: (query?: { creatorName?: string; targetName?: string }) => PointLog[];
 
     addScheduledEvent: (event: ScheduledEvent) => Promise<guildProfileInterface>;
-    getScheduledEvent: (eventId: string) => Promise<ScheduledEvent>;
+    getScheduledEvent: (eventId: string) => ScheduledEvent;
     removeScheduledEvent: (eventId: string) => Promise<guildProfileInterface>;
     updateScheduledEvent: (eventId: string, event: ScheduledEvent) => Promise<guildProfileInterface>;
-    getScheduledEvents: (query?: { hostId: string; eventType: string }) => ScheduledEvent[];
+    getScheduledEvents: (query?: { hostName?: string; eventType?: string }) => ScheduledEvent[];
 
     addScheduleType: (type: ScheduleEventType) => Promise<guildProfileInterface>;
-    getScheduleType: (name: string) => Promise<ScheduleEventType>;
+    getScheduleType: (name: string) => ScheduleEventType;
     removeScheduleType: (name: string) => Promise<guildProfileInterface>;
     updateScheduleType: (name: string, scheduleType: ScheduleEventType) => Promise<guildProfileInterface>;
     getScheduleTypes: () => ScheduleEventType[];
@@ -245,7 +246,7 @@ guildProfileSchema.methods.getFFlag = function (FFlagName: string) {
 guildProfileSchema.methods.setFFlag = async function (FFlagName: string, value: unknown) {
     this.FFlags.set(FFlagName, value);
 
-    return this.save();
+    return await this.save();
 };
 
 //? Settings
@@ -257,7 +258,7 @@ guildProfileSchema.methods.getSetting = function (settingName: string) {
 guildProfileSchema.methods.setSetting = async function (settingName: string, value: unknown) {
     this.settings.set(settingName, value);
 
-    return this.save();
+    return await this.save();
 };
 
 //? Channels
@@ -269,7 +270,7 @@ guildProfileSchema.methods.getChannel = async function (channelName: string) {
 guildProfileSchema.methods.setChannel = async function (channelName: string, id: string) {
     this.channels.set(channelName, id);
 
-    return this.save();
+    return await this.save();
 };
 
 //? Permissions
@@ -302,7 +303,7 @@ guildProfileSchema.methods.checkPermissions = function (user: GuildMember, requi
 guildProfileSchema.methods.addUserToPermission = async function (permissionName: string, userId: string) {
     this.permissions.get(permissionName).users.push(userId);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.removeUserFromPermission = async function (permissionName: string, userId: string) {
@@ -310,13 +311,13 @@ guildProfileSchema.methods.removeUserFromPermission = async function (permission
         .get(permissionName)
         .users.filter((user: string) => user !== userId);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.setUsersToPermission = async function (permissionName: string, userIds: string[]) {
     this.permissions.get(permissionName).users = userIds;
 
-    return this.save();
+    return await this.save();
 };
 
 // Permission/Roles
@@ -324,7 +325,7 @@ guildProfileSchema.methods.setUsersToPermission = async function (permissionName
 guildProfileSchema.methods.addRoleToPermission = async function (permissionName: string, roleId: string) {
     this.permissions.get(permissionName).roles.push(roleId);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.removeRoleFromPermission = async function (permissionName: string, roleId: string) {
@@ -332,13 +333,13 @@ guildProfileSchema.methods.removeRoleFromPermission = async function (permission
         .get(permissionName)
         .roles.filter((role: string) => role !== roleId);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.setRolesToPermission = async function (permissionName: string, roleIds: string[]) {
     this.permissions.get(permissionName).roles = roleIds;
 
-    return this.save();
+    return await this.save();
 };
 
 //? Users
@@ -400,13 +401,13 @@ guildProfileSchema.methods.calculatePendingPoints = function (robloxId: string) 
 };
 
 guildProfileSchema.methods.setNote = async function (robloxId: string, note: string, visible?: boolean) {
-    const user = this.getUser(robloxId);
+    const user = await this.getUser(robloxId);
 
     user.note.text = note;
     user.note.visible = visible ?? true;
     user.note.updatedAt = new Date();
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.setRankLock = async function (
@@ -415,49 +416,49 @@ guildProfileSchema.methods.setRankLock = async function (
     shadow?: boolean,
     reason?: string,
 ) {
-    const user = this.getUser(robloxId);
+    const user = await this.getUser(robloxId);
 
     user.ranklock.rank = rank;
     user.ranklock.shadow = shadow ?? false;
     user.ranklock.reason = reason;
     user.ranklock.updatedAt = new Date();
 
-    return this.save();
+    return await this.save();
 };
 
 //? Point logs
 
 guildProfileSchema.methods.addPointLog = async function (log: PointLog) {
-    this.pointLogs.push(log);
+    this.pointLogs.set(log.id, log);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.getPointLog = async function (logId: string) {
-    return this.pointLogs.find((log: PointLog) => log.id === logId);
+guildProfileSchema.methods.getPointLog = function (logId: string) {
+    return this.pointLogs.get(logId);
 };
 
 guildProfileSchema.methods.removePointLog = async function (logId: string) {
-    this.pointLogs = this.pointLogs.filter((log: PointLog) => log.id !== logId);
+    this.pointLogs = new Map([...this.pointLogs].filter(([key, log]: [string, PointLog]) => log.id !== logId));
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.updatePointLog = async function (logId: string, log: PointLog) {
-    this.pointLogs = this.pointLogs.map((log: PointLog) => (log.id === logId ? log : log));
+    this.pointLogs.set(logId, log);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.getPointLogs = function (query?: { creatorId?: string; targetId?: string }) {
+guildProfileSchema.methods.getPointLogs = function (query?: { creatorName?: string; targetName?: string }) {
     if (!query) return this.pointLogs;
 
-    const { creatorId, targetId } = query;
+    const { creatorName, targetName } = query;
     return (
-        this.pointLogs.filter(
-            (log: PointLog) =>
-                (creatorId ? log.creator.id === creatorId : true) &&
-                (targetId ? log.data.some((data) => data.id.toString() === targetId) : true),
+        Array.from(this.pointLogs.values()).filter(
+            (log: unknown) =>
+                (creatorName ? (log as PointLog).creator.name === creatorName : true) &&
+                (targetName ? (log as PointLog).data.some((data) => data.name === targetName) : true),
         ) || []
     );
 };
@@ -465,35 +466,38 @@ guildProfileSchema.methods.getPointLogs = function (query?: { creatorId?: string
 //? Schedule
 
 guildProfileSchema.methods.addScheduledEvent = async function (event: ScheduledEvent) {
-    this.schedule.events.push(event);
+    this.schedule.events.set(event.id, event);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.getScheduledEvent = async function (eventId: string) {
-    return this.schedule.events.find((event: ScheduledEvent) => event.id === eventId);
+guildProfileSchema.methods.getScheduledEvent = function (eventId: string) {
+    return this.schedule.events.get(eventId);
 };
 
 guildProfileSchema.methods.removeScheduledEvent = async function (eventId: string) {
-    this.schedule.events = this.schedule.events.filter((event: ScheduledEvent) => event.id !== eventId);
+    this.schedule.events = new Map(
+        [...this.schedule.events].filter(([key, event]: [string, ScheduledEvent]) => event.id !== eventId),
+    );
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.updateScheduledEvent = async function (eventId: string, event: ScheduledEvent) {
-    this.schedule.events = this.schedule.events.map((event: ScheduledEvent) => (event.id === eventId ? event : event));
+    this.schedule.events.set(eventId, event);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.getScheduledEvents = function (query?: { hostId?: string; eventType?: string }) {
+guildProfileSchema.methods.getScheduledEvents = function (query?: { hostName?: string; eventType?: string }) {
     if (!query) return this.schedule.events;
 
-    const { hostId, eventType } = query;
+    const { hostName, eventType } = query;
     return (
-        this.schedule.events.filter(
-            (event: ScheduledEvent) =>
-                (hostId ? event.host.id === hostId : true) && (eventType ? event.eventType === eventType : true),
+        Array.from(this.schedule.events.values()).filter(
+            (event: unknown) =>
+                (hostName ? (event as ScheduledEvent).host.name === hostName : true) &&
+                (eventType ? (event as ScheduledEvent).eventType === eventType : true),
         ) || []
     );
 };
@@ -501,27 +505,27 @@ guildProfileSchema.methods.getScheduledEvents = function (query?: { hostId?: str
 //? Schedule Types
 
 guildProfileSchema.methods.addScheduleType = async function (type: ScheduleEventType) {
-    this.schedule.types.push(type);
+    this.schedule.types.set(type.name, type);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.getScheduleType = async function (name: string) {
-    return this.schedule.types.find((type: ScheduleEventType) => type.name === name);
+guildProfileSchema.methods.getScheduleType = function (name: string) {
+    return this.schedule.types.get(name);
 };
 
 guildProfileSchema.methods.removeScheduleType = async function (name: string) {
-    this.schedule.types = this.schedule.types.filter((type: ScheduleEventType) => type.name !== name);
+    this.schedule.types = new Map(
+        [...this.schedule.types].filter(([key, type]: [string, ScheduleEventType]) => type.name !== name),
+    );
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.updateScheduleType = async function (name: string, scheduleType: ScheduleEventType) {
-    this.schedule.types = this.schedule.types.map((type: ScheduleEventType) =>
-        type.name === name ? scheduleType : type,
-    );
+    this.schedule.types.set(name, scheduleType);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.getScheduleTypes = function () {
@@ -535,25 +539,27 @@ guildProfileSchema.methods.getAPIKey = function (keyName: string) {
 };
 
 guildProfileSchema.methods.addAPIKey = async function (key: APIKey) {
-    this.API.keys.push(key);
+    this.API.keys.set(key.name, key);
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.removeAPIKey = async function (keyName: string) {
-    this.API.keys = this.API.keys.filter((key: APIKey) => key.name !== keyName);
+    this.API.keys = new Map([...this.API.keys].filter(([key, value]: [string, APIKey]) => value.name !== keyName));
 
-    return this.save();
+    return await this.save();
 };
 
 guildProfileSchema.methods.updateAPIKey = async function (keyName: string, key: APIKey) {
-    this.API.keys = this.API.keys.map((key: APIKey) => (key.name === keyName ? key : key));
+    this.API.keys.set(keyName, key);
 
-    return this.save();
+    return await this.save();
 };
 
-guildProfileSchema.methods.validateAPIKey = async function (key: string) {
-    return this.API.keys.some((apiKey: APIKey) => apiKey.key === client.Functions.Decrypt(key, this.iv));
+guildProfileSchema.methods.validateAPIKey = function (key: string) {
+    return Array.from(this.API.keys.values()).some(
+        (apiKey) => (apiKey as APIKey).key === client.Functions.Decrypt(key, this.iv),
+    );
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
