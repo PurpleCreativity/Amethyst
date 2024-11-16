@@ -104,13 +104,13 @@ export default class Database {
             },
 
             roblox: {
-                groupId: undefined,
+                groupId: "0",
                 places: new Map(),
             },
 
             API: {
-                rover_Key: undefined,
-                bloxlink_Key: undefined,
+                rover_Key: "",
+                bloxlink_Key: "",
 
                 enabled: false,
                 keys: new Map(),

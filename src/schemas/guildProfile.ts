@@ -106,7 +106,7 @@ interface guildProfileInterface extends mongoose.Document {
     };
 
     roblox: {
-        groupId: number | undefined;
+        groupId: string | undefined;
 
         places: Map<string, robloxPlace>;
     };
@@ -135,6 +135,8 @@ interface guildProfileInterface extends mongoose.Document {
     settings: Map<string, unknown>;
 
     fetchGuild(): Promise<Guild>;
+    linkGroup(groupId: string): Promise<guildProfileInterface>;
+    fetchGroup(): Promise<unknown | undefined>;
 
     getCommandState(commandName: string): boolean;
     setCommandState(commandName: string, enabled: boolean): Promise<guildProfileInterface>;
@@ -211,7 +213,7 @@ const guildProfileSchema = new mongoose.Schema({
     },
 
     roblox: {
-        groupId: { type: Number, required: false },
+        groupId: { type: String, required: true, default: "0" },
         places: {
             type: Map,
             of: {
@@ -222,8 +224,8 @@ const guildProfileSchema = new mongoose.Schema({
     },
 
     API: {
-        rover_Key: { type: String, required: false },
-        bloxlink_Key: { type: String, required: false },
+        rover_Key: { type: String, required: true, default: "" },
+        bloxlink_Key: { type: String, required: true, default: "" },
         enabled: { type: Boolean, required: true, default: false },
         keys: {
             type: Map,
@@ -239,7 +241,7 @@ const guildProfileSchema = new mongoose.Schema({
 
     commands: {
         type: Map,
-        of: { type: Boolean, default: true, required: true },
+        of: { type: Boolean, default: true },
     },
 
     users: {
@@ -326,10 +328,16 @@ guildProfileSchema.methods.fetchGuild = async function () {
     return await client.guilds.fetch(this.guild.id);
 };
 
-guildProfileSchema.methods.linkGroup = async function (groupId: number) {
+guildProfileSchema.methods.linkGroup = async function (groupId: string) {
     this.roblox.groupId = groupId;
 
     return await this.save();
+};
+
+guildProfileSchema.methods.fetchGroup = async function () {
+    if (this.roblox.groupId === "0") return undefined;
+
+    return await client.Wrapblox.fetchGroup(this.roblox.groupId);
 };
 
 //? FFlags
@@ -371,7 +379,7 @@ guildProfileSchema.methods.setSetting = async function (settingName: string, val
 guildProfileSchema.methods.getChannel = async function (channelName: string) {
     if (!this.channels.has(channelName)) return undefined;
     const id = this.channels.get(channelName);
-    if (id === "" || id === "0") return undefined;
+    if (id === "0") return undefined;
 
     return await client.channels.fetch(id);
 };
