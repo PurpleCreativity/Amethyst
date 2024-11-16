@@ -2,7 +2,7 @@
 .DS_Store
 desktop.ini
 
-# build
+# static build
 build
 
 # node
@@ -16,3 +16,6 @@ docker-compose.yml
 
 # ide
 .vscode
+
+# docs
+docs
