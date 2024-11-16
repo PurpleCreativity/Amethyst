@@ -222,7 +222,7 @@ const guildProfileSchema = new mongoose.Schema({
     API: {
         rover_Key: { type: String, required: false },
         bloxlink_Key: { type: String, required: false },
-        enabled: { type: Boolean, required: true, default: true },
+        enabled: { type: Boolean, required: true, default: false },
         keys: {
             type: Map,
             of: {
