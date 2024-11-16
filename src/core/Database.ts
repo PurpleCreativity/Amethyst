@@ -195,7 +195,5 @@ export default class Database {
         }
 
         if (this.isConnected()) this.client.success("Connected to Database");
-
-        console.log(await this.fetchGuildFromShortname("DEV"));
     };
 }
