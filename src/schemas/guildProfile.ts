@@ -326,6 +326,12 @@ guildProfileSchema.methods.fetchGuild = async function () {
     return await client.guilds.fetch(this.guild.id);
 };
 
+guildProfileSchema.methods.linkGroup = async function (groupId: number) {
+    this.roblox.groupId = groupId;
+
+    return await this.save();
+};
+
 //? FFlags
 
 guildProfileSchema.methods.getCommandState = function (commandName: string) {
