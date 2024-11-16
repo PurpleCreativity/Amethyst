@@ -148,6 +148,11 @@ export default class Database {
         return profile;
     };
 
+    clearCache = () => {
+        this.cache.guilds.clear();
+        this.cache.users.clear();
+    };
+
     isConnected = () => mongoose.connection.readyState === 1;
 
     Init = async () => {
