@@ -169,6 +169,28 @@ export default class Database {
         return profile;
     };
 
+    private syncCachetoDB = async () => {
+        try {
+            this.client.warn("Syncing Cache to Database...");
+
+            for (const [userId, profile] of this.cache.users) {
+                this.client.verbose(`Syncing User: ${userId}`);
+                await userProfile.findOneAndUpdate({ "user.id": userId }, profile, { upsert: true });
+            }
+
+            for (const [guildId, profile] of this.cache.guilds) {
+                this.client.verbose(`Syncing Guild: ${guildId}`);
+                await guildProfile.findOneAndUpdate({ "guild.id": guildId }, profile, { upsert: true });
+            }
+
+            this.client.success("Synced Cache to Database");
+        } catch (error) {
+            this.client.error("Failed to Sync Cache to Database");
+            this.client.error(error);
+            if (this.isConnected()) this.client.error("Database Connection is still open");
+        }
+    };
+
     clearCache = () => {
         this.cache.guilds.clear();
         this.cache.users.clear();
@@ -185,5 +207,8 @@ export default class Database {
         }
 
         if (this.isConnected()) this.client.success("Connected to Database");
+        else return this.client.error("Failed to connect to database");
+
+        this.client.Threader.CreateThread("DatabaseSync", this.syncCachetoDB).Loop(10 * 60 * 1000);
     };
 }
