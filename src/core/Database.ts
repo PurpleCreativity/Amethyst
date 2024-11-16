@@ -191,7 +191,9 @@ export default class Database {
         }
     };
 
-    clearCache = () => {
+    clearCache = async () => {
+        await this.syncCachetoDB();
+
         this.cache.guilds.clear();
         this.cache.users.clear();
     };
