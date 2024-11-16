@@ -14,7 +14,7 @@ const client: Client = new Client({
     ],
 });
 
-await client.Startup();
+client.Startup();
 
 const maxMemory = 512; // in MB
 client.Threader.CreateThread("MemoryMonitor", () => {
