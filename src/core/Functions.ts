@@ -14,33 +14,11 @@ export default class Functions {
     constructor(client: Client) {
         this.client = client;
     }
-    /*
-  GetRobloxUser = async (searcher: string | number, useCache = true) => {
-    if (typeof searcher === "number") {
-      try {
+
+    fetchRobloxUser = async (searcher: string | number, useCache = true) => {
         return await this.client.Wrapblox.fetchUser(searcher, useCache);
-      } catch (_error) {
-        return undefined;
-      }
-    }
+    };
 
-    if (typeof searcher === "string") {
-      if (!Number.isNaN(Number.parseInt(searcher))) {
-        try {
-          return await this.client.Wrapblox.fetchUser(Number.parseInt(searcher), useCache);
-        } catch (_error) {
-          return undefined;
-        }
-      }
-
-      try {
-        return await this.client.Wrapblox.fetchUserByName(searcher, useCache);
-      } catch (_error) {
-        return undefined;
-      }
-    }
-  };
-*/
     GenerateID = () => {
         return crypto.randomUUID();
     };
