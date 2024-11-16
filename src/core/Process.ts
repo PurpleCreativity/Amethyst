@@ -14,15 +14,27 @@ export default class Process {
     loadEventFiles = async (Filespath: string): Promise<void> => {
         const eventsDir = path.join(process.cwd(), Filespath);
 
-        for (const file of fs.readdirSync(eventsDir)) {
-            if (file.endsWith(".map")) continue;
-            if (!file.endsWith(".js")) continue;
+        const loadEventsfromDir = async (dir: string) => {
+            for (const eventFile of fs.readdirSync(dir)) {
+                const eventPath = path.join(dir, eventFile);
+                if (fs.statSync(eventPath).isDirectory()) {
+                    await loadEventsfromDir(eventPath);
+                }
 
-            const eventClass = await import(`file://${path.join(eventsDir, file)}`);
-            if (!(eventClass.default || eventClass.default instanceof Event)) continue;
+                if (!eventPath.endsWith(".js")) continue;
 
-            this.client.Events.AddEvent(eventClass.default.type, file.slice(0, -3), eventClass.default.callback);
-        }
+                const event = await import(`file://${eventPath}`).then((module) => module.default);
+
+                if (!(event instanceof Event)) {
+                    this.client.warn(`Event [${eventPath}] is not a valid event.`);
+                    return;
+                }
+
+                this.client.Events.AddEvent(event.type, eventFile.slice(0, -3), event.callback);
+            }
+        };
+
+        await loadEventsfromDir(eventsDir);
     };
 
     Init = async (): Promise<void> => {

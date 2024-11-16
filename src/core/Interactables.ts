@@ -150,44 +150,36 @@ export default class Interactables {
     loadCommandFiles = async (Filespath: string): Promise<void> => {
         const commandsDir = path.join(process.cwd(), Filespath);
 
-        for (const folderEntry of fs.readdirSync(commandsDir)) {
-            if (fs.statSync(path.join(commandsDir, folderEntry)).isDirectory()) {
-                for (const fileEntry of fs
-                    .readdirSync(path.join(commandsDir, folderEntry))
-                    .filter((file) => file.endsWith(".js"))) {
-                    if (fileEntry.endsWith(".map")) continue;
-                    if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || fileEntry.endsWith(".js"))) {
-                        this.client.warn(`Skipping [${fileEntry}] as it is not a valid command file.`);
-                        continue;
-                    }
-
-                    const moduleImport = await import(`file://${path.join(commandsDir, folderEntry, fileEntry)}`).then(
-                        (module) => module.default,
-                    );
-                    const commands = Array.isArray(moduleImport) ? moduleImport : [moduleImport];
-
-                    for (const command of commands) {
-                        this.addCommand(command);
-                    }
+        const loadCommandsfromDir = async (dir: string) => {
+            for (const commandFile of fs.readdirSync(dir)) {
+                const commandPath = path.join(dir, commandFile);
+                if (fs.statSync(commandPath).isDirectory()) {
+                    await loadCommandsfromDir(commandPath);
                 }
-                return;
-            }
 
-            if (folderEntry.endsWith(".map")) continue;
-            if (!(fs.statSync(path.join(commandsDir, folderEntry)).isFile() || folderEntry.endsWith(".js"))) {
-                this.client.warn(`Skipping [${folderEntry}] as it is not a valid command file.`);
-                continue;
-            }
+                if (!commandPath.endsWith(".js")) continue;
 
-            const moduleImport = await import(`file://${path.join(commandsDir, folderEntry)}`).then(
-                (module) => module.default,
-            );
-            const commands = Array.isArray(moduleImport) ? moduleImport : [moduleImport];
+                const commandModule = await import(`file://${commandPath}`).then((module) => module.default);
+                const commands = Array.isArray(commandModule) ? commandModule : [commandModule];
 
-            for (const command of commands) {
-                this.addCommand(command);
+                for (const command of commands) {
+                    if (
+                        !(
+                            command instanceof SlashCommand ||
+                            command instanceof UserContextMenuCommand ||
+                            command instanceof MessageContextMenuCommand
+                        )
+                    ) {
+                        this.client.warn(`Command [${commandPath}] is not a valid command.`);
+                        return;
+                    }
+
+                    this.addCommand(command);
+                }
             }
-        }
+        };
+
+        await loadCommandsfromDir(commandsDir);
     };
 
     deployCommands = async (): Promise<void> => {
