@@ -112,7 +112,6 @@ export default class Client extends DiscordClient {
             let fullMessage = `[${type.toUpperCase()}] (${infoline}) ${message}`;
             if (useDate === true || useDate === undefined) {
                 fullMessage = `[${new Date().toISOString().replace("T", " ").replace("Z", "")}] ${fullMessage}`;
-                fullMessage += ` at ${new Date().toLocaleString()}`;
             }
             if (this.config.logConfig[type] === undefined) {
                 this.Log("error", `Invalid log type ${type}`);
