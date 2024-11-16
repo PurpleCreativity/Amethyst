@@ -20,7 +20,7 @@ export type guildUser = {
     ranklock: {
         rank: NumberRange<0, 255>; // Roblox group rank (0-255)
 
-        visible: boolean;
+        shadow: boolean;
         reason?: string;
 
         updatedAt: Date;
@@ -33,6 +33,7 @@ export type Permission = {
 };
 
 export type APIKey = {
+    name: string;
     key: string;
 
     enabled: boolean;
@@ -48,14 +49,16 @@ export type robloxPlace = {
 };
 
 export type PointLog = {
+    id: string;
+
     creator: {
         name: string;
-        id: number;
+        id: string;
     };
 
     data: {
         name: string;
-        id: number;
+        id: string;
 
         points: number;
     }[];
@@ -65,6 +68,7 @@ export type PointLog = {
 };
 
 export type ScheduleEventType = {
+    name: string;
     icon: string;
     color: ColorResolvable;
 
@@ -77,6 +81,8 @@ export type ScheduleEventType = {
 };
 
 export type ScheduledEvent = {
+    id: string;
+
     time: number; // In Minutes
     duration: number; // In Minutes
 
@@ -154,7 +160,21 @@ interface guildProfileInterface extends mongoose.Document {
     setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
 
     addUser: (robloxUser: { id: string; name: string }) => Promise<guildProfileInterface>;
-    getUser: (robloxId: string | number) => Promise<guildUser>;
+    getUser: (robloxId: string) => Promise<guildUser>;
+    calculatePendingPoints: (robloxId: string) => number;
+    setNote: (robloxId: string, note: string, visible?: boolean) => Promise<guildProfileInterface>;
+    setRankLock: (
+        robloxId: string,
+        rank: NumberRange<0, 255>,
+        shadow?: boolean,
+        reason?: string,
+    ) => Promise<guildProfileInterface>;
+
+    addPointLog: (log: PointLog) => Promise<guildProfileInterface>;
+    getPointLog: (logId: string) => Promise<PointLog>;
+    removePointLog: (logId: string) => Promise<guildProfileInterface>;
+    updatePointLog: (logId: string, log: PointLog) => Promise<guildProfileInterface>;
+    getPointLogs: (query?: { creatorId: string; targetId: string }) => PointLog[];
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -303,6 +323,8 @@ guildProfileSchema.methods.setRolesToPermission = async function (permissionName
     return this.save();
 };
 
+//? Users
+
 guildProfileSchema.methods.addUser = async function (robloxUser: { id: string; name: string }) {
     const userId = robloxUser.id;
 
@@ -323,7 +345,7 @@ guildProfileSchema.methods.addUser = async function (robloxUser: { id: string; n
 
         ranklock: {
             rank: 0,
-            visible: true,
+            shadow: false,
             reason: undefined,
 
             updatedAt: new Date(),
@@ -334,18 +356,92 @@ guildProfileSchema.methods.addUser = async function (robloxUser: { id: string; n
     return await this.save();
 };
 
-guildProfileSchema.methods.getUser = async function (robloxId: string | number) {
-    const userId = robloxId.toString();
-
-    if (this.users.has(userId)) return this.users.get(userId);
+guildProfileSchema.methods.getUser = async function (robloxId: string) {
+    if (this.users.has(robloxId)) return this.users.get(robloxId);
 
     try {
-        const rbxUser = await client.Wrapblox.fetchUser(userId);
+        const rbxUser = await client.Wrapblox.fetchUser(robloxId);
 
-        return (await this.addUser({ id: rbxUser.id.toString(), name: rbxUser.name })).users.get(userId);
+        return (await this.addUser({ id: rbxUser.id.toString(), name: rbxUser.name })).users.get(robloxId);
     } catch (error) {
         throw new Error("Invalid User or User not found");
     }
+};
+
+guildProfileSchema.methods.calculatePendingPoints = function (robloxId: string) {
+    const logs = this.getPointLogs({ targetId: robloxId });
+
+    let points = 0;
+    for (const log of logs) {
+        for (const data of log.data) {
+            points += data.points;
+        }
+    }
+
+    return points;
+};
+
+guildProfileSchema.methods.setNote = async function (robloxId: string, note: string, visible?: boolean) {
+    const user = this.getUser(robloxId);
+
+    user.note.text = note;
+    user.note.visible = visible ?? true;
+    user.note.updatedAt = new Date();
+
+    return this.save();
+};
+
+guildProfileSchema.methods.setRankLock = async function (
+    robloxId: string,
+    rank: NumberRange<0, 255>,
+    shadow?: boolean,
+    reason?: string,
+) {
+    const user = this.getUser(robloxId);
+
+    user.ranklock.rank = rank;
+    user.ranklock.shadow = shadow ?? false;
+    user.ranklock.reason = reason;
+    user.ranklock.updatedAt = new Date();
+
+    return this.save();
+};
+
+//? Point logs
+
+guildProfileSchema.methods.addPointLog = async function (log: PointLog) {
+    this.pointLogs.push(log);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getPointLog = async function (logId: string) {
+    return this.pointLogs.find((log: PointLog) => log.id === logId);
+};
+
+guildProfileSchema.methods.removePointLog = async function (logId: string) {
+    this.pointLogs = this.pointLogs.filter((log: PointLog) => log.id !== logId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.updatePointLog = async function (logId: string, log: PointLog) {
+    this.pointLogs = this.pointLogs.map((log: PointLog) => (log.id === logId ? log : log));
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getPointLogs = function (query?: { creatorId?: string; targetId?: string }) {
+    if (!query) return this.pointLogs;
+
+    const { creatorId, targetId } = query;
+    return (
+        this.pointLogs.filter(
+            (log: PointLog) =>
+                (creatorId ? log.creator.id === creatorId : true) &&
+                (targetId ? log.data.some((data) => data.id.toString() === targetId) : true),
+        ) || []
+    );
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
