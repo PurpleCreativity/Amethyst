@@ -54,6 +54,8 @@ export default class Database {
             settings: new Map(),
         });
 
+        await profile.setFFlag("CreatedInVersion", this.client.config.version);
+
         await profile.save();
         this.cache.users.set(user.id, profile);
 
@@ -132,6 +134,8 @@ export default class Database {
             FFlags: new Map(),
             settings: new Map(),
         });
+
+        await profile.setFFlag("CreatedInVersion", this.client.config.version);
 
         await profile.save();
         this.cache.guilds.set(guild.id, profile);
