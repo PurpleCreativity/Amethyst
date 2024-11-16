@@ -62,19 +62,13 @@ export default class Database {
         return profile;
     };
 
-    fetchUserProfile = async (user: string | User, useCache = true): Promise<userProfileInterface> => {
-        try {
-            if (typeof user === "string") user = await this.client.users.fetch(user);
-        } catch (error) {
-            throw new Error("Invalid User or User not found");
-        }
+    fetchUserProfile = async (userId: string, useCache = true): Promise<userProfileInterface> => {
+        if (useCache && this.cache.users.has(userId)) return this.cache.users.get(userId) as userProfileInterface;
 
-        if (useCache && this.cache.users.has(user.id)) return this.cache.users.get(user.id) as userProfileInterface;
+        const profile = await userProfile.findOne({ "user.id": userId });
+        if (!profile) return this.createUserProfile(userId);
 
-        const profile = await userProfile.findOne({ "user.id": user.id });
-        if (!profile) return this.createUserProfile(user);
-
-        this.cache.users.set(user.id, profile);
+        this.cache.users.set(userId, profile);
 
         return profile;
     };
@@ -90,7 +84,7 @@ export default class Database {
 
     //? Guilds
 
-    createGuildProfile = async (guild: string | Guild): Promise<guildProfileInterface> => {
+    createGuildProfile = async (shortname: string, guild: string | Guild): Promise<guildProfileInterface> => {
         if (typeof guild === "string") {
             try {
                 guild = await this.client.guilds.fetch(guild);
@@ -102,6 +96,7 @@ export default class Database {
         const profile = new guildProfile({
             _id: new mongoose.Types.ObjectId(),
             iv: this.client.Functions.GenerateIV(),
+            shortname: shortname,
 
             guild: {
                 id: guild.id,
@@ -143,22 +138,22 @@ export default class Database {
         return profile;
     };
 
-    fetchGuildProfile = async (guild: string | Guild, useCache = true): Promise<guildProfileInterface | undefined> => {
-        try {
-            if (typeof guild === "string") guild = await this.client.guilds.fetch(guild);
-        } catch (error) {
-            throw new Error("Invalid Guild or Guild not found");
-        }
+    fetchGuildProfile = async (guildId: string, useCache = true): Promise<guildProfileInterface | undefined> => {
+        if (useCache && this.cache.guilds.has(guildId)) return this.cache.guilds.get(guildId) as guildProfileInterface;
 
-        if (useCache && this.cache.guilds.has(guild.id))
-            return this.cache.guilds.get(guild.id) as guildProfileInterface;
-
-        const profile = await guildProfile.findOne({ "guild.id": guild.id });
+        const profile = await guildProfile.findOne({ "guild.id": guildId });
         //if (!profile) return this.createGuildProfile(guild);
         if (!profile) return undefined;
 
-        this.cache.guilds.set(guild.id, profile);
+        this.cache.guilds.set(guildId, profile);
+        return profile;
+    };
 
+    fetchGuildFromShortname = async (shortname: string): Promise<guildProfileInterface | undefined> => {
+        const profile = await guildProfile.findOne({ shortname: shortname });
+        if (!profile) return undefined;
+
+        this.cache.guilds.set(profile.guild.id, profile);
         return profile;
     };
 
@@ -178,5 +173,7 @@ export default class Database {
         }
 
         if (this.isConnected()) this.client.success("Connected to Database");
+
+        console.log(await this.fetchGuildFromShortname("DEV"));
     };
 }
