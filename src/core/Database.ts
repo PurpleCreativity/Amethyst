@@ -139,7 +139,7 @@ export default class Database {
         return profile;
     };
 
-    fetchGuildProfile = async (guild: string | Guild, useCache = true): Promise<guildProfileInterface> => {
+    fetchGuildProfile = async (guild: string | Guild, useCache = true): Promise<guildProfileInterface | undefined> => {
         try {
             if (typeof guild === "string") guild = await this.client.guilds.fetch(guild);
         } catch (error) {
@@ -150,7 +150,8 @@ export default class Database {
             return this.cache.guilds.get(guild.id) as guildProfileInterface;
 
         const profile = await guildProfile.findOne({ "guild.id": guild.id });
-        if (!profile) return this.createGuildProfile(guild);
+        //if (!profile) return this.createGuildProfile(guild);
+        if (!profile) return undefined;
 
         this.cache.guilds.set(guild.id, profile);
 
