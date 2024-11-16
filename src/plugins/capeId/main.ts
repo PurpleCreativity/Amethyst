@@ -23,7 +23,7 @@ export default new Plugin({
                         .setRequired(true),
                 ],
 
-                function: async (client, interaction) => {
+                function: async (interaction) => {
                     const assetId = interaction.options.getString("assetid", true);
 
                     const rbxRequest = await client.Axios.get(

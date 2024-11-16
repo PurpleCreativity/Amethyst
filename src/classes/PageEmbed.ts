@@ -1,6 +1,5 @@
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import ButtonEmbed from "./ButtonEmbed.js";
-import type Client from "./Client.js";
 
 export type PageEmbedOptions = {
     baseEmbed: EmbedBuilder;
@@ -18,8 +17,8 @@ export default class PageEmbed extends ButtonEmbed {
     backButton: string;
     nextButton: string;
 
-    constructor(client: Client, opts: PageEmbedOptions) {
-        super(client, opts.baseEmbed);
+    constructor(opts: PageEmbedOptions) {
+        super(opts.baseEmbed);
         this.PageFooter = opts.PageFooter ?? false;
         this.fieldsPerPage = opts.fieldsPerPage ?? 25;
 

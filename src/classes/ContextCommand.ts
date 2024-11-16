@@ -8,6 +8,7 @@ import {
     type UserContextMenuCommandInteraction,
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
+import client from "../main.js";
 import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
 import type { ValidPermissions } from "../types/global.d.js";
 import type Client from "./Client.js";
@@ -27,11 +28,11 @@ export type BaseContextMenuCommandOptions = {
 };
 
 export type MessageContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (client: Client, interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
+    function: (interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
 };
 
 export type UserContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (client: Client, interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
+    function: (interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
 };
 
 class BaseContextMenuCommand extends ContextMenuCommandBuilder {
@@ -75,7 +76,6 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
     }
 
     check = async (
-        client: Client,
         interaction: MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction,
     ): Promise<CommandError | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
@@ -107,7 +107,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 }
 
 class MessageContextMenuCommand extends BaseContextMenuCommand {
-    private function: (client: Client, interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
+    private function: (interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
 
     constructor(options: MessageContextMenuCommandOptions) {
         super(options);
@@ -117,10 +117,10 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
         this.function = options.function;
     }
 
-    execute = async (client: Client, interaction: MessageContextMenuCommandInteraction): Promise<unknown> => {
+    execute = async (interaction: MessageContextMenuCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
-        const error = await this.check(client, interaction);
+        const error = await this.check(interaction);
         if (error) {
             return await interaction.editReply({
                 embeds: [
@@ -133,11 +133,11 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
             });
         }
 
-        return await this.function(client, interaction);
+        return await this.function(interaction);
     };
 }
 class UserContextMenuCommand extends BaseContextMenuCommand {
-    private function: (client: Client, interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
+    private function: (interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
 
     constructor(options: UserContextMenuCommandOptions) {
         super(options);
@@ -147,10 +147,10 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
         this.function = options.function;
     }
 
-    execute = async (client: Client, interaction: UserContextMenuCommandInteraction): Promise<unknown> => {
+    execute = async (interaction: UserContextMenuCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
-        const error = await this.check(client, interaction);
+        const error = await this.check(interaction);
         if (error) {
             return await interaction.editReply({
                 embeds: [
@@ -163,7 +163,7 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
             });
         }
 
-        return await this.function(client, interaction);
+        return await this.function(interaction);
     };
 }
 

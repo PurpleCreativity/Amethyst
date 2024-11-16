@@ -1,4 +1,5 @@
 import SlashCommand from "../classes/SlashCommand.js";
+import client from "../main.js";
 
 export default new SlashCommand({
     name: "stats",
@@ -6,7 +7,7 @@ export default new SlashCommand({
 
     user_installable: true,
 
-    function: async (client, interaction) => {
+    function: async (interaction) => {
         if (!client.user || client.uptime === null) throw new Error("Client is not ready yet");
 
         const botOwner = await client.users.fetch("762329291169857537");

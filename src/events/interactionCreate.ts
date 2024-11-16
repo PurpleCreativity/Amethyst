@@ -1,9 +1,10 @@
 import { BaseInteraction } from "discord.js";
 import Event from "../classes/Event.js";
+import client from "../main.js";
 
 export default new Event({
     type: "client",
-    callback: async (client, interaction) => {
+    callback: async (interaction) => {
         if (!(interaction instanceof BaseInteraction)) return;
 
         if (interaction.isChatInputCommand()) {
@@ -20,7 +21,7 @@ export default new Event({
             }
 
             try {
-                return await command.execute(client, interaction);
+                return await command.execute(interaction);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 
@@ -53,7 +54,7 @@ export default new Event({
 
             if (!command || !command.autocomplete) return;
 
-            const choiches = (await command.autocomplete(client, interaction)) || [];
+            const choiches = (await command.autocomplete(interaction)) || [];
             if (choiches.length > 25) choiches.splice(25);
 
             return await interaction.respond(choiches);
@@ -73,7 +74,7 @@ export default new Event({
             }
 
             try {
-                return await command.execute(client, interaction);
+                return await command.execute(interaction);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 
@@ -113,7 +114,7 @@ export default new Event({
             }
 
             try {
-                return await command.execute(client, interaction);
+                return await command.execute(interaction);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 

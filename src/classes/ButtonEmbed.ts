@@ -7,7 +7,7 @@ import {
     ComponentType,
     type EmbedBuilder,
 } from "discord.js";
-import type Client from "./Client.ts";
+import client from "../main.js";
 
 export type Button = {
     label: string;
@@ -22,15 +22,12 @@ export type Button = {
 };
 
 export default class ButtonEmbed {
-    client: Client;
-
     Embed: EmbedBuilder;
     Ephemeral: boolean;
     CurrentRow = 1;
     Rows: ButtonBuilder[][] = [];
 
-    constructor(client: Client, embed: EmbedBuilder, buttons?: Button[]) {
-        this.client = client;
+    constructor(embed: EmbedBuilder, buttons?: Button[]) {
         this.Embed = embed;
         this.Rows[0] = [];
         this.Ephemeral = false;
@@ -60,7 +57,7 @@ export default class ButtonEmbed {
     }
 
     addButton(button: Button) {
-        const id = button.customId || this.client.Functions.GenerateID();
+        const id = button.customId || client.Functions.GenerateID();
 
         if (button.style === ButtonStyle.Link && button.link !== undefined) {
             this.Rows[this.CurrentRow - 1].push(
@@ -79,7 +76,7 @@ export default class ButtonEmbed {
         this.Rows[this.CurrentRow - 1].push(Bbutton);
 
         if (button.function) {
-            this.client.on("buttonInteraction", async (interaction: ButtonInteraction) => {
+            client.on("buttonInteraction", async (interaction: ButtonInteraction) => {
                 if (!button.function) return;
 
                 if (interaction.customId === id) {

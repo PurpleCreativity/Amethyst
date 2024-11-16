@@ -19,9 +19,9 @@ import {
     type SlashCommandUserOption,
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
+import client from "../main.js";
 import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
 import type { ValidPermissions } from "../types/global.d.js";
-import type Client from "./Client.js";
 
 export type ValidSlashCommandOptions =
     | SlashCommandStringOption
@@ -59,11 +59,8 @@ export type SlashCommandOptions = {
     options?: ValidSlashCommandOptions[];
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
-    function: (client: Client, interaction: ChatInputCommandInteraction) => Promise<unknown>;
-    autocomplete?: (
-        client: Client,
-        interaction: AutocompleteInteraction,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    function: (interaction: ChatInputCommandInteraction) => Promise<unknown>;
+    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 export default class SlashCommand extends SlashCommandBuilder {
@@ -75,11 +72,8 @@ export default class SlashCommand extends SlashCommandBuilder {
     readonly permissions: ValidPermissions[];
     readonly developer_only: boolean;
 
-    private function: (client: Client, interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
-    autocomplete?: (
-        client: Client,
-        interaction: AutocompleteInteraction,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    private function: (interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
+    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
     disabled = false;
 
@@ -139,10 +133,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
     }
 
-    private check = async (
-        client: Client,
-        interaction: ChatInputCommandInteraction,
-    ): Promise<CommandError | undefined> => {
+    private check = async (interaction: ChatInputCommandInteraction): Promise<CommandError | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandError.DISABLED_GLOBAL;
@@ -170,10 +161,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         return undefined;
     };
 
-    execute = async (client: Client, interaction: ChatInputCommandInteraction): Promise<unknown> => {
+    execute = async (interaction: ChatInputCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
-        const error = await this.check(client, interaction);
+        const error = await this.check(interaction);
         if (error) {
             return await interaction.editReply({
                 embeds: [
@@ -186,6 +177,6 @@ export default class SlashCommand extends SlashCommandBuilder {
             });
         }
 
-        return await this.function(client, interaction);
+        return await this.function(interaction);
     };
 }

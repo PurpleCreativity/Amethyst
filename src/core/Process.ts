@@ -21,9 +21,7 @@ export default class Process {
             const eventClass = await import(`file://${path.join(eventsDir, file)}`);
             if (!(eventClass.default || eventClass.default instanceof Event)) continue;
 
-            this.client.Events.AddEvent(eventClass.default.type, file.slice(0, -3), (...args: unknown[]) =>
-                eventClass.default.callback(this.client, ...args),
-            );
+            this.client.Events.AddEvent(eventClass.default.type, file.slice(0, -3), eventClass.default.callback);
         }
     };
 
