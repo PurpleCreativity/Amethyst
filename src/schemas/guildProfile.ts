@@ -137,7 +137,7 @@ interface guildProfileInterface extends mongoose.Document {
     fetchGuild(): Promise<Guild>;
 
     getCommandState(commandName: string): boolean;
-    setCommandState(commandName: string, state: boolean): Promise<guildProfileInterface>;
+    setCommandState(commandName: string, enabled: boolean): Promise<guildProfileInterface>;
 
     getFFlag(FFlagName: string): unknown;
     setFFlag(FFlagName: string, value: unknown): Promise<guildProfileInterface>;
@@ -332,8 +332,8 @@ guildProfileSchema.methods.getCommandState = function (commandName: string) {
     return this.commands.get(commandName);
 };
 
-guildProfileSchema.methods.setCommandState = async function (commandName: string, state: boolean) {
-    this.commands.set(commandName, state);
+guildProfileSchema.methods.setCommandState = async function (commandName: string, enabled: boolean) {
+    this.commands.set(commandName, enabled);
 
     return await this.save();
 };
