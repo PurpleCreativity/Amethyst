@@ -21,6 +21,8 @@ interface userProfileInterface extends mongoose.Document {
 
     FFlags: Map<string, unknown>;
     settings: Map<string, unknown>;
+
+    linkRoblox: (robloxUser: { id: number; name: string }) => Promise<userProfileInterface>;
 }
 
 const userProfileSchema = new mongoose.Schema({
@@ -43,6 +45,13 @@ const userProfileSchema = new mongoose.Schema({
     FFlags: { type: Map, of: mongoose.Schema.Types.Mixed },
     settings: { type: Map, of: mongoose.Schema.Types.Mixed },
 });
+
+userProfileSchema.methods.linkRoblox = async function (robloxUser: { id: number; name: string }) {
+    this.roblox.user = robloxUser;
+    this.roblox.updatedAt = new Date();
+
+    return this.save();
+};
 
 const userProfile = mongoose.model<userProfileInterface>("User", userProfileSchema);
 

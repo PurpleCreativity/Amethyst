@@ -16,7 +16,11 @@ export default class Functions {
     }
 
     fetchRobloxUser = async (searcher: string | number, useCache = true) => {
-        return await this.client.Wrapblox.fetchUser(searcher, useCache);
+        try {
+            return await this.client.Wrapblox.fetchUser(searcher, useCache);
+        } catch (error) {
+            return undefined;
+        }
     };
 
     GenerateID = () => {
