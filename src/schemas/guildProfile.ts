@@ -91,7 +91,7 @@ export type ScheduledEvent = {
 
     host: {
         name: string;
-        id: number;
+        id: string;
     };
 
     eventType: string;
@@ -175,6 +175,18 @@ interface guildProfileInterface extends mongoose.Document {
     removePointLog: (logId: string) => Promise<guildProfileInterface>;
     updatePointLog: (logId: string, log: PointLog) => Promise<guildProfileInterface>;
     getPointLogs: (query?: { creatorId: string; targetId: string }) => PointLog[];
+
+    addScheduledEvent: (event: ScheduledEvent) => Promise<guildProfileInterface>;
+    getScheduledEvent: (eventId: string) => Promise<ScheduledEvent>;
+    removeScheduledEvent: (eventId: string) => Promise<guildProfileInterface>;
+    updateScheduledEvent: (eventId: string, event: ScheduledEvent) => Promise<guildProfileInterface>;
+    getScheduledEvents: (query?: { hostId: string; eventType: string }) => ScheduledEvent[];
+
+    addScheduleType: (type: ScheduleEventType) => Promise<guildProfileInterface>;
+    getScheduleType: (name: string) => Promise<ScheduleEventType>;
+    removeScheduleType: (name: string) => Promise<guildProfileInterface>;
+    updateScheduleType: (name: string, scheduleType: ScheduleEventType) => Promise<guildProfileInterface>;
+    getScheduleTypes: () => ScheduleEventType[];
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -442,6 +454,72 @@ guildProfileSchema.methods.getPointLogs = function (query?: { creatorId?: string
                 (targetId ? log.data.some((data) => data.id.toString() === targetId) : true),
         ) || []
     );
+};
+
+//? Schedule
+
+guildProfileSchema.methods.addScheduledEvent = async function (event: ScheduledEvent) {
+    this.schedule.events.push(event);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getScheduledEvent = async function (eventId: string) {
+    return this.schedule.events.find((event: ScheduledEvent) => event.id === eventId);
+};
+
+guildProfileSchema.methods.removeScheduledEvent = async function (eventId: string) {
+    this.schedule.events = this.schedule.events.filter((event: ScheduledEvent) => event.id !== eventId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.updateScheduledEvent = async function (eventId: string, event: ScheduledEvent) {
+    this.schedule.events = this.schedule.events.map((event: ScheduledEvent) => (event.id === eventId ? event : event));
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getScheduledEvents = function (query?: { hostId?: string; eventType?: string }) {
+    if (!query) return this.schedule.events;
+
+    const { hostId, eventType } = query;
+    return (
+        this.schedule.events.filter(
+            (event: ScheduledEvent) =>
+                (hostId ? event.host.id === hostId : true) && (eventType ? event.eventType === eventType : true),
+        ) || []
+    );
+};
+
+//? Schedule Types
+
+guildProfileSchema.methods.addScheduleType = async function (type: ScheduleEventType) {
+    this.schedule.types.push(type);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getScheduleType = async function (name: string) {
+    return this.schedule.types.find((type: ScheduleEventType) => type.name === name);
+};
+
+guildProfileSchema.methods.removeScheduleType = async function (name: string) {
+    this.schedule.types = this.schedule.types.filter((type: ScheduleEventType) => type.name !== name);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.updateScheduleType = async function (name: string, scheduleType: ScheduleEventType) {
+    this.schedule.types = this.schedule.types.map((type: ScheduleEventType) =>
+        type.name === name ? scheduleType : type,
+    );
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getScheduleTypes = function () {
+    return Array.from(this.schedule.types.values());
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
