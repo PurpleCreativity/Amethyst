@@ -153,8 +153,8 @@ interface guildProfileInterface extends mongoose.Document {
     getChannel: (channelName: string) => Promise<TextChannel>;
     setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
 
-    addUser: (RobloxUser: { id: string; name: string }) => Promise<guildProfileInterface>;
-    getUser: (RobloxId: string | number) => Promise<guildUser>;
+    addUser: (robloxUser: { id: string; name: string }) => Promise<guildProfileInterface>;
+    getUser: (robloxId: string | number) => Promise<guildUser>;
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -303,12 +303,12 @@ guildProfileSchema.methods.setRolesToPermission = async function (permissionName
     return this.save();
 };
 
-guildProfileSchema.methods.addUser = async function (RobloxUser: { id: string; name: string }) {
-    const userId = RobloxUser.id;
+guildProfileSchema.methods.addUser = async function (robloxUser: { id: string; name: string }) {
+    const userId = robloxUser.id;
 
     const user = {
         user: {
-            name: RobloxUser.name,
+            name: robloxUser.name,
             id: userId,
         },
 
@@ -334,8 +334,8 @@ guildProfileSchema.methods.addUser = async function (RobloxUser: { id: string; n
     return await this.save();
 };
 
-guildProfileSchema.methods.getUser = async function (RobloxId: string | number) {
-    const userId = RobloxId.toString();
+guildProfileSchema.methods.getUser = async function (robloxId: string | number) {
+    const userId = robloxId.toString();
 
     if (this.users.has(userId)) return this.users.get(userId);
 
