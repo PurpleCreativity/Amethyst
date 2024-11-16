@@ -88,7 +88,7 @@ export default class Database {
 
     //? Guilds
 
-    private createGuildProfile = async (guild: string | Guild): Promise<guildProfileInterface> => {
+    createGuildProfile = async (guild: string | Guild): Promise<guildProfileInterface> => {
         if (typeof guild === "string") {
             try {
                 guild = await this.client.guilds.fetch(guild);
