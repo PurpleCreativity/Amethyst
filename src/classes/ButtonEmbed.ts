@@ -36,6 +36,14 @@ export default class ButtonEmbed {
     }
 
     getMessageData() {
+        if (this.Rows.length === 0 || this.Rows.every((row) => row.length === 0)) {
+            return {
+                ephemeral: this.Ephemeral,
+                embeds: [this.Embed],
+                components: [],
+            };
+        }
+
         const components = [];
         for (let i = 0; i < this.Rows.length; i++) {
             if (this.Rows[i].length === 0) continue;
@@ -50,10 +58,6 @@ export default class ButtonEmbed {
             embeds: [this.Embed],
             components: components.length > 0 ? components : undefined,
         };
-    }
-
-    getRows() {
-        return this.Rows;
     }
 
     addButton(button: Button) {
@@ -100,6 +104,11 @@ export default class ButtonEmbed {
     }
 
     setButtons(buttons: Button[]) {
+        if (buttons.length === 0) {
+            this.Rows = [[]];
+            return;
+        }
+
         if (this.Rows[this.CurrentRow - 1] === undefined) {
             this.Rows[this.CurrentRow - 1] = [];
         }

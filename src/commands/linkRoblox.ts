@@ -99,37 +99,40 @@ export default new SlashCommand({
             emoji: Emojis.check,
 
             function: async (buttonInteraction) => {
-                await buttonInteraction.deferReply();
+                await buttonInteraction.deferUpdate();
 
                 const user = await client.Functions.fetchRobloxUser(username, false);
                 if (!user) {
-                    await buttonInteraction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "Link Roblox",
-                                description: "User not found.",
-                            }),
-                        ],
-                    });
+                    buttonEmbed.setEmbed(
+                        client.Functions.makeErrorEmbed({
+                            title: "Link Roblox",
+                            description: "User not found.",
+                        }),
+                    );
+
+                    buttonEmbed.setButtons([]);
+                    await interaction.editReply(buttonEmbed.getMessageData());
+
                     return;
                 }
 
                 if (!user.description.trim().includes(code)) {
-                    await buttonInteraction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "Link Roblox",
-                                description: "Your profile description does not match the code.",
-                            }),
-                        ],
-                    });
+                    buttonEmbed.setEmbed(
+                        client.Functions.makeErrorEmbed({
+                            title: "Link Roblox",
+                            description: "Your profile description does not match the code.",
+                        }),
+                    );
+
+                    buttonEmbed.setButtons([]);
+                    await interaction.editReply(buttonEmbed.getMessageData());
+
                     return;
                 }
 
                 const userProffile = await client.Database.fetchUserProfile(interaction.user.id);
                 await userProffile.linkRoblox({ id: user.id, name: user.name });
 
-                buttonEmbed.setButtons([]);
                 buttonEmbed.setEmbed(
                     client.Functions.makeSuccessEmbed({
                         title: "Link Roblox",
@@ -138,9 +141,8 @@ export default new SlashCommand({
                     }),
                 );
 
-                const messageData = buttonEmbed.getMessageData();
-                messageData.components = [];
-                await buttonInteraction.editReply(messageData);
+                buttonEmbed.setButtons([]);
+                await interaction.editReply(buttonEmbed.getMessageData());
             },
         });
 
@@ -157,9 +159,10 @@ export default new SlashCommand({
                     client.Functions.makeInfoEmbed({ title: "Link Roblox", description: "Linking cancelled." }),
                 );
 
-                const messageData = buttonEmbed.getMessageData();
-                messageData.components = [];
-                await buttonInteraction.editReply(messageData);
+                console.log(buttonEmbed.Rows);
+                console.log(buttonEmbed.getMessageData());
+
+                await buttonInteraction.editReply(buttonEmbed.getMessageData());
             },
         });
 
