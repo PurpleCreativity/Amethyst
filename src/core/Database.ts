@@ -1,9 +1,3 @@
-/*
-    Mongoose really does not seem to like Deno
-    Types in your IDE will not work,
-    but the code will still run and pass the typescript compiler
-*/
-
 import mongoose from "mongoose";
 
 import type { Guild, User } from "discord.js";
