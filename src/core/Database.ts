@@ -44,11 +44,9 @@ export default class Database {
                 updatedAt: undefined,
             },
 
-            FFlags: new Map(),
+            FFlags: new Map().set("CreatedInVersion", this.client.config.version),
             settings: new Map(),
         });
-
-        await profile.setFFlag("CreatedInVersion", this.client.config.version);
 
         await profile.save();
         this.cache.users.set(user.id, profile);
@@ -138,11 +136,9 @@ export default class Database {
                 .set("Custom4", "0")
                 .set("Custom5", "0"),
 
-            FFlags: new Map(),
+            FFlags: new Map().set("CreatedInVersion", this.client.config.version),
             settings: new Map(),
         });
-
-        await profile.setFFlag("CreatedInVersion", this.client.config.version);
 
         await profile.save();
         this.cache.guilds.set(guild.id, profile);
