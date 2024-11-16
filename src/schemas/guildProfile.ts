@@ -106,6 +106,7 @@ export type ScheduledEvent = {
 interface guildProfileInterface extends mongoose.Document {
     _id: mongoose.Types.ObjectId;
     iv: string;
+    shortname: string;
 
     guild: {
         id: string;
@@ -201,6 +202,7 @@ interface guildProfileInterface extends mongoose.Document {
 const guildProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     iv: { type: String, required: true },
+    shortname: { type: String, unique: true, required: true },
 
     guild: {
         id: { type: String, required: true },
