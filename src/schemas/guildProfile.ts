@@ -28,6 +28,7 @@ export type guildUser = {
 };
 
 export type Permission = {
+    name: string;
     roles: string[];
     users: string[];
 };
@@ -44,6 +45,7 @@ export type APIKey = {
 };
 
 export type robloxPlace = {
+    name: string;
     id: string; // placeId, not UniverseId
     key: string; // API Key
 };
@@ -198,39 +200,123 @@ interface guildProfileInterface extends mongoose.Document {
 
 const guildProfileSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    iv: { type: String, unique: true, required: true },
+    iv: { type: String, required: true },
 
     guild: {
-        id: { type: String, unique: true, required: true },
+        id: { type: String, required: true },
         name: { type: String, required: true },
     },
 
     roblox: {
-        groupId: { type: Number, required: false, default: undefined },
-
-        places: Map,
+        groupId: { type: Number, required: false },
+        places: {
+            type: Map,
+            of: {
+                name: { type: String, required: true },
+                id: { type: String, required: true },
+                key: { type: String, required: true },
+            },
+        },
     },
 
     API: {
-        rover_Key: { type: String, default: undefined },
-        bloxlink_Key: { type: String, default: undefined },
-
-        enabled: { type: Boolean, default: false },
-        keys: Map,
+        rover_Key: { type: String, required: false },
+        bloxlink_Key: { type: String, required: false },
+        enabled: { type: Boolean, required: true, default: true },
+        keys: {
+            type: Map,
+            of: {
+                name: { type: String, required: true },
+                key: { type: String, required: true },
+                enabled: { type: Boolean, required: true },
+                permissions: [String],
+                createdAt: { type: Date, required: true },
+                createdBy: { type: String, required: true },
+            },
+        },
     },
 
-    users: Map,
+    users: {
+        type: Map,
+        of: {
+            user: {
+                name: { type: String, required: true },
+                id: { type: String, required: true },
+            },
+            points: { type: Number, required: true },
+            note: {
+                text: { type: String, required: false },
+                visible: { type: Boolean, required: true },
+                updatedAt: { type: Date, required: true },
+            },
+            ranklock: {
+                rank: { type: Number, required: true },
+                shadow: { type: Boolean, required: true },
+                reason: { type: String, required: false },
+                updatedAt: { type: Date, required: true },
+            },
+        },
+    },
 
     schedule: {
-        types: Map,
-        events: Map,
+        types: {
+            type: Map,
+            of: {
+                name: { type: String, required: true },
+                icon: { type: String, required: true },
+                color: { type: String, required: true },
+                description: { type: String, required: true },
+                useRobloxSchedule: { type: Boolean, required: true },
+                useDiscordSchedule: { type: Boolean, required: true },
+                canSchedule: {
+                    roles: [String],
+                    users: [String],
+                },
+            },
+        },
+        events: {
+            type: Map,
+            of: {
+                id: { type: String, required: true },
+                time: { type: Number, required: true },
+                duration: { type: Number, required: true },
+                placeId: { type: Number, required: false },
+                notes: { type: String, required: false },
+                host: {
+                    name: { type: String, required: true },
+                    id: { type: String, required: true },
+                },
+                eventType: { type: String, required: true },
+                ongoing: { type: Boolean, required: true },
+                discordEventId: { type: String, required: true },
+                robloxEventId: { type: String, required: true },
+            },
+        },
     },
 
-    permissions: Map,
-    channels: Map,
+    permissions: {
+        type: Map,
+        of: {
+            name: { type: String, required: true },
+            roles: [String],
+            users: [String],
+        },
+    },
 
-    FFlags: Map,
-    settings: Map,
+    channels: {
+        type: Map,
+        of: String,
+    },
+
+    FFlags: {
+        type: Map,
+        of: mongoose.Schema.Types.Mixed,
+    },
+
+    settings: {
+        type: Map,
+        of: mongoose.Schema.Types.Mixed,
+    },
 });
 
 guildProfileSchema.methods.fetchGuild = async function () {
