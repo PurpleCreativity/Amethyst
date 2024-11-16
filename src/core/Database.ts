@@ -183,7 +183,7 @@ export default class Database {
         } catch (error) {
             this.client.error("Failed to Sync Cache to Database");
             this.client.error(error);
-            if (this.isConnected()) this.client.error("Database Connection is still open");
+            if (this.isConnected()) this.client.warn("Database Connection is still open");
         }
     };
 
