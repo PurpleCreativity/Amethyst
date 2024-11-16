@@ -23,6 +23,10 @@ export default class Functions {
         }
     };
 
+    findKeyfromValue = (map: Map<unknown, unknown>, value: unknown) => {
+        return [...map].find(([key, val]) => val === value)?.[0];
+    };
+
     GenerateID = () => {
         return crypto.randomUUID();
     };
