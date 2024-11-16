@@ -77,6 +77,15 @@ export default class Database {
         return profile;
     };
 
+    fetchUserFromRoblox = async (robloxId: string): Promise<userProfileInterface | undefined> => {
+        const profile = await userProfile.findOne({ "roblox.user.id": robloxId });
+        if (!profile) return undefined;
+
+        this.cache.users.set(profile.user.id, profile);
+
+        return profile;
+    };
+
     //? Guilds
 
     private createGuildProfile = async (guild: string | Guild): Promise<guildProfileInterface> => {
