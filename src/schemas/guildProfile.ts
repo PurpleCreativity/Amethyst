@@ -127,6 +127,8 @@ interface guildProfileInterface extends mongoose.Document {
         keys: Map<string, APIKey>;
     };
 
+    commands: Map<string, boolean>;
+
     users: Map<string, guildUser>;
 
     schedule: {
@@ -141,6 +143,9 @@ interface guildProfileInterface extends mongoose.Document {
     settings: Map<string, unknown>;
 
     fetchGuild: () => Promise<Guild>;
+
+    getCommandState: (commandName: string) => boolean;
+    setCommandState: (commandName: string, state: boolean) => Promise<guildProfileInterface>;
 
     getFFlag: (FFlagName: string) => unknown;
     setFFlag: (FFlagName: string, value: unknown) => Promise<guildProfileInterface>;
@@ -238,6 +243,11 @@ const guildProfileSchema = new mongoose.Schema({
         },
     },
 
+    commands: {
+        type: Map,
+        of: Boolean,
+    },
+
     users: {
         type: Map,
         of: {
@@ -327,6 +337,16 @@ guildProfileSchema.methods.fetchGuild = async function () {
 
 //? FFlags
 
+guildProfileSchema.methods.getCommandState = function (commandName: string) {
+    return this.commands.get(commandName);
+};
+
+guildProfileSchema.methods.setCommandState = async function (commandName: string, state: boolean) {
+    this.commands.set(commandName, state);
+
+    return await this.save();
+};
+
 guildProfileSchema.methods.getFFlag = function (FFlagName: string) {
     return this.FFlags.get(FFlagName);
 };
@@ -352,7 +372,11 @@ guildProfileSchema.methods.setSetting = async function (settingName: string, val
 //? Channels
 
 guildProfileSchema.methods.getChannel = async function (channelName: string) {
-    return await client.channels.fetch(this.channels.get(channelName));
+    if (!this.channels.has(channelName)) return undefined;
+    const id = this.channels.get(channelName);
+    if (id === "" || id === "0") return undefined;
+
+    return await client.channels.fetch(id);
 };
 
 guildProfileSchema.methods.setChannel = async function (channelName: string, id: string) {

@@ -116,6 +116,8 @@ export default class Database {
                 keys: new Map(),
             },
 
+            commands: new Map(),
+
             users: new Map(),
 
             schedule: {
@@ -123,8 +125,28 @@ export default class Database {
                 events: new Map(),
             },
 
-            permissions: new Map(),
-            channels: new Map(),
+            permissions: new Map()
+                .set("Administrator", { name: "Administrator", roles: [], users: [] })
+                .set("Moderator", { name: "Moderator", roles: [], users: [] })
+
+                .set("PointsManager", { name: "PointsManager", roles: [], users: [] })
+                .set("PointsViewer", { name: "PointsViewer", roles: [], users: [] })
+                .set("CreatePointLogs", { name: "CreatePointLogs", roles: [], users: [] })
+
+                .set("EventScheduler", { name: "EventScheduler", roles: [], users: [] })
+                .set("EventManager", { name: "EventManager", roles: [], users: [] }),
+
+            channels: new Map()
+                .set("PointsDatabaseUpdates", "0")
+                .set("PointLogUpdates", "0")
+                .set("ScheduleUpdates", "0")
+                .set("RobloxGroupLogs", "0")
+
+                .set("Custom1", "0")
+                .set("Custom2", "0")
+                .set("Custom3", "0")
+                .set("Custom4", "0")
+                .set("Custom5", "0"),
 
             FFlags: new Map(),
             settings: new Map(),
