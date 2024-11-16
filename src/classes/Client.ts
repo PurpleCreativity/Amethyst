@@ -176,7 +176,7 @@ export default class Client extends DiscordClient {
 
         try {
             const authuser = await this.Wrapblox.login(this.config.credentials.robloxCookie);
-            this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
+            this.success(`Logged in to Roblox as [${authuser.toString()}]`);
         } catch (error) {
             this.error("Failed to login to Roblox:");
             this.error(error);
