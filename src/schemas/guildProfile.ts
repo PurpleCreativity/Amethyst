@@ -1,4 +1,4 @@
-import type { ColorResolvable } from "discord.js";
+import type { ColorResolvable, Guild } from "discord.js";
 import mongoose from "mongoose";
 import client from "../main.js";
 
@@ -135,6 +135,14 @@ interface guildProfileInterface extends mongoose.Document {
 
     FFlags: Map<string, unknown>;
     settings: Map<string, unknown>;
+
+    fetchGuild: () => Promise<Guild>;
+
+    getFFlag: (name: string) => unknown;
+    setFFlag: (name: string, value: unknown) => Promise<guildProfileInterface>;
+
+    getSetting: (name: string) => unknown;
+    setSetting: (name: string, value: unknown) => Promise<guildProfileInterface>;
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -176,6 +184,26 @@ const guildProfileSchema = new mongoose.Schema({
 
 guildProfileSchema.methods.fetchGuild = async function () {
     return await client.guilds.fetch(this.guild.id);
+};
+
+guildProfileSchema.methods.getFFlag = function (name: string) {
+    return this.FFlags.get(name);
+};
+
+guildProfileSchema.methods.setFFlag = async function (name: string, value: unknown) {
+    this.FFlags.set(name, value);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.getSetting = function (name: string) {
+    return this.settings.get(name);
+};
+
+guildProfileSchema.methods.setSetting = async function (name: string, value: unknown) {
+    this.settings.set(name, value);
+
+    return this.save();
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
