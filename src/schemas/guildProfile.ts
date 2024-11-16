@@ -1,4 +1,4 @@
-import type { ColorResolvable, Guild } from "discord.js";
+import type { ColorResolvable, Guild, TextChannel } from "discord.js";
 import mongoose from "mongoose";
 import client from "../main.js";
 
@@ -27,13 +27,11 @@ export type guildUser = {
 };
 
 export type Permission = {
-    name: string;
     roles: string[];
     users: string[];
 };
 
 export type APIKey = {
-    name: string;
     key: string;
 
     enabled: boolean;
@@ -44,13 +42,11 @@ export type APIKey = {
 };
 
 export type robloxPlace = {
-    name: string;
     id: string; // placeId, not UniverseId
     key: string; // API Key
 };
 
 export type PointLog = {
-    id: string;
     creator: {
         name: string;
         id: number;
@@ -68,7 +64,6 @@ export type PointLog = {
 };
 
 export type ScheduleEventType = {
-    name: string;
     icon: string;
     color: ColorResolvable;
 
@@ -97,7 +92,6 @@ export type ScheduledEvent = {
 
     discordEventId: string;
     robloxEventId: string;
-    id: string;
 };
 
 interface guildProfileInterface extends mongoose.Document {
@@ -138,11 +132,24 @@ interface guildProfileInterface extends mongoose.Document {
 
     fetchGuild: () => Promise<Guild>;
 
-    getFFlag: (name: string) => unknown;
-    setFFlag: (name: string, value: unknown) => Promise<guildProfileInterface>;
+    getFFlag: (FFlagName: string) => unknown;
+    setFFlag: (FFlagName: string, value: unknown) => Promise<guildProfileInterface>;
 
-    getSetting: (name: string) => unknown;
-    setSetting: (name: string, value: unknown) => Promise<guildProfileInterface>;
+    getSetting: (settingName: string) => unknown;
+    setSetting: (settingName: string, value: unknown) => Promise<guildProfileInterface>;
+
+    getPermission: (permissionName: string) => Permission;
+
+    addUserToPermission: (permissionName: string, userId: string) => Promise<guildProfileInterface>;
+    removeUserFromPermission: (permissionName: string, userId: string) => Promise<guildProfileInterface>;
+    setUsersToPermission: (permissionName: string, userIds: string[]) => Promise<guildProfileInterface>;
+
+    addRoleToPermission: (permissionName: string, roleId: string) => Promise<guildProfileInterface>;
+    removeRoleFromPermission: (permissionName: string, roleId: string) => Promise<guildProfileInterface>;
+    setRolesToPermission: (permissionName: string, roleIds: string[]) => Promise<guildProfileInterface>;
+
+    getChannel: (channelName: string) => Promise<TextChannel>;
+    setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -186,22 +193,88 @@ guildProfileSchema.methods.fetchGuild = async function () {
     return await client.guilds.fetch(this.guild.id);
 };
 
-guildProfileSchema.methods.getFFlag = function (name: string) {
-    return this.FFlags.get(name);
+//? FFlags
+
+guildProfileSchema.methods.getFFlag = function (FFlagName: string) {
+    return this.FFlags.get(FFlagName);
 };
 
-guildProfileSchema.methods.setFFlag = async function (name: string, value: unknown) {
-    this.FFlags.set(name, value);
+guildProfileSchema.methods.setFFlag = async function (FFlagName: string, value: unknown) {
+    this.FFlags.set(FFlagName, value);
 
     return this.save();
 };
 
-guildProfileSchema.methods.getSetting = function (name: string) {
-    return this.settings.get(name);
+//? Settings
+
+guildProfileSchema.methods.getSetting = function (settingName: string) {
+    return this.settings.get(settingName);
 };
 
-guildProfileSchema.methods.setSetting = async function (name: string, value: unknown) {
-    this.settings.set(name, value);
+guildProfileSchema.methods.setSetting = async function (settingName: string, value: unknown) {
+    this.settings.set(settingName, value);
+
+    return this.save();
+};
+
+//? Channels
+
+guildProfileSchema.methods.getChannel = async function (channelName: string) {
+    return await client.channels.fetch(this.channels.get(channelName));
+};
+
+guildProfileSchema.methods.setChannel = async function (channelName: string, id: string) {
+    this.channels.set(channelName, id);
+
+    return this.save();
+};
+
+//? Permissions
+
+guildProfileSchema.methods.getPermission = function (permissionName: string) {
+    return this.permissions.get(permissionName);
+};
+
+// Permission/Users
+
+guildProfileSchema.methods.addUserToPermission = async function (permissionName: string, userId: string) {
+    this.permissions.get(permissionName).users.push(userId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.removeUserFromPermission = async function (permissionName: string, userId: string) {
+    this.permissions.get(permissionName).users = this.permissions
+        .get(permissionName)
+        .users.filter((user: string) => user !== userId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.setUsersToPermission = async function (permissionName: string, userIds: string[]) {
+    this.permissions.get(permissionName).users = userIds;
+
+    return this.save();
+};
+
+// Permission/Roles
+
+guildProfileSchema.methods.addRoleToPermission = async function (permissionName: string, roleId: string) {
+    this.permissions.get(permissionName).roles.push(roleId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.removeRoleFromPermission = async function (permissionName: string, roleId: string) {
+    this.permissions.get(permissionName).roles = this.permissions
+        .get(permissionName)
+        .roles.filter((role: string) => role !== roleId);
+
+    return this.save();
+};
+
+guildProfileSchema.methods.setRolesToPermission = async function (permissionName: string, roleIds: string[]) {
+    this.permissions.get(permissionName).roles = roleIds;
 
     return this.save();
 };
