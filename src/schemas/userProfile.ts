@@ -79,7 +79,7 @@ userProfileSchema.methods.setSetting = async function (name: string, value: unkn
     return await this.save();
 };
 
-const userProfile = mongoose.model<userProfileInterface>("User", userProfileSchema);
+const userProfile = mongoose.model<userProfileInterface>("userProfile", userProfileSchema);
 
 export default userProfile;
 export type { userProfileInterface, userProfileSchema };

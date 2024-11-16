@@ -698,7 +698,7 @@ guildProfileSchema.methods.validateAPIKey = function (key: string) {
     );
 };
 
-const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
+const guildProfile = mongoose.model<guildProfileInterface>("guildProfile", guildProfileSchema);
 
 export default guildProfile;
 export type { guildProfileInterface, guildProfileSchema };
