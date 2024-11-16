@@ -1,4 +1,4 @@
-import type { ColorResolvable, Guild, TextChannel } from "discord.js";
+import type { ColorResolvable, Guild, GuildMember, TextChannel } from "discord.js";
 import mongoose from "mongoose";
 import client from "../main.js";
 
@@ -11,16 +11,17 @@ export type guildUser = {
     points: number;
 
     note: {
-        text: string;
+        text?: string;
         visible: boolean;
 
         updatedAt: Date;
     };
 
     ranklock: {
-        rank: number;
-        shadow: boolean;
-        reason: string;
+        rank: NumberRange<0, 255>; // Roblox group rank (0-255)
+
+        visible: boolean;
+        reason?: string;
 
         updatedAt: Date;
     };
@@ -139,6 +140,7 @@ interface guildProfileInterface extends mongoose.Document {
     setSetting: (settingName: string, value: unknown) => Promise<guildProfileInterface>;
 
     getPermission: (permissionName: string) => Permission;
+    checkPermissions: (user: GuildMember, requiredPermissions: string[]) => boolean;
 
     addUserToPermission: (permissionName: string, userId: string) => Promise<guildProfileInterface>;
     removeUserFromPermission: (permissionName: string, userId: string) => Promise<guildProfileInterface>;
@@ -150,6 +152,9 @@ interface guildProfileInterface extends mongoose.Document {
 
     getChannel: (channelName: string) => Promise<TextChannel>;
     setChannel: (channelName: string, id: string) => Promise<guildProfileInterface>;
+
+    addUser: (RobloxUser: { id: string; name: string }) => Promise<guildProfileInterface>;
+    getUser: (RobloxId: string | number) => Promise<guildUser>;
 }
 
 const guildProfileSchema = new mongoose.Schema({
@@ -235,6 +240,25 @@ guildProfileSchema.methods.getPermission = function (permissionName: string) {
     return this.permissions.get(permissionName);
 };
 
+guildProfileSchema.methods.checkPermissions = function (user: GuildMember, requiredPermissions: string[]) {
+    const userRoles = user.roles.cache.map((role) => role.id);
+
+    if (user.permissions.has("Administrator")) return true;
+
+    const ownedPermissions: string[] = [];
+
+    for (const permissionName of requiredPermissions) {
+        const permission = this.permissions.get(permissionName);
+
+        if (permission.roles.some((role: string) => userRoles.includes(role))) ownedPermissions.push(permissionName);
+        if (permission.users.includes(user.id)) ownedPermissions.push(permissionName);
+    }
+
+    if (ownedPermissions.length === requiredPermissions.length) return true;
+
+    return false;
+};
+
 // Permission/Users
 
 guildProfileSchema.methods.addUserToPermission = async function (permissionName: string, userId: string) {
@@ -277,6 +301,51 @@ guildProfileSchema.methods.setRolesToPermission = async function (permissionName
     this.permissions.get(permissionName).roles = roleIds;
 
     return this.save();
+};
+
+guildProfileSchema.methods.addUser = async function (RobloxUser: { id: string; name: string }) {
+    const userId = RobloxUser.id;
+
+    const user = {
+        user: {
+            name: RobloxUser.name,
+            id: userId,
+        },
+
+        points: 0,
+
+        note: {
+            text: undefined,
+            visible: true,
+
+            updatedAt: new Date(),
+        },
+
+        ranklock: {
+            rank: 0,
+            visible: true,
+            reason: undefined,
+
+            updatedAt: new Date(),
+        },
+    };
+
+    this.users.set(userId, user);
+    return await this.save();
+};
+
+guildProfileSchema.methods.getUser = async function (RobloxId: string | number) {
+    const userId = RobloxId.toString();
+
+    if (this.users.has(userId)) return this.users.get(userId);
+
+    try {
+        const rbxUser = await client.Wrapblox.fetchUser(userId);
+
+        return (await this.addUser({ id: rbxUser.id.toString(), name: rbxUser.name })).users.get(userId);
+    } catch (error) {
+        throw new Error("Invalid User or User not found");
+    }
 };
 
 const guildProfile = mongoose.model<guildProfileInterface>("Guild", guildProfileSchema);
