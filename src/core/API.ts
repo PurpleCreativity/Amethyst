@@ -74,7 +74,13 @@ export default class API {
     };
 
     GenerateKey() {
-        return `AMETHYST_API_KEY_${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}${this.client.Functions.GenerateID().replace(/-/g, "")}`;
+        const keyLength = Math.floor(Math.random() * (40 - 20 + 1)) + 40;
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
+        let key = "";
+        for (let i = 0; i < keyLength; i++) {
+            key += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return key;
     }
 
     Init = async () => {
@@ -86,5 +92,7 @@ export default class API {
         this.server.listen(this.client.config.port, () => {
             this.client.success(`Server is running on port ${this.client.config.port}`);
         });
+
+        console.log(this.GenerateKey());
     };
 }

@@ -58,6 +58,10 @@ export default class Route {
             return res.status(401).send(client.API.formatError(401, "No API Key provided."));
         }
 
+        if (!/^[a-zA-Z0-9-]{40,60}$/.test(APIKey)) {
+            return res.status(400).send(client.API.formatError(400, "Invalid API Key format."));
+        }
+
         const { guildProfile, keyData } = (await client.Database.fetchGuildFromAPIKey(APIKey)) || {};
         if (!guildProfile || !keyData) {
             return res.status(401).send(client.API.formatError(401, "Invalid API Key provided."));
