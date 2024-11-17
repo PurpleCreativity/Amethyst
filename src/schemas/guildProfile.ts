@@ -173,7 +173,12 @@ interface guildProfileInterface extends mongoose.Document {
     getPointLog: (logId: string) => PointLog;
     removePointLog: (logId: string) => void;
     updatePointLog: (logId: string, log: PointLog) => void;
-    getPointLogs: (query?: { creatorName?: string; creatorId?: string; targetName?: string; targetId?: string }) => PointLog[];
+    getPointLogs: (query?: {
+        creatorName?: string;
+        creatorId?: string;
+        targetName?: string;
+        targetId?: string;
+    }) => PointLog[];
 
     addScheduledEvent: (eventId: string, event: ScheduledEvent) => void;
     getScheduledEvent: (eventId: string) => ScheduledEvent;

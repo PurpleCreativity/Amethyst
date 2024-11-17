@@ -23,7 +23,7 @@ interface userProfileInterface extends mongoose.Document {
     settings: Map<string, unknown>;
 
     linkRoblox: (robloxUser: { id: number; name: string }) => void;
-    
+
     getFFlag: (name: string) => unknown;
     setFFlag: (name: string, value: unknown) => void;
 
