@@ -17,7 +17,7 @@ export type RouteOptions = {
     permissions?: ValidPermissions[];
     deprecated?: boolean;
 
-    function: (req: express.Request, res: express.Response, guildProfile?: guildProfileInterface) => Promise<void>;
+    function: (req: express.Request, res: express.Response, guildProfile?: guildProfileInterface) => Promise<unknown>;
 };
 
 export default class Route {
@@ -33,7 +33,7 @@ export default class Route {
         req: express.Request,
         res: express.Response,
         guildProfile?: guildProfileInterface,
-    ) => Promise<void>;
+    ) => Promise<unknown>;
 
     constructor(options: RouteOptions) {
         this.method = options.method;
