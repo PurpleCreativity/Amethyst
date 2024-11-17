@@ -239,6 +239,6 @@ export default class Database {
         if (this.isConnected()) this.client.success("Connected to Database");
         else return this.client.error("Failed to connect to database");
 
-        this.client.Threader.CreateThread("DatabaseSync", this.syncCachetoDB).Loop(10 * 60 * 1000);
+        this.client.Threader.CreateThread("DatabaseSync", this.syncCachetoDB).Loop(5 * 60 * 1000);
     };
 }
