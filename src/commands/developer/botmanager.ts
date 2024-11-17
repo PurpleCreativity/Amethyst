@@ -46,7 +46,17 @@ export default new SlashCommand({
                 try {
                     const guild = await client.guilds.fetch(guildId);
 
-                    await client.Database.createGuildProfile(shortname, guild);
+                    const profile = await client.Database.createGuildProfile(shortname, guild);
+                    profile.addAPIKey("debug", {
+                        enabled: true,
+                        permissions: ["Administrator"],
+
+                        key: "bananas",
+
+                        createdAt: new Date(),
+                        createdBy: interaction.user.id,
+                    });
+                    await profile.save();
 
                     await interaction.editReply({
                         embeds: [

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import type { Guild, User } from "discord.js";
 import type Client from "../classes/Client.ts";
 import guildProfile from "../schemas/guildProfile.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.ts";
+import type { APIKey, guildProfileInterface } from "../schemas/guildProfile.ts";
 import userProfile from "../schemas/userProfile.js";
 import type { userProfileInterface } from "../schemas/userProfile.ts";
 
@@ -163,6 +163,28 @@ export default class Database {
 
         this.cache.guilds.set(profile.guild.id, profile);
         return profile;
+    };
+
+    fetchAllGuilds = async (useCache = true): Promise<guildProfileInterface[]> => {
+        if (useCache && this.cache.guilds.size) return Array.from(this.cache.guilds.values());
+
+        const profiles = await guildProfile.find();
+        for (const profile of profiles) this.cache.guilds.set(profile.guild.id, profile);
+
+        return profiles;
+    };
+
+    fetchGuildFromAPIKey = async (
+        key: string,
+        useCache = true,
+    ): Promise<{ guildProfile: guildProfileInterface; keyData: APIKey } | undefined> => {
+        const profiles = await this.fetchAllGuilds(useCache);
+
+        for (const guildProfile of profiles) {
+            for (const keyData of guildProfile.API.keys.values()) {
+                if (keyData.key === key) return { guildProfile, keyData };
+            }
+        }
     };
 
     private syncCachetoDB = async () => {

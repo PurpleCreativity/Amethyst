@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import type { Group } from "noblox.js";
 import client from "../main.js";
 import type { NumberRange } from "../types/custom.js";
+import type { ValidPermissions } from "../types/global.js";
 
 export type guildUser = {
     user: {
@@ -38,7 +39,7 @@ export type APIKey = {
     key: string;
 
     enabled: boolean;
-    permissions: string[];
+    permissions: ValidPermissions[];
 
     createdAt: Date;
     createdBy: string;
