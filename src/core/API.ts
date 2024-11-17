@@ -53,10 +53,7 @@ export default class API {
                     ratelimit({
                         windowMs: route.rateLimit.windowMs,
                         max: route.rateLimit.limit,
-                        message: this.formatError(
-                            429,
-                            "You are being rate limited. Please try again later.",
-                        ),
+                        message: this.formatError(429, "You are being rate limited. Please try again later."),
                     }),
                     route.middlewares,
                     route.execute,
