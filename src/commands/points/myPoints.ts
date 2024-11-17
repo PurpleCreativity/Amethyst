@@ -21,22 +21,6 @@ export default new SlashCommand({
             return;
         }
 
-        guildProfile.addPointLog(client.Functions.GenerateID(), {
-            notes: "User checked their points",
-            createdAt: new Date(),
-            creator: {
-                id: linkedUser.id,
-                name: linkedUser.name,
-            },
-            data: [
-                {
-                    id: linkedUser.id,
-                    name: linkedUser.name,
-                    points: 15,
-                },
-            ],
-        });
-
         const user = await guildProfile.getUser(linkedUser.id);
         const pendingPoints = guildProfile.calculatePendingPoints(linkedUser.id);
         const iconURL = (
@@ -51,7 +35,7 @@ export default new SlashCommand({
                     fields: [
                         {
                             name: guildProfile.shortname,
-                            value: `${user.points} points${pendingPoints > 0 ? ` (${pendingPoints} pending)` : ""}`,
+                            value: `${user.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}`,
                         },
                     ],
                 }),
