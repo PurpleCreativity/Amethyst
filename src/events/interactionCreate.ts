@@ -21,7 +21,9 @@ export default new Event({
             }
 
             try {
-                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                const guildProfile = interaction.guild
+                    ? await client.Database.fetchGuildProfile(interaction.guild.id)
+                    : undefined;
                 if (interaction.guild && !guildProfile) {
                     return await interaction.reply({
                         embeds: [
@@ -66,7 +68,9 @@ export default new Event({
 
             if (!command || !command.autocomplete) return;
 
-            const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+            const guildProfile = interaction.guild
+                ? await client.Database.fetchGuildProfile(interaction.guild.id)
+                : undefined;
             if (interaction.guild && !guildProfile) {
                 return await interaction.respond([]);
             }
@@ -91,7 +95,9 @@ export default new Event({
             }
 
             try {
-                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                const guildProfile = interaction.guild
+                    ? await client.Database.fetchGuildProfile(interaction.guild.id)
+                    : undefined;
                 if (interaction.guild && !guildProfile) {
                     return await interaction.reply({
                         embeds: [
@@ -143,7 +149,9 @@ export default new Event({
             }
 
             try {
-                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                const guildProfile = interaction.guild
+                    ? await client.Database.fetchGuildProfile(interaction.guild.id)
+                    : undefined;
                 if (interaction.guild && !guildProfile) {
                     return await interaction.reply({
                         embeds: [

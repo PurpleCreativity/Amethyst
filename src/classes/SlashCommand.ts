@@ -62,7 +62,10 @@ export type SlashCommandOptions = {
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
     function: (interaction: ChatInputCommandInteraction, guildProfile?: guildProfileInterface) => Promise<unknown>;
-    autocomplete?: (interaction: AutocompleteInteraction, guildProfile?: guildProfileInterface) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    autocomplete?: (
+        interaction: AutocompleteInteraction,
+        guildProfile?: guildProfileInterface,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 export default class SlashCommand extends SlashCommandBuilder {
@@ -74,8 +77,14 @@ export default class SlashCommand extends SlashCommandBuilder {
     readonly permissions: ValidPermissions[];
     readonly developer_only: boolean;
 
-    private function: (interaction: ChatInputCommandInteraction, guildProfile?: guildProfileInterface) => unknown | Promise<unknown>;
-    autocomplete?: (interaction: AutocompleteInteraction, guildProfile?: guildProfileInterface) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    private function: (
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: guildProfileInterface,
+    ) => unknown | Promise<unknown>;
+    autocomplete?: (
+        interaction: AutocompleteInteraction,
+        guildProfile?: guildProfileInterface,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
     disabled = false;
 
@@ -135,8 +144,11 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
     }
 
-    private check = async (interaction: ChatInputCommandInteraction, guildProfile?: guildProfileInterface): Promise<CommandError | undefined> => {
-//        if (client.Functions.isDev(interaction.user.id)) return undefined;
+    private check = async (
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: guildProfileInterface,
+    ): Promise<CommandError | undefined> => {
+        //        if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandError.DISABLED_GLOBAL;
         if (this.developer_only) return CommandError.DEVELOPER_ONLY;
@@ -151,7 +163,7 @@ export default class SlashCommand extends SlashCommandBuilder {
                 const boolean = guildProfile.checkPermissions(interaction.member, this.permissions);
                 if (!boolean) return CommandError.MISSING_PERMISSIONS;
                 return undefined;
-            };
+            }
 
             if (this.discord_permissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
@@ -170,7 +182,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         return undefined;
     };
 
-    execute = async (interaction: ChatInputCommandInteraction, guildProfile?: guildProfileInterface): Promise<unknown> => {
+    execute = async (
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: guildProfileInterface,
+    ): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
         const error = await this.check(interaction, guildProfile);

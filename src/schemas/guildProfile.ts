@@ -404,10 +404,7 @@ guildProfileSchema.methods.checkPermissions = function (user: GuildMember, requi
     if (user.permissions.has("Administrator")) return true;
 
     const permission = this.permissions.get("Administrator");
-    if (
-        permission.roles.some((role: string) => userRoles.includes(role)) ||
-        permission.users.includes(user.id)
-    )
+    if (permission.roles.some((role: string) => userRoles.includes(role)) || permission.users.includes(user.id))
         return true;
 
     const ownedPermissions: string[] = [];
