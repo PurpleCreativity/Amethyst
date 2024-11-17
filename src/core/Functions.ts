@@ -158,6 +158,7 @@ export default class Functions {
 
     makeInfoEmbed = (options: EmbedOptions) => {
         const embed = new Embed(options);
+
         if (!options.color) embed.setColor(0x4287f5);
         if (!options.author) {
             embed.setAuthor({ name: "Info", iconURL: Icons.info });
@@ -168,6 +169,7 @@ export default class Functions {
 
     makeWarnEmbed = (options: EmbedOptions) => {
         const embed = new Embed(options);
+
         if (!options.color) embed.setColor(0xffcc00);
         if (!options.author) {
             embed.setAuthor({ name: "Warning", iconURL: Icons.warn });
@@ -178,6 +180,7 @@ export default class Functions {
 
     makeSuccessEmbed = (options: EmbedOptions) => {
         const embed = new Embed(options);
+
         if (!options.color) embed.setColor(0x00ff00);
         if (!options.author) {
             embed.setAuthor({ name: "Success", iconURL: Icons.check });
@@ -188,6 +191,7 @@ export default class Functions {
 
     makeErrorEmbed = (options: EmbedOptions) => {
         const embed = new Embed(options);
+        
         if (!options.color) embed.setColor(0xff0000);
         if (!options.author) {
             embed.setAuthor({ name: "Error", iconURL: Icons.close });
