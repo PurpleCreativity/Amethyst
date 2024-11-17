@@ -148,7 +148,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         interaction: ChatInputCommandInteraction,
         guildProfile?: guildProfileInterface,
     ): Promise<CommandError | undefined> => {
-        //        if (client.Functions.isDev(interaction.user.id)) return undefined;
+        if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandError.DISABLED_GLOBAL;
         if (this.developer_only) return CommandError.DEVELOPER_ONLY;
