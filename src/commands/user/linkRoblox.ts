@@ -1,8 +1,8 @@
 import { ButtonStyle, SlashCommandStringOption } from "discord.js";
+import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../main.js";
-import ButtonEmbed from "../../classes/ButtonEmbed.js";
-import Emojis from "../../../public/Emojis.json" with { type: "json"};
 
 const permittedWords = [
     "apple",
@@ -65,10 +65,7 @@ export default new SlashCommand({
     description: "Link your Roblox account to your Discord account",
 
     options: [
-        new SlashCommandStringOption()
-            .setName("username")
-            .setDescription("Your Roblox username")
-            .setRequired(true)
+        new SlashCommandStringOption().setName("username").setDescription("Your Roblox username").setRequired(true),
     ],
 
     function: async (interaction, _guildProfile) => {
@@ -92,7 +89,7 @@ export default new SlashCommand({
             client.Functions.makeInfoEmbed({
                 title: "Link Roblox",
                 description: `Hi, \`@${interaction.user.username}\`! To make sure you're the owner of the account, please set your roblox description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`,
-            })
+            }),
         );
 
         buttonEmbed.addButton({
@@ -100,7 +97,7 @@ export default new SlashCommand({
             style: ButtonStyle.Success,
             emoji: Emojis.check,
 
-            function: async (buttonInteraction) => {}
+            function: async (buttonInteraction) => {},
         });
 
         buttonEmbed.addButton({
@@ -141,5 +138,5 @@ export default new SlashCommand({
         });
 
         return await interaction.editReply(buttonEmbed.getMessageData());
-    }
-})
+    },
+});
