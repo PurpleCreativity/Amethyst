@@ -4,6 +4,7 @@ import express from "express";
 import ratelimit from "express-rate-limit";
 import type Client from "../classes/Client.ts";
 import Route from "../classes/Route.js";
+import { HttpStatusCodes } from "../types/Enums.js";
 
 export default class API {
     client: Client;
@@ -54,7 +55,6 @@ export default class API {
                         max: route.rateLimit.limit,
                         message: this.formatError(
                             429,
-                            "RATE_LIMIT_EXCEEDED",
                             "You are being rate limited. Please try again later.",
                         ),
                     }),
@@ -67,12 +67,12 @@ export default class API {
         await loadRoutesfromDir(routesDir);
     };
 
-    formatError = (code: number, error: string, message: string, details?: Record<string, unknown>) => {
+    formatError = (code: number, message: string, details?: Record<string, unknown>) => {
         return {
-            code,
-            error,
-            message,
-            details,
+            code: code,
+            error: HttpStatusCodes[code] || "UNKNOWN",
+            message: message,
+            details: details,
         };
     };
 

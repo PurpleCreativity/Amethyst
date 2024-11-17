@@ -55,26 +55,26 @@ export default class Route {
             req.headers.authorization ||
             req.headers.Authorization) as string | undefined;
         if (!APIKey) {
-            return res.status(401).send(client.API.formatError(401, "UNAUTHORIZED", "No API Key provided."));
+            return res.status(401).send(client.API.formatError(401, "No API Key provided."));
         }
 
         const { guildProfile, keyData } = (await client.Database.fetchGuildFromAPIKey(APIKey)) || {};
         if (!guildProfile || !keyData) {
-            return res.status(401).send(client.API.formatError(401, "UNAUTHORIZED", "Invalid API Key provided."));
+            return res.status(401).send(client.API.formatError(401, "Invalid API Key provided."));
         }
         if (!guildProfile.API.enabled) {
-            return res.status(403).send(client.API.formatError(403, "FORBIDDEN", "API is disabled for this guild."));
+            return res.status(403).send(client.API.formatError(403, "API is disabled for this guild."));
         }
 
         if (!keyData.enabled) {
-            return res.status(403).send(client.API.formatError(403, "FORBIDDEN", "API Key is disabled."));
+            return res.status(403).send(client.API.formatError(403, "API Key is disabled."));
         }
 
         if (
             this.permissions.length &&
             !keyData.permissions.some((permission) => this.permissions?.includes(permission))
         ) {
-            return res.status(403).send(client.API.formatError(403, "FORBIDDEN", "Insufficient Permissions."));
+            return res.status(403).send(client.API.formatError(403, "Insufficient Permissions."));
         }
 
         return await this.function(req, res, guildProfile);

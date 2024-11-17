@@ -7,6 +7,8 @@ export default new Route({
         limit: 1,
     },
 
+    public: false,
+
     function: async (req, res) => {
         res.send("Hello, World!");
     },
