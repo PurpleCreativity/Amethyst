@@ -7,6 +7,7 @@ import { Colors, Message, type StartThreadOptions, type TextChannel } from "disc
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/Embed.js";
+import type { PlayerInfo } from "../types/Functions.js";
 
 export default class Functions {
     client: Client;
@@ -19,9 +20,34 @@ export default class Functions {
         return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
-    fetchRobloxUser = async (searcher: string | number, useCache = true) => {
+    // String is username, number is userId
+    fetchRobloxUser = async (searcher: string | number): Promise<PlayerInfo | undefined> => {
         try {
-            return await this.client.Wrapblox.fetchUser(searcher, useCache);
+            if (typeof searcher === "string") {
+                searcher = await this.client.noblox.getIdFromUsername(searcher);
+            }
+
+            const raw = await this.client.noblox.getPlayerInfo(searcher);
+
+            return {
+                id: searcher,
+
+                username: raw.username,
+                displayName: raw.displayName,
+
+                description: raw.blurb,
+                blurb: raw.blurb,
+
+                joinDate: new Date(raw.joinDate),
+                age: raw.age,
+
+                friendCount: raw.friendCount,
+                followerCount: raw.followerCount,
+                followingCount: raw.followingCount,
+
+                oldNames: raw.oldNames,
+                isBanned: raw.isBanned,
+            };
         } catch (error) {
             return undefined;
         }

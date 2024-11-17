@@ -2,3 +2,5 @@
 /// <reference path="./custom.d.ts" />
 
 /// <reference path="./config.d.ts" />
+
+/// <reference path="./Functions.d.ts" />

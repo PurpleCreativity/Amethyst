@@ -2,8 +2,7 @@ import process from "node:process";
 import axios, { type Axios } from "axios";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
-import mongoose, { type Mongoose } from "mongoose";
-import Wrapblox from "wrapblox";
+import noblox from "noblox.js";
 import config from "../config.js";
 import type { configType } from "../types/config.d.js";
 dotenv.config();
@@ -56,7 +55,7 @@ export default class Client extends DiscordClient {
 
     //? Dependencies
     Axios: Axios = axios.create();
-    Wrapblox: Wrapblox = new Wrapblox();
+    noblox: typeof noblox = noblox;
 
     constructor(options: ClientOptions) {
         super(options);
@@ -174,8 +173,8 @@ export default class Client extends DiscordClient {
         this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
 
         try {
-            const authuser = await this.Wrapblox.login(this.config.credentials.robloxCookie);
-            this.success(`Logged in to Roblox as [${authuser.toString()}]`);
+            const authuser = await this.noblox.setCookie(this.config.credentials.robloxCookie);
+            this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
         } catch (error) {
             this.error("Failed to login to Roblox:");
             this.error(error);

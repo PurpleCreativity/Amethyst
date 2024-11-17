@@ -337,7 +337,7 @@ guildProfileSchema.methods.linkGroup = async function (groupId: string) {
 guildProfileSchema.methods.fetchGroup = async function () {
     if (this.roblox.groupId === "0") return undefined;
 
-    return await client.Wrapblox.fetchGroup(this.roblox.groupId);
+    return await client.noblox.getGroup(Number.parseInt(this.roblox.groupId));
 };
 
 //? FFlags
@@ -500,9 +500,9 @@ guildProfileSchema.methods.getUser = async function (robloxId: string) {
     if (this.users.has(robloxId)) return this.users.get(robloxId);
 
     try {
-        const rbxUser = await client.Wrapblox.fetchUser(robloxId);
+        const rbxUser = await client.noblox.getPlayerInfo(Number.parseInt(robloxId));
 
-        return (await this.addUser({ id: rbxUser.id.toString(), name: rbxUser.name })).users.get(robloxId);
+        return (await this.addUser({ id: robloxId, name: rbxUser.username })).users.get(robloxId);
     } catch (error) {
         throw new Error("Invalid User or User not found");
     }

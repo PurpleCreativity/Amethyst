@@ -41,6 +41,6 @@
         "express": "^4.21.1",
         "express-rate-limit": "^7.4.1",
         "mongoose": "^8.8.1",
-        "wrapblox": "^0.6.0"
+        "noblox.js": "^6.0.2"
     }
 }

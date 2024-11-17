@@ -71,7 +71,7 @@ export default new SlashCommand({
 
     function: async (interaction) => {
         const username = interaction.options.getString("username", true);
-        const account = await client.Functions.fetchRobloxUser(username, false);
+        const account = await client.Functions.fetchRobloxUser(username);
         if (!account) {
             await interaction.editReply({
                 embeds: [
@@ -101,7 +101,7 @@ export default new SlashCommand({
             function: async (buttonInteraction) => {
                 await buttonInteraction.deferReply();
 
-                const user = await client.Functions.fetchRobloxUser(username, false);
+                const user = await client.Functions.fetchRobloxUser(username);
                 if (!user) {
                     buttonEmbed.setEmbed(
                         client.Functions.makeErrorEmbed({
@@ -117,7 +117,7 @@ export default new SlashCommand({
                     return;
                 }
 
-                if (!user.description.trim().includes(code)) {
+                if (!user.blurb.trim().includes(code)) {
                     buttonEmbed.setEmbed(
                         client.Functions.makeErrorEmbed({
                             title: "Link Roblox",
@@ -135,13 +135,12 @@ export default new SlashCommand({
                 buttonEmbed.setEmbed(
                     client.Functions.makeSuccessEmbed({
                         title: "Link Roblox",
-                        thumbnail: await user.fetchAvatarHeadshotUrl(),
-                        description: `Account linked to \`${user.name}\``,
+                        description: `Account linked to \`${user.username}\``,
                     }),
                 );
 
                 const userProffile = await client.Database.fetchUserProfile(interaction.user.id);
-                await userProffile.linkRoblox({ id: user.id, name: user.name });
+                await userProffile.linkRoblox({ id: user.id, name: user.username });
 
                 buttonEmbed.setButtons([]);
                 await interaction.editReply(buttonEmbed.getMessageData());
