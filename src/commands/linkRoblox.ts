@@ -139,8 +139,9 @@ export default new SlashCommand({
                     }),
                 );
 
-                const userProffile = await client.Database.fetchUserProfile(interaction.user.id);
-                await userProffile.linkRoblox({ id: user.id, name: user.username });
+                const userProfile = await client.Database.fetchUserProfile(interaction.user.id);
+                userProfile.linkRoblox({ id: user.id, name: user.username });
+                await userProfile.save();
 
                 buttonEmbed.setButtons([]);
                 await interaction.editReply(buttonEmbed.getMessageData());

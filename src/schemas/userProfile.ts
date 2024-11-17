@@ -22,13 +22,13 @@ interface userProfileInterface extends mongoose.Document {
     FFlags: Map<string, unknown>;
     settings: Map<string, unknown>;
 
-    linkRoblox: (robloxUser: { id: number; name: string }) => Promise<userProfileInterface>;
-
+    linkRoblox: (robloxUser: { id: number; name: string }) => void;
+    
     getFFlag: (name: string) => unknown;
-    setFFlag: (name: string, value: unknown) => Promise<userProfileInterface>;
+    setFFlag: (name: string, value: unknown) => void;
 
     getSetting: (name: string) => unknown;
-    setSetting: (name: string, value: unknown) => Promise<userProfileInterface>;
+    setSetting: (name: string, value: unknown) => void;
 }
 
 const userProfileSchema = new mongoose.Schema({
@@ -52,31 +52,25 @@ const userProfileSchema = new mongoose.Schema({
     settings: { type: Map, of: mongoose.Schema.Types.Mixed },
 });
 
-userProfileSchema.methods.linkRoblox = async function (robloxUser: { id: number; name: string }) {
+userProfileSchema.methods.linkRoblox = function (robloxUser: { id: number; name: string }) {
     this.roblox.user = robloxUser;
     this.roblox.updatedAt = new Date();
-
-    return await this.save();
 };
 
 userProfileSchema.methods.getFFlag = function (name: string) {
     return this.FFlags.get(name);
 };
 
-userProfileSchema.methods.setFFlag = async function (name: string, value: unknown) {
+userProfileSchema.methods.setFFlag = function (name: string, value: unknown) {
     this.FFlags.set(name, value);
-
-    return await this.save();
 };
 
 userProfileSchema.methods.getSetting = function (name: string) {
     return this.settings.get(name);
 };
 
-userProfileSchema.methods.setSetting = async function (name: string, value: unknown) {
+userProfileSchema.methods.setSetting = function (name: string, value: unknown) {
     this.settings.set(name, value);
-
-    return await this.save();
 };
 
 const userProfile = mongoose.model<userProfileInterface>("userProfile", userProfileSchema);
