@@ -1,5 +1,5 @@
-import SlashCommand from "../classes/SlashCommand.js";
-import client from "../main.js";
+import SlashCommand from "../../classes/SlashCommand.js";
+import client from "../../main.js";
 
 export default new SlashCommand({
     name: "stats",
