@@ -92,7 +92,5 @@ export default class API {
         this.server.listen(this.client.config.port, () => {
             this.client.success(`Server is running on port ${this.client.config.port}`);
         });
-
-        console.log(this.GenerateKey());
     };
 }
