@@ -73,13 +73,13 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
             this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
         }
 
-        this.ephemeral = options.ephemeral || false;
+        this.ephemeral = options.ephemeral ?? false;
         this.module = options.module;
         this.selected_guilds = options.selected_guilds || [];
 
         this.discord_permissions = options.discord_permissions || [];
         this.permissions = options.permissions || [];
-        this.developer_only = options.developer_only || false;
+        this.developer_only = options.developer_only ?? false;
     }
 
     check = async (

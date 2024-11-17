@@ -105,11 +105,11 @@ export default class SlashCommand extends SlashCommandBuilder {
 
         this.module = options.module;
         this.selected_guilds = options.selected_guilds || [];
-        this.ephemeral = options.ephemeral || false;
+        this.ephemeral = options.ephemeral ?? false;
 
         this.discord_permissions = options.discord_permissions || [];
         this.permissions = options.permissions || [];
-        this.developer_only = options.developer_only || false;
+        this.developer_only = options.developer_only ?? false;
 
         if (options.options && options.options.length > 0) {
             for (const option of options.options) {
