@@ -106,6 +106,7 @@ export default class Database {
 
             commands: new Map(),
 
+            pointLogs: new Map(),
             users: new Map(),
 
             schedule: {

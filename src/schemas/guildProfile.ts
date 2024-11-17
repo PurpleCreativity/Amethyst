@@ -125,6 +125,7 @@ interface guildProfileInterface extends mongoose.Document {
     commands: Map<string, boolean>;
 
     users: Map<string, guildUser>;
+    pointLogs: Map<string, PointLog>;
 
     schedule: {
         types: Map<string, ScheduleEventType>;
@@ -262,6 +263,24 @@ const guildProfileSchema = new mongoose.Schema({
                 reason: { type: String, required: false },
                 updatedAt: { type: Date, required: true },
             },
+        },
+    },
+    pointLogs: {
+        type: Map,
+        of: {
+            creator: {
+                name: { type: String, required: true },
+                id: { type: String, required: true },
+            },
+            data: [
+                {
+                    name: { type: String, required: true },
+                    id: { type: String, required: true },
+                    points: { type: Number, required: true },
+                },
+            ],
+            notes: { type: String, required: false },
+            createdAt: { type: Date, required: true },
         },
     },
 
