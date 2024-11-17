@@ -15,8 +15,8 @@ export default new SlashCommand({
                     client.Functions.makeErrorEmbed({
                         title: "My Points",
                         description: "You are not linked to a Roblox account.",
-                    })
-                ]
+                    }),
+                ],
             });
             return;
         }
@@ -26,21 +26,23 @@ export default new SlashCommand({
             createdAt: new Date(),
             creator: {
                 id: linkedUser.id,
-                name: linkedUser.name
+                name: linkedUser.name,
             },
             data: [
                 {
                     id: linkedUser.id,
                     name: linkedUser.name,
-                    points: 15
-                }
-            ]
-        })
+                    points: 15,
+                },
+            ],
+        });
 
         const user = await guildProfile.getUser(linkedUser.id);
         const pendingPoints = guildProfile.calculatePendingPoints(linkedUser.id);
-        const iconURL = (await client.noblox.getPlayerThumbnail(Number.parseInt(linkedUser.id), "150x150", "png", true, "headshot"))[0].imageUrl;
-        
+        const iconURL = (
+            await client.noblox.getPlayerThumbnail(Number.parseInt(linkedUser.id), "150x150", "png", true, "headshot")
+        )[0].imageUrl;
+
         return await interaction.editReply({
             embeds: [
                 client.Functions.makeInfoEmbed({
@@ -49,11 +51,11 @@ export default new SlashCommand({
                     fields: [
                         {
                             name: guildProfile.shortname,
-                            value: `${user.points} points${pendingPoints > 0 ? ` (${pendingPoints} pending)` : ""}`
-                        }
-                    ]
-                })
-            ]
-        })
-    }
-})
+                            value: `${user.points} points${pendingPoints > 0 ? ` (${pendingPoints} pending)` : ""}`,
+                        },
+                    ],
+                }),
+            ],
+        });
+    },
+});

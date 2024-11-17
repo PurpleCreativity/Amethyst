@@ -191,7 +191,7 @@ export default class Functions {
 
     makeErrorEmbed = (options: EmbedOptions) => {
         const embed = new Embed(options);
-        
+
         if (!options.color) embed.setColor(0xff0000);
         if (!options.author) {
             embed.setAuthor({ name: "Error", iconURL: Icons.close });
