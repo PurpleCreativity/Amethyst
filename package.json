@@ -14,12 +14,16 @@
         "build": "tsc",
         "dev": "npm run build && node . --dev",
         "start": "npm run build && node .",
+
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
+
         "format": "biome format .",
         "format:fix": "biome format --write .",
+
         "organized-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true .",
         "organized-imports:fix": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
+
         "check": "biome check .",
         "check:fix": "biome check --write ."
     },
