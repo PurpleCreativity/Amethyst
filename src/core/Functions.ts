@@ -15,6 +15,10 @@ export default class Functions {
         this.client = client;
     }
 
+    wait = async (ms: number) => {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    };
+
     fetchRobloxUser = async (searcher: string | number, useCache = true) => {
         try {
             return await this.client.Wrapblox.fetchUser(searcher, useCache);
