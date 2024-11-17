@@ -191,8 +191,57 @@ export default new Event({
 
         if (interaction.isButton()) {
             if (interaction.customId.toLowerCase().startsWith("static_")) {
-                //? Static Button
-                return;
+                const button = client.Interactables.stored.StaticButtons.get(interaction.customId.slice(7));
+                if (!button) {
+                    return await interaction.reply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "Button not found",
+                                description: "The button you're trying to run doesn't exist.",
+                            }),
+                        ],
+                    });
+                }
+
+                try {
+                    const guildProfile = interaction.guild
+                        ? await client.Database.fetchGuildProfile(interaction.guild.id)
+                        : undefined;
+                    if (interaction.guild && !guildProfile) {
+                        return await interaction.reply({
+                            embeds: [
+                                client.Functions.makeErrorEmbed({
+                                    title: "An error occurred",
+                                    description: "This guild is not registered in the database.",
+                                }),
+                            ],
+                        });
+                    }
+
+                    return await button.execute(interaction, guildProfile);
+                } catch (error) {
+                    if (!(error instanceof Error)) return;
+
+                    if (interaction.deferred) {
+                        return await interaction.editReply({
+                            embeds: [
+                                client.Functions.makeErrorEmbed({
+                                    title: "An error occurred",
+                                    description: `\`\`\`${error.message}\`\`\``,
+                                }),
+                            ],
+                        });
+                    }
+
+                    return await interaction.reply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: `\`\`\`${error.message}\`\`\``,
+                            }),
+                        ],
+                    });
+                }
             }
 
             return client.emit("buttonInteraction", interaction);
