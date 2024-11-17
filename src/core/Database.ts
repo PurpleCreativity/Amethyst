@@ -178,6 +178,14 @@ export default class Database {
         key: string,
         useCache = true,
     ): Promise<{ guildProfile: guildProfileInterface; keyData: APIKey } | undefined> => {
+        if (useCache) {
+            for (const guildProfile of this.cache.guilds.values()) {
+                for (const keyData of guildProfile.API.keys.values()) {
+                    if (keyData.key === key) return { guildProfile, keyData };
+                }
+            }
+        }
+
         const profiles = await this.fetchAllGuilds(useCache);
 
         for (const guildProfile of profiles) {
