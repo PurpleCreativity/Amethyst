@@ -53,6 +53,13 @@ export default class Functions {
         }
     };
 
+    getLinkedRobloxUser = async (discordId: string) => {
+        const userProfile = await this.client.Database.fetchUserProfile(discordId);
+        if (!userProfile || !userProfile.roblox.user || !userProfile.roblox.user.id) return undefined;
+
+        return { id: userProfile.roblox.user.id, name: userProfile.roblox.user.name };
+    };
+
     findKeyfromValue = (map: Map<unknown, unknown>, value: unknown) => {
         return [...map].find(([key, val]) => val === value)?.[0];
     };
