@@ -1,8 +1,8 @@
 import type { ColorResolvable, Guild, GuildMember, TextChannel } from "discord.js";
 import mongoose from "mongoose";
+import type { Group } from "noblox.js";
 import client from "../main.js";
 import type { NumberRange } from "../types/custom.js";
-import type { Group } from "noblox.js";
 
 export type guildUser = {
     user: {
