@@ -181,6 +181,7 @@ export default class Database {
         const profiles = await this.fetchAllGuilds(useCache);
 
         for (const guildProfile of profiles) {
+            this.cache.guilds.set(guildProfile.guild.id, guildProfile);
             for (const keyData of guildProfile.API.keys.values()) {
                 if (keyData.key === key) return { guildProfile, keyData };
             }
