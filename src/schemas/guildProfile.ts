@@ -1,6 +1,7 @@
 import type { ColorResolvable, Guild, GuildMember, TextChannel } from "discord.js";
 import mongoose from "mongoose";
 import client from "../main.js";
+import type { NumberRange } from "../types/custom.js";
 
 export type guildUser = {
     user: {
