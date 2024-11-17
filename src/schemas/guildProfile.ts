@@ -2,6 +2,7 @@ import type { ColorResolvable, Guild, GuildMember, TextChannel } from "discord.j
 import mongoose from "mongoose";
 import client from "../main.js";
 import type { NumberRange } from "../types/custom.js";
+import type { Group } from "noblox.js";
 
 export type guildUser = {
     user: {
@@ -137,7 +138,7 @@ interface guildProfileInterface extends mongoose.Document {
 
     fetchGuild: () => Promise<Guild | undefined>;
     linkGroup: (groupId: string) => void;
-    fetchGroup: () => Promise<import("noblox.js").Group | undefined>;
+    fetchGroup: () => Promise<Group | undefined>;
 
     getCommandState: (commandName: string) => boolean;
     setCommandState: (commandName: string, enabled: boolean) => void;
