@@ -83,6 +83,9 @@ export default class API {
     Init = async () => {
         await this.loadRoutes("build/api");
 
+        this.server.use(express.json());
+        this.server.use(express.urlencoded({ extended: true }));
+
         this.server.listen(this.client.config.port, () => {
             this.client.success(`Server is running on port ${this.client.config.port}`);
         });
