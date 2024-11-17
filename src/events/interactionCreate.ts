@@ -21,7 +21,19 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.reply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 
@@ -54,7 +66,12 @@ export default new Event({
 
             if (!command || !command.autocomplete) return;
 
-            const choiches = (await command.autocomplete(interaction)) || [];
+            const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+            if (interaction.guild && !guildProfile) {
+                return await interaction.respond([]);
+            }
+
+            const choiches = (await command.autocomplete(interaction, guildProfile)) || [];
             if (choiches.length > 25) choiches.splice(25);
 
             return await interaction.respond(choiches);
@@ -74,7 +91,19 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.reply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 
@@ -114,7 +143,19 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                const guildProfile = interaction.guild ? await client.Database.fetchGuildProfile(interaction.guild.id) : undefined;
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.reply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 if (!(error instanceof Error)) return;
 

@@ -400,7 +400,15 @@ guildProfileSchema.methods.getPermission = function (permissionName: string) {
 guildProfileSchema.methods.checkPermissions = function (user: GuildMember, requiredPermissions: string[]) {
     const userRoles = user.roles.cache.map((role) => role.id);
 
+    // Applies for guild owner too as they will always have it
     if (user.permissions.has("Administrator")) return true;
+
+    const permission = this.permissions.get("Administrator");
+    if (
+        permission.roles.some((role: string) => userRoles.includes(role)) ||
+        permission.users.includes(user.id)
+    )
+        return true;
 
     const ownedPermissions: string[] = [];
 
@@ -414,6 +422,9 @@ guildProfileSchema.methods.checkPermissions = function (user: GuildMember, requi
 
         if (permission.users.includes(user.id)) ownedPermissions.push(permissionName);
     }
+
+    console.log(ownedPermissions);
+    console.log(requiredPermissions);
 
     if (ownedPermissions.length === requiredPermissions.length) return true;
 
