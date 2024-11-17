@@ -162,9 +162,6 @@ export default new SlashCommand({
                     client.Functions.makeInfoEmbed({ title: "Link Roblox", description: "Linking cancelled." }),
                 );
 
-                console.log(buttonEmbed.Rows);
-                console.log(buttonEmbed.getMessageData());
-
                 await buttonInteraction.editReply(buttonEmbed.getMessageData());
             },
         });
