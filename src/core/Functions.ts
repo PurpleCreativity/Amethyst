@@ -24,7 +24,7 @@ export default class Functions {
     fetchRobloxUser = async (searcher: string | number): Promise<PlayerInfo | undefined> => {
         try {
             if (typeof searcher === "string") {
-                if (Number.isNaN(searcher)) {
+                if (Number.isNaN(Number.parseInt(searcher))) {
                     searcher = await this.client.noblox.getIdFromUsername(searcher);
                 } else {
                     searcher = Number.parseInt(searcher);
