@@ -1,4 +1,4 @@
-import Route from "../../classes/Route.js";
+import Route from "../../../classes/Route.js";
 
 export default new Route({
     method: "GET",
@@ -7,7 +7,7 @@ export default new Route({
         limit: 1,
     },
 
-    public: false,
+    public: true,
 
     function: async (req, res) => {
         res.send("Hello, World!");
