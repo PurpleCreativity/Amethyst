@@ -65,12 +65,12 @@ export default new SlashCommand({
     description: "Link your Roblox account to your Discord account",
 
     options: [
-        new SlashCommandStringOption().setName("username").setDescription("Your Roblox username").setRequired(true),
+        new SlashCommandStringOption().setName("user").setDescription("Your Roblox username or Id").setRequired(true),
     ],
 
     function: async (interaction, _guildProfile) => {
-        const username = interaction.options.getString("username", true);
-        const robloxUser = await client.Functions.fetchRobloxUser(username);
+        const userInput = interaction.options.getString("user", true);
+        const robloxUser = await client.Functions.fetchRobloxUser(userInput);
 
         if (!robloxUser) {
             return await interaction.editReply({
