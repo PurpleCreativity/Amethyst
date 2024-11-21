@@ -1,12 +1,12 @@
 import { ButtonStyle, SlashCommandStringOption } from "discord.js";
+import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import ButtonEmbed from "../../classes/ButtonEmbed.js";
 import { UserContextMenuCommand } from "../../classes/ContextCommand.js";
 import SlashCommand from "../../classes/SlashCommand.js";
 import client from "../../main.js";
-import ButtonEmbed from "../../classes/ButtonEmbed.js";
-import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import type { guildProfileInterface } from "../../schemas/guildProfile.js";
 
-const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { id: string, name: string } ) => {
+const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { id: string; name: string }) => {
     const user = await guildProfile.getUser(robloxUser.id.toString());
     const iconURL = (
         await client.noblox.getPlayerThumbnail(Number.parseInt(robloxUser.id), "150x150", "png", true, "headshot")
@@ -27,20 +27,20 @@ const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { 
                 name: "Notes",
                 value: `
                 **Visible:** \`${user.note.visible}\`
-                **Text:** ${user.note.text && user.note.text !== "" ? `\`${user.note.text}\`` : "\`N/A\`"}
-                `
+                **Text:** ${user.note.text && user.note.text !== "" ? `\`${user.note.text}\`` : "`N/A`"}
+                `,
             },
             {
                 name: "Ranklock",
                 value: `
                 **Shadow:** \`${user.ranklock.shadow}\`
-                **Reason:** ${user.ranklock.reason && user.ranklock.reason !== "" ? `\`${user.ranklock.reason}\`` : "\`N/A\`"}
-                **Rank:** ${user.ranklock.rank !== 0 ? `\`${user.ranklock.rank}\`` : "\`Not ranklocked\`"}
-                `
-            }
-        ]
-    })
-}
+                **Reason:** ${user.ranklock.reason && user.ranklock.reason !== "" ? `\`${user.ranklock.reason}\`` : "`N/A`"}
+                **Rank:** ${user.ranklock.rank !== 0 ? `\`${user.ranklock.rank}\`` : "`Not ranklocked`"}
+                `,
+            },
+        ],
+    });
+};
 
 const slashCommand = new SlashCommand({
     name: "getpoints",
@@ -74,24 +74,27 @@ const slashCommand = new SlashCommand({
 
         const user = await guildProfile.getUser(robloxUser.id.toString());
         const pendingPoints = guildProfile.calculatePendingPoints(robloxUser.id.toString());
-        const hasModAction = (user.ranklock.rank !== 0 && !user.ranklock.shadow)
+        const hasModAction = user.ranklock.rank !== 0 && !user.ranklock.shadow;
 
-        const iconURL = (
-            await client.noblox.getPlayerThumbnail(robloxUser.id, "150x150", "png", true, "headshot")
-        )[0].imageUrl;
+        const iconURL = (await client.noblox.getPlayerThumbnail(robloxUser.id, "150x150", "png", true, "headshot"))[0]
+            .imageUrl;
 
-        const buttonEmbed = new ButtonEmbed(client.Functions.makeInfoEmbed({
-            title: "View Points",
-            description: hasModAction ? "*A moderation action is associated with one or more of these records*." : undefined,
-            footer: { text: `@${robloxUser.username}`, iconURL: iconURL },
-            fields: [
-                {
-                    name: guildProfile.shortname,
-                    value: `${user.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}`,
-                    inline: true,
-                },
-            ],
-        }));
+        const buttonEmbed = new ButtonEmbed(
+            client.Functions.makeInfoEmbed({
+                title: "View Points",
+                description: hasModAction
+                    ? "*A moderation action is associated with one or more of these records*."
+                    : undefined,
+                footer: { text: `@${robloxUser.username}`, iconURL: iconURL },
+                fields: [
+                    {
+                        name: guildProfile.shortname,
+                        value: `${user.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}`,
+                        inline: true,
+                    },
+                ],
+            }),
+        );
 
         buttonEmbed.addButton({
             label: "View Full Data",
@@ -103,10 +106,12 @@ const slashCommand = new SlashCommand({
                 await buttonInteraction.deferReply({ ephemeral: true });
 
                 return await buttonInteraction.editReply({
-                    embeds: [await fullDataEmbed(guildProfile, { name: robloxUser.username, id: robloxUser.id.toString() })]
-                })
-            }
-        })
+                    embeds: [
+                        await fullDataEmbed(guildProfile, { name: robloxUser.username, id: robloxUser.id.toString() }),
+                    ],
+                });
+            },
+        });
 
         return await interaction.editReply(buttonEmbed.getMessageData());
     },
@@ -135,24 +140,28 @@ const userCommand = new UserContextMenuCommand({
 
         const user = await guildProfile.getUser(linkedUser.id);
         const pendingPoints = guildProfile.calculatePendingPoints(linkedUser.id);
-        const hasModAction = (user.ranklock.rank !== 0 && !user.ranklock.shadow)
+        const hasModAction = user.ranklock.rank !== 0 && !user.ranklock.shadow;
 
         const iconURL = (
             await client.noblox.getPlayerThumbnail(Number.parseInt(linkedUser.id), "150x150", "png", true, "headshot")
         )[0].imageUrl;
 
-        const buttonEmbed = new ButtonEmbed(client.Functions.makeInfoEmbed({
-            title: "View Points",
-            description: hasModAction ? "*A moderation action is associated with one or more of these records*." : undefined,
-            footer: { text: `@${linkedUser.name}`, iconURL: iconURL },
-            fields: [
-                {
-                    name: guildProfile.shortname,
-                    value: `${user.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}`,
-                    inline: true,
-                },
-            ],
-        }));
+        const buttonEmbed = new ButtonEmbed(
+            client.Functions.makeInfoEmbed({
+                title: "View Points",
+                description: hasModAction
+                    ? "*A moderation action is associated with one or more of these records*."
+                    : undefined,
+                footer: { text: `@${linkedUser.name}`, iconURL: iconURL },
+                fields: [
+                    {
+                        name: guildProfile.shortname,
+                        value: `${user.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}`,
+                        inline: true,
+                    },
+                ],
+            }),
+        );
 
         buttonEmbed.addButton({
             label: "View Full Data",
@@ -164,10 +173,10 @@ const userCommand = new UserContextMenuCommand({
                 await buttonInteraction.deferReply({ ephemeral: true });
 
                 return await buttonInteraction.editReply({
-                    embeds: [await fullDataEmbed(guildProfile, linkedUser)]
-                })
-            }
-        })
+                    embeds: [await fullDataEmbed(guildProfile, linkedUser)],
+                });
+            },
+        });
 
         return await interaction.editReply(buttonEmbed.getMessageData());
     },
