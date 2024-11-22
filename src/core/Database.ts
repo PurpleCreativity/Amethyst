@@ -96,6 +96,7 @@ export default class Database {
             },
 
             roblox: {
+                groupId: 0,
                 places: new Map(),
             },
 

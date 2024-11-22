@@ -13,6 +13,7 @@ const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { 
     )[0].imageUrl;
 
     const pendingPoints = guildProfile.calculatePendingPoints(robloxUser.id.toString());
+    const groupRole = guildProfile.roblox.groupId && user.ranklock.rank !== 0 ? await client.Functions.getGroupRoleByRank(Number.parseInt(guildProfile.roblox.groupId), user.ranklock.rank) : undefined;
 
     return client.Functions.makeInfoEmbed({
         title: "Full Data",
@@ -27,7 +28,7 @@ const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { 
                 name: "Notes",
                 value: `
                 **Visible:** \`${user.note.visible}\`
-                **Text:** ${user.note.text && user.note.text !== "" ? `\`${user.note.text}\`` : "`N/A`"}
+                **Text:** ${user.note.content !== "" ? `\`${user.note.content}\`` : "`N/A`"}
                 `,
             },
             {
@@ -35,7 +36,7 @@ const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { 
                 value: `
                 **Shadow:** \`${user.ranklock.shadow}\`
                 **Reason:** ${user.ranklock.reason && user.ranklock.reason !== "" ? `\`${user.ranklock.reason}\`` : "`N/A`"}
-                **Rank:** ${user.ranklock.rank !== 0 ? `\`${user.ranklock.rank}\`` : "`Not ranklocked`"}
+                **Rank:** ${groupRole ? `\`${groupRole.name}\`:\`${groupRole.rank}\`` : "`Not ranklocked`"}
                 `,
             },
         ],

@@ -14,7 +14,7 @@ export type guildUser = {
     points: number;
 
     note: {
-        text?: string;
+        content: string;
         visible: boolean;
 
         updatedAt: Date;
@@ -169,7 +169,7 @@ interface guildProfileInterface extends mongoose.Document {
     addUser: (robloxUser: { id: string; name: string }) => Promise<void>;
 
     calculatePendingPoints: (robloxId: string) => number;
-    setNote: (robloxId: string, note: string, visible?: boolean) => void;
+    setNote: (robloxId: string, content: string, visible?: boolean) => void;
     setRankLock: (robloxId: string, rank: NumberRange<0, 255>, shadow?: boolean, reason?: string) => void;
 
     addPointLog: (logId: string, log: PointLog) => void;
@@ -253,7 +253,7 @@ const guildProfileSchema = new mongoose.Schema({
             },
             points: { type: Number, required: true },
             note: {
-                text: { type: String, required: false },
+                content: { type: String, required: false },
                 visible: { type: Boolean, required: true },
                 updatedAt: { type: Date, required: true },
             },
@@ -481,7 +481,7 @@ guildProfileSchema.methods.addUser = async function (robloxUser: { id: string; n
         points: 0,
 
         note: {
-            text: undefined,
+            content: "",
             visible: true,
 
             updatedAt: new Date(),
@@ -525,10 +525,10 @@ guildProfileSchema.methods.calculatePendingPoints = function (robloxId: string) 
     return points;
 };
 
-guildProfileSchema.methods.setNote = async function (robloxId: string, note: string, visible?: boolean) {
+guildProfileSchema.methods.setNote = async function (robloxId: string, content: string, visible?: boolean) {
     const user = await this.getUser(robloxId);
 
-    user.note.text = note;
+    user.note.content = content;
     user.note.visible = visible ?? true;
     user.note.updatedAt = new Date();
 };
