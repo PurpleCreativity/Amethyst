@@ -13,7 +13,13 @@ const fullDataEmbed = async (guildProfile: guildProfileInterface, robloxUser: { 
     )[0].imageUrl;
 
     const pendingPoints = guildProfile.calculatePendingPoints(robloxUser.id.toString());
-    const groupRole = guildProfile.roblox.groupId && user.ranklock.rank !== 0 ? await client.Functions.getGroupRoleByRank(Number.parseInt(guildProfile.roblox.groupId), user.ranklock.rank) : undefined;
+    const groupRole =
+        guildProfile.roblox.groupId && user.ranklock.rank !== 0
+            ? await client.Functions.getGroupRoleByRank(
+                  Number.parseInt(guildProfile.roblox.groupId),
+                  user.ranklock.rank,
+              )
+            : undefined;
 
     return client.Functions.makeInfoEmbed({
         title: "Full Data",
