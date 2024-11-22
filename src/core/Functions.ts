@@ -64,6 +64,21 @@ export default class Functions {
         return { id: userProfile.roblox.user.id, name: userProfile.roblox.user.name };
     };
 
+    getGroupRoleByRank = async (
+        groupId: number,
+        rank: number,
+    ): Promise<{ id: number; name: string; rank: number; memberCount: number } | undefined> => {
+        try {
+            const rawGroupRoles: { id: number; name: string; rank: number; memberCount: number }[] = (
+                await this.client.Axios.get(`https://groups.roblox.com/v1/groups/${groupId}/roles`)
+            ).data.roles;
+
+            return rawGroupRoles.find((role) => role.rank === rank);
+        } catch (error) {
+            return undefined;
+        }
+    };
+
     findKeyfromValue = (map: Map<unknown, unknown>, value: unknown) => {
         return [...map].find(([key, val]) => val === value)?.[0];
     };
