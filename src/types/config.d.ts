@@ -1,6 +1,6 @@
 import type { ChalkInstance } from "chalk";
 
-type configType = {
+export type configType = {
     version: string;
 
     baseURL: string;
@@ -39,5 +39,3 @@ type configType = {
         };
     };
 };
-
-export type { configType };

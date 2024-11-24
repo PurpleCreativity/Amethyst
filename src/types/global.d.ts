@@ -1,4 +1,4 @@
-type ValidPermissions =
+export type ValidPermissions =
     | "Administrator"
     | "Moderator"
     | "RobloxModerator"
@@ -8,5 +8,3 @@ type ValidPermissions =
     | "PointLogCreator"
     | "EventScheduler"
     | "ScheduleManager";
-
-export type { ValidPermissions };
