@@ -29,6 +29,7 @@ export enum CommandModule {
     Developer = "Developer",
 }
 
+// dont tell anyone that this isnt an enum
 export const HttpStatusCodes: { [key: number]: string } = {
     100: "CONTINUE",
     101: "SWITCHING_PROTOCOLS",
