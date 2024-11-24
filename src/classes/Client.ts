@@ -8,6 +8,7 @@ import type { configType } from "../types/config.d.js";
 dotenv.config();
 
 import API from "../core/API.js";
+import CLI from "../core/CLI.js";
 import Database from "../core/Database.js";
 import Events from "../core/Events.js";
 import Functions from "../core/Functions.js";
@@ -39,6 +40,7 @@ export default class Client extends DiscordClient {
         "API",
         "Interactables",
 
+        "CLI",
         "Plugins",
     ];
 
@@ -51,6 +53,7 @@ export default class Client extends DiscordClient {
     Database: Database;
     API: API;
     Interactables: Interactables;
+    CLI: CLI;
     Plugins: Plugins;
 
     //? Dependencies
@@ -68,6 +71,7 @@ export default class Client extends DiscordClient {
         this.Database = new Database(this);
         this.API = new API(this);
         this.Interactables = new Interactables(this);
+        this.CLI = new CLI(this);
         this.Plugins = new Plugins(this);
     }
 
@@ -192,6 +196,8 @@ export default class Client extends DiscordClient {
             } catch (error) {
                 this.error(`Failed to fetch ${channel} channel:`);
                 this.error(error);
+
+                process.exit(1);
             }
         }
 
@@ -213,6 +219,8 @@ export default class Client extends DiscordClient {
             } catch (error) {
                 this.error(`Failed to load ${moduleName as string} module:`);
                 if (error instanceof Error) this.error(error.stack);
+
+                process.exit(1);
             }
         }
 
@@ -241,6 +249,8 @@ export default class Client extends DiscordClient {
             } catch (error) {
                 this.error(`Failed to execute afterInit for ${moduleName as string} module:`);
                 if (error instanceof Error) this.error(error.stack);
+
+                process.exit(1);
             }
         }
 
