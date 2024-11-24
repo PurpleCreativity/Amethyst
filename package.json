@@ -25,7 +25,7 @@
 
         "organized-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true .",
         "organized-imports:fix": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
-        
+
         "check": "biome check .",
         "check:fix": "biome check --write ."
     },
