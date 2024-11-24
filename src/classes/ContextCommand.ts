@@ -28,15 +28,11 @@ export type BaseContextMenuCommandOptions = {
 };
 
 export type MessageContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (
-        interaction: MessageContextMenuCommandInteraction,
-    ) => Promise<unknown>;
+    function: (interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
 };
 
 export type UserContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (
-        interaction: UserContextMenuCommandInteraction,
-    ) => Promise<unknown>;
+    function: (interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
 };
 
 class BaseContextMenuCommand extends ContextMenuCommandBuilder {
@@ -120,9 +116,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 }
 
 class MessageContextMenuCommand extends BaseContextMenuCommand {
-    private function: (
-        interaction: MessageContextMenuCommandInteraction,
-    ) => Promise<unknown>;
+    private function: (interaction: MessageContextMenuCommandInteraction) => Promise<unknown>;
 
     constructor(options: MessageContextMenuCommandOptions) {
         super(options);
@@ -132,9 +126,7 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
         this.function = options.function;
     }
 
-    execute = async (
-        interaction: MessageContextMenuCommandInteraction,
-    ): Promise<unknown> => {
+    execute = async (interaction: MessageContextMenuCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
         const error = await this.check(interaction);
@@ -154,9 +146,7 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
     };
 }
 class UserContextMenuCommand extends BaseContextMenuCommand {
-    private function: (
-        interaction: UserContextMenuCommandInteraction,
-    ) => Promise<unknown>;
+    private function: (interaction: UserContextMenuCommandInteraction) => Promise<unknown>;
 
     constructor(options: UserContextMenuCommandOptions) {
         super(options);
@@ -166,9 +156,7 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
         this.function = options.function;
     }
 
-    execute = async (
-        interaction: UserContextMenuCommandInteraction,
-    ): Promise<unknown> => {
+    execute = async (interaction: UserContextMenuCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
         const error = await this.check(interaction);

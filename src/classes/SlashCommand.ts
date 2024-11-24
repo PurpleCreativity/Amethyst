@@ -61,9 +61,7 @@ export type SlashCommandOptions = {
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
     function: (interaction: ChatInputCommandInteraction) => Promise<unknown>;
-    autocomplete?: (
-        interaction: AutocompleteInteraction,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 export default class SlashCommand extends SlashCommandBuilder {
@@ -75,12 +73,8 @@ export default class SlashCommand extends SlashCommandBuilder {
     readonly permissions: ValidPermissions[];
     readonly developer_only: boolean;
 
-    private function: (
-        interaction: ChatInputCommandInteraction,
-    ) => unknown | Promise<unknown>;
-    autocomplete?: (
-        interaction: AutocompleteInteraction,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    private function: (interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
+    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
     disabled = false;
 
@@ -140,9 +134,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
     }
 
-    private check = async (
-        interaction: ChatInputCommandInteraction,
-    ): Promise<CommandError | undefined> => {
+    private check = async (interaction: ChatInputCommandInteraction): Promise<CommandError | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandError.DISABLED_GLOBAL;
@@ -179,9 +171,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         return undefined;
     };
 
-    execute = async (
-        interaction: ChatInputCommandInteraction,
-    ): Promise<unknown> => {
+    execute = async (interaction: ChatInputCommandInteraction): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
         const error = await this.check(interaction);

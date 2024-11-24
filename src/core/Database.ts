@@ -7,9 +7,5 @@ export default class Database {
         this.client = client;
     }
 
-   
-
-    Init = async () => {
-        
-    };
+    Init = async () => {};
 }

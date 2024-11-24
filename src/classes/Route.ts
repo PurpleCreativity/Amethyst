@@ -27,10 +27,7 @@ export default class Route {
     readonly permissions: ValidPermissions[];
     readonly deprecated: boolean;
 
-    private function: (
-        req: express.Request,
-        res: express.Response,
-    ) => Promise<unknown>;
+    private function: (req: express.Request, res: express.Response) => Promise<unknown>;
 
     constructor(options: RouteOptions) {
         this.method = options.method;
