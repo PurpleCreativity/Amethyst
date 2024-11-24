@@ -249,7 +249,7 @@ export default class Interactables {
     afterInit = async (): Promise<void> => {
         this.REST.setToken(this.client.config.credentials.discordToken);
 
-        await this.loadCommandFiles("build/commands");
+        await this.loadCommandFiles("build/interactables");
 
         if (this.client.redeployCommands) {
             await this.clearCommands();
