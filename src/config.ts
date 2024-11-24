@@ -9,7 +9,7 @@ const config = {} as Config;
 config.version = "1.1.3"
 
 config.baseURL = "https://amethyst-e1050d4a61a7.herokuapp.com/"
-config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3003
+config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8008
 
 config.devList = [
 	"762329291169857537" // Purple_Creativity

@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    container_name: amethyst-container
+    image: amethyst-image
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
