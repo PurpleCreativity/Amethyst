@@ -1,6 +1,4 @@
 import type express from "express";
-import client from "../main.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.js";
 import type { ValidPermissions } from "../types/global.js";
 
 export type RouteMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
@@ -17,7 +15,7 @@ export type RouteOptions = {
     permissions?: ValidPermissions[];
     deprecated?: boolean;
 
-    function: (req: express.Request, res: express.Response, guildProfile?: guildProfileInterface) => Promise<unknown>;
+    function: (req: express.Request, res: express.Response) => Promise<unknown>;
 };
 
 export default class Route {
@@ -32,7 +30,6 @@ export default class Route {
     private function: (
         req: express.Request,
         res: express.Response,
-        guildProfile?: guildProfileInterface,
     ) => Promise<unknown>;
 
     constructor(options: RouteOptions) {
@@ -50,6 +47,7 @@ export default class Route {
             return await this.function(req, res);
         }
 
+        /*
         const APIKey = (req.headers["x-api-key"] ||
             req.headers["X-Api-Key"] ||
             req.headers.authorization ||
@@ -80,7 +78,8 @@ export default class Route {
         ) {
             return res.status(403).send(client.API.formatError(403, "Insufficient Permissions."));
         }
+        */
 
-        return await this.function(req, res, guildProfile);
+        return await this.function(req, res);
     };
 }

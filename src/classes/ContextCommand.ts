@@ -10,7 +10,6 @@ import {
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import client from "../main.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.js";
 import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
 import type { ValidPermissions } from "../types/global.d.js";
 
@@ -31,14 +30,12 @@ export type BaseContextMenuCommandOptions = {
 export type MessageContextMenuCommandOptions = BaseContextMenuCommandOptions & {
     function: (
         interaction: MessageContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ) => Promise<unknown>;
 };
 
 export type UserContextMenuCommandOptions = BaseContextMenuCommandOptions & {
     function: (
         interaction: UserContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ) => Promise<unknown>;
 };
 
@@ -84,7 +81,6 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 
     check = async (
         interaction: MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ): Promise<CommandError | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
@@ -94,6 +90,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
         if (interaction.guild) {
             if (!interaction.member) return CommandError.UNKNOWN;
 
+            /*
             if (this.permissions.length > 0) {
                 if (!guildProfile) return CommandError.UNKNOWN;
                 if (!(interaction.member instanceof GuildMember)) return CommandError.UNKNOWN;
@@ -102,6 +99,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
                 if (!boolean) return CommandError.MISSING_PERMISSIONS;
                 return undefined;
             }
+            */
 
             if (this.discord_permissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
@@ -124,7 +122,6 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 class MessageContextMenuCommand extends BaseContextMenuCommand {
     private function: (
         interaction: MessageContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ) => Promise<unknown>;
 
     constructor(options: MessageContextMenuCommandOptions) {
@@ -137,7 +134,6 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
 
     execute = async (
         interaction: MessageContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
@@ -154,13 +150,12 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
             });
         }
 
-        return await this.function(interaction, guildProfile);
+        return await this.function(interaction);
     };
 }
 class UserContextMenuCommand extends BaseContextMenuCommand {
     private function: (
         interaction: UserContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ) => Promise<unknown>;
 
     constructor(options: UserContextMenuCommandOptions) {
@@ -173,7 +168,6 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
 
     execute = async (
         interaction: UserContextMenuCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
@@ -190,7 +184,7 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
             });
         }
 
-        return await this.function(interaction, guildProfile);
+        return await this.function(interaction);
     };
 }
 

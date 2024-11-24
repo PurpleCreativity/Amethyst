@@ -1,5 +1,4 @@
 import type { ButtonInteraction, PermissionResolvable } from "discord.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.js";
 import type { ValidPermissions } from "../types/global.js";
 
 export type StaticButtonOptions = {
@@ -8,7 +7,7 @@ export type StaticButtonOptions = {
     permissions?: ValidPermissions[];
     discord_permissions?: PermissionResolvable[];
 
-    function: (interaction: ButtonInteraction, guildProfile?: guildProfileInterface) => Promise<unknown>;
+    function: (interaction: ButtonInteraction) => Promise<unknown>;
 };
 
 export default class StaticButton {
@@ -17,7 +16,7 @@ export default class StaticButton {
     readonly permissions: ValidPermissions[];
     readonly discord_permissions: PermissionResolvable[];
 
-    private function: (interaction: ButtonInteraction, guildProfile?: guildProfileInterface) => Promise<unknown>;
+    private function: (interaction: ButtonInteraction) => Promise<unknown>;
 
     constructor(options: StaticButtonOptions) {
         this.id = options.id;
@@ -27,7 +26,7 @@ export default class StaticButton {
         this.function = options.function;
     }
 
-    execute = async (interaction: ButtonInteraction, guildProfile?: guildProfileInterface) => {
-        return await this.function(interaction, guildProfile);
+    execute = async (interaction: ButtonInteraction) => {
+        return await this.function(interaction);
     };
 }

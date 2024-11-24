@@ -21,7 +21,6 @@ import {
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import client from "../main.js";
-import type { guildProfileInterface } from "../schemas/guildProfile.js";
 import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
 import type { ValidPermissions } from "../types/global.d.js";
 
@@ -61,10 +60,9 @@ export type SlashCommandOptions = {
     options?: ValidSlashCommandOptions[];
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
-    function: (interaction: ChatInputCommandInteraction, guildProfile?: guildProfileInterface) => Promise<unknown>;
+    function: (interaction: ChatInputCommandInteraction) => Promise<unknown>;
     autocomplete?: (
         interaction: AutocompleteInteraction,
-        guildProfile?: guildProfileInterface,
     ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
@@ -79,11 +77,9 @@ export default class SlashCommand extends SlashCommandBuilder {
 
     private function: (
         interaction: ChatInputCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ) => unknown | Promise<unknown>;
     autocomplete?: (
         interaction: AutocompleteInteraction,
-        guildProfile?: guildProfileInterface,
     ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
     disabled = false;
@@ -146,7 +142,6 @@ export default class SlashCommand extends SlashCommandBuilder {
 
     private check = async (
         interaction: ChatInputCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ): Promise<CommandError | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
@@ -156,6 +151,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         if (interaction.guild) {
             if (!interaction.member) return CommandError.UNKNOWN;
 
+            /*
             if (this.permissions.length > 0) {
                 if (!guildProfile) return CommandError.UNKNOWN;
                 if (!(interaction.member instanceof GuildMember)) return CommandError.UNKNOWN;
@@ -164,6 +160,7 @@ export default class SlashCommand extends SlashCommandBuilder {
                 if (!boolean) return CommandError.MISSING_PERMISSIONS;
                 return undefined;
             }
+            */
 
             if (this.discord_permissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
@@ -184,11 +181,10 @@ export default class SlashCommand extends SlashCommandBuilder {
 
     execute = async (
         interaction: ChatInputCommandInteraction,
-        guildProfile?: guildProfileInterface,
     ): Promise<unknown> => {
         await interaction.deferReply({ ephemeral: this.ephemeral });
 
-        const error = await this.check(interaction, guildProfile);
+        const error = await this.check(interaction);
         if (error) {
             return await interaction.editReply({
                 embeds: [
@@ -201,6 +197,6 @@ export default class SlashCommand extends SlashCommandBuilder {
             });
         }
 
-        return await this.function(interaction, guildProfile);
+        return await this.function(interaction);
     };
 }
