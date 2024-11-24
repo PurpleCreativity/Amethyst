@@ -8,7 +8,7 @@ const config = {} as configType;
 
 config.version = "2.0.0";
 config.baseURL = "https://amethyst-e1050d4a61a7.herokuapp.com";
-config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8008;
+config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8080;
 
 config.devList = [
     "762329291169857537", // @purple_creativity
