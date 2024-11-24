@@ -1,6 +1,8 @@
 {
     "name": "amethyst",
     "version": "2.0.0",
+    "author": "PurpleCreativity",
+    "license": "MIT",
     "description": "A discord bot written in Typescript, inspired by PB Kronos.",
     "main": "./build/main.js",
     "type": "module",
@@ -23,8 +25,6 @@
         "check": "biome check .",
         "check:fix": "biome check --write ."
     },
-    "author": "PurpleCreativity",
-    "license": "MIT",
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/express": "^5.0.0",
