@@ -16,6 +16,3 @@ docker-compose.yml
 
 # ide
 .vscode
-
-# docs
-docs
