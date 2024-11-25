@@ -151,8 +151,6 @@ export default class Client extends DiscordClient {
 
             this.config.baseURL = `http://localhost:${this.config.port}`;
 
-            this.config.credentials.database.host = "localhost";
-
             this.config.credentials.discordToken = process.env.Dev_discordToken as string;
             this.config.credentials.discordClientSecret = process.env.Dev_discordClientSecret as string;
             this.config.credentials.discordOAuthRedirectLink =
