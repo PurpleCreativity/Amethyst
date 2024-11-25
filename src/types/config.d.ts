@@ -1,13 +1,13 @@
 import type { ChalkInstance } from "chalk";
 
 export type DatabaseConfig = {
-    host: string,
-    port: number,
-    user: string,
-    password: string,
+    host: string;
+    port: number;
+    user: string;
+    password: string;
     database: string;
-    connectionLimit: number,
-}
+    connectionLimit: number;
+};
 
 export type configType = {
     version: string;

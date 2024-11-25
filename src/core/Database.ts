@@ -1,5 +1,5 @@
-import type Client from "../classes/Client.ts";
 import mariadb from "mariadb";
+import type Client from "../classes/Client.ts";
 
 export default class Database {
     client: Client;
@@ -14,11 +14,11 @@ export default class Database {
     getConnection = async (): Promise<mariadb.Connection> => {
         try {
             return await this.pool.getConnection();
-          } catch (error) {
-            this.client.error('Failed to get database connection:');
+        } catch (error) {
+            this.client.error("Failed to get database connection:");
             this.client.error(error);
             throw error;
-          }
+        }
     };
 
     query = async (sql: string, params?: unknown[]): Promise<unknown> => {

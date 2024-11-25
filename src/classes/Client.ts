@@ -169,7 +169,7 @@ export default class Client extends DiscordClient {
 
         if (this.devMode) {
             //this.config.credentials.database.host = "localhost"
-            this.config.credentials.database.database = "development"
+            this.config.credentials.database.database = "development";
         }
 
         await this.login(this.config.credentials.discordToken);

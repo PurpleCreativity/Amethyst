@@ -22,12 +22,12 @@ config.credentials = {
     database: {
         host: "104.248.22.47",
         port: 3306,
-        
+
         user: "myuser",
         password: process.env.DatabasePassword as string,
 
         database: "production",
-        connectionLimit: 5
+        connectionLimit: 5,
     },
 
     robloxCookie: "",
