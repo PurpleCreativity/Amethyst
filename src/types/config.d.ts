@@ -1,13 +1,5 @@
 import type { ChalkInstance } from "chalk";
-
-export type DatabaseConfig = {
-    host: string;
-    port: number;
-    user: string;
-    password: string;
-    database: string;
-    connectionLimit: number;
-};
+import type { PoolConfig } from "mariadb";
 
 export type configType = {
     version: string;
@@ -22,7 +14,7 @@ export type configType = {
         discordClientSecret: string;
         discordOAuthRedirectLink: string;
 
-        database: DatabaseConfig;
+        database: PoolConfig;
 
         robloxCookie: string;
 
