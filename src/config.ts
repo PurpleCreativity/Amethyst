@@ -26,7 +26,7 @@ config.credentials = {
         user: process.env.DataBaseUser as string,
         password: process.env.DatabasePassword as string,
 
-        database: "database",
+        database: "amethyst",
         connectionLimit: 5,
     },
 

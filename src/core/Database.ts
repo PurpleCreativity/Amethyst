@@ -27,6 +27,6 @@ export default class Database {
     };
 
     Init = async () => {
-        console.log(await this.query("SHOW DATABASES"));
+        console.log(await this.query("SHOW DATABASES;"));
     };
 }
