@@ -151,6 +151,8 @@ export default class Client extends DiscordClient {
 
             this.config.baseURL = `http://localhost:${this.config.port}`;
 
+            this.config.credentials.database.host = "localhost";
+
             this.config.credentials.discordToken = process.env.Dev_discordToken as string;
             this.config.credentials.discordClientSecret = process.env.Dev_discordClientSecret as string;
             this.config.credentials.discordOAuthRedirectLink =
@@ -166,11 +168,6 @@ export default class Client extends DiscordClient {
         this.config.credentials.sessionSecret = process.env.sessionSecret as string;
         this.config.credentials.robloxCookie = process.env.robloxCookie as string;
         this.config.credentials.robloxOAuthSecret = process.env.robloxOAuthSecret as string;
-
-        if (this.devMode) {
-            //this.config.credentials.database.host = "localhost"
-            this.config.credentials.database.database = "development";
-        }
 
         await this.login(this.config.credentials.discordToken);
         this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
