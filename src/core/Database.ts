@@ -16,7 +16,7 @@ export default class Database {
             return await this.pool.getConnection();
         } catch (error) {
             if (!(error instanceof SqlError)) throw new Error("Unknown error");
-            
+
             this.client.error(`Failed to get database connection:\n${error.sqlMessage}`);
             throw error;
         }
