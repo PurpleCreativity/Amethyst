@@ -17,7 +17,7 @@ export default class Database {
         } catch (error) {
             if (!(error instanceof SqlError)) throw new Error("Unknown error");
 
-            this.client.error(`Failed to get database connection:\n${error.sqlMessage}`);
+            this.client.error(`Failed to get database connection: ${error.sqlMessage}`);
             throw error;
         }
     };
