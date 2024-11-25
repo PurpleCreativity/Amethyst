@@ -8,7 +8,7 @@ import { HttpStatusCodes } from "../types/Enums.js";
 
 export default class API {
     client: Client;
-    server: express.Application = express();
+    private server: express.Application = express();
 
     constructor(client: Client) {
         this.client = client;
