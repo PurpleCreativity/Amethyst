@@ -20,67 +20,6 @@ export default class Functions {
         return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
-    // String is username, number is userId
-    fetchRobloxUser = async (searcher: string | number): Promise<PlayerInfo | undefined> => {
-        try {
-            if (typeof searcher === "string") {
-                if (Number.isNaN(Number.parseInt(searcher))) {
-                    searcher = await this.client.noblox.getIdFromUsername(searcher);
-                } else {
-                    searcher = Number.parseInt(searcher);
-                }
-            }
-
-            const raw = await this.client.noblox.getPlayerInfo(searcher);
-
-            return {
-                id: searcher,
-
-                username: raw.username,
-                displayName: raw.displayName,
-
-                description: raw.blurb,
-                blurb: raw.blurb,
-
-                joinDate: new Date(raw.joinDate),
-                age: raw.age,
-
-                friendCount: raw.friendCount,
-                followerCount: raw.followerCount,
-                followingCount: raw.followingCount,
-
-                oldNames: raw.oldNames,
-                isBanned: raw.isBanned,
-            };
-        } catch (error) {
-            return undefined;
-        }
-    };
-
-    /*
-    getLinkedRobloxUser = async (discordId: string) => {
-        const userProfile = await this.client.Database.fetchUserProfile(discordId);
-        if (!userProfile || !userProfile.roblox.user || !userProfile.roblox.user.id) return undefined;
-
-        return { id: userProfile.roblox.user.id, name: userProfile.roblox.user.name };
-    };
-    */
-
-    getGroupRoleByRank = async (
-        groupId: number,
-        rank: number,
-    ): Promise<{ id: number; name: string; rank: number; memberCount: number } | undefined> => {
-        try {
-            const rawGroupRoles: { id: number; name: string; rank: number; memberCount: number }[] = (
-                await this.client.Axios.get(`https://groups.roblox.com/v1/groups/${groupId}/roles`)
-            ).data.roles;
-
-            return rawGroupRoles.find((role) => role.rank === rank);
-        } catch (error) {
-            return undefined;
-        }
-    };
-
     findKeyfromValue = (map: Map<unknown, unknown>, value: unknown) => {
         return [...map].find(([key, val]) => val === value)?.[0];
     };
@@ -101,11 +40,6 @@ export default class Functions {
     CreateAcronym = (string: string) => {
         // Removes all non-uppercase letters
         return string.replace(/[^A-Z]/g, "");
-    };
-
-    ConvertPlaceIDToUniverseID = async (placeID: number) => {
-        const response = await this.client.Axios.get(`https://apis.roblox.com/universes/v1/places/${placeID}/universe`);
-        return response.data.universeId;
     };
 
     TrueStrings = ["true", "yes", "1", "on"];
@@ -219,13 +153,5 @@ export default class Functions {
         }
 
         return embed;
-    };
-
-    startThread = async (starter: Message | TextChannel, options: StartThreadOptions) => {
-        if (starter instanceof Message) {
-            return await starter.startThread(options);
-        }
-
-        return await starter.threads.create(options);
     };
 }
