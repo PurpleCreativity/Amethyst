@@ -1,5 +1,14 @@
 import type { ChalkInstance } from "chalk";
 
+export type DatabaseConfig = {
+    host: string,
+    port: number,
+    user: string,
+    password: string,
+    database: string;
+    connectionLimit: number,
+}
+
 export type configType = {
     version: string;
 
@@ -13,7 +22,7 @@ export type configType = {
         discordClientSecret: string;
         discordOAuthRedirectLink: string;
 
-        databaseURI: string;
+        database: DatabaseConfig;
 
         robloxCookie: string;
 

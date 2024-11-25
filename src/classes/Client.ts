@@ -155,19 +155,22 @@ export default class Client extends DiscordClient {
             this.config.credentials.discordClientSecret = process.env.Dev_discordClientSecret as string;
             this.config.credentials.discordOAuthRedirectLink =
                 "https://discord.com/oauth2/authorize?client_id=1271891545527681096&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3003%2Fapi%2Fv1%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds";
-            this.config.credentials.databaseURI = process.env.Dev_databaseURI as string;
         } else {
             this.config.credentials.discordToken = process.env.discordToken as string;
             this.config.credentials.discordClientSecret = process.env.discordClientSecret as string;
             this.config.credentials.discordOAuthRedirectLink =
                 "https://discord.com/oauth2/authorize?client_id=1271862480641069179&response_type=code&redirect_uri=https%3A%2F%2Famethyst-e1050d4a61a7.herokuapp.com%2Fapi%2Fv1%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds";
-            this.config.credentials.databaseURI = process.env.databaseURI as string;
         }
 
         this.config.credentials.encryptionKey = process.env.encryptionKey as string;
         this.config.credentials.sessionSecret = process.env.sessionSecret as string;
         this.config.credentials.robloxCookie = process.env.robloxCookie as string;
         this.config.credentials.robloxOAuthSecret = process.env.robloxOAuthSecret as string;
+
+        if (this.devMode) {
+            //this.config.credentials.database.host = "localhost"
+            this.config.credentials.database.database = "development"
+        }
 
         await this.login(this.config.credentials.discordToken);
         this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
