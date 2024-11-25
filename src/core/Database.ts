@@ -1,4 +1,4 @@
-import mariadb from "mariadb";
+import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 
 export default class Database {
@@ -15,13 +15,19 @@ export default class Database {
         try {
             return await this.pool.getConnection();
         } catch (error) {
-            this.client.error("Failed to get database connection:");
-            this.client.error(error);
+            if (!(error instanceof SqlError)) throw new Error("Unknown error");
+            
+            this.client.error(`Failed to get database connection:\n${error.sqlMessage}`);
             throw error;
         }
     };
 
-    query = async (sql: string, params?: unknown[]): Promise<unknown> => {
+    closeConnection = async (): Promise<void> => {
+        await this.pool.end();
+        this.client.warn("Database pool closed");
+    };
+
+    query = async (sql: string | mariadb.QueryOptions, params?: unknown[]): Promise<unknown> => {
         const connection = await this.getConnection();
         return await connection.query(sql, params);
     };
