@@ -5,6 +5,13 @@ import type Client from "../classes/Client.ts";
 export default class Database {
     client: Client;
     private pool: mariadb.Pool;
+    private cache: {
+        users: Map<string, unknown>
+        guilds: Map<string, unknown>
+    } = {
+        users: new Map(),
+        guilds: new Map()
+    }
 
     constructor(client: Client) {
         this.client = client;
@@ -32,8 +39,6 @@ export default class Database {
         const connection = await this.getConnection();
         return await connection.query(sql, params);
     };
-
-    private addUser = async (user: User) => {};
 
     Init = async () => {
         console.log(await this.query("SHOW DATABASES;"));
