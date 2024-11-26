@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import client from "../main.js";
-import { CommandError, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
+import { CommandErrorName, CommandErrorDescription, type CommandModule } from "../types/Enums.js";
 import type { ValidPermissions } from "../types/global.d.js";
 
 export type BaseContextMenuCommandOptions = {
@@ -77,14 +77,14 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 
     check = async (
         interaction: MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction,
-    ): Promise<CommandError | undefined> => {
+    ): Promise<CommandErrorName | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
-        if (this.disabled) return CommandError.DISABLED_GLOBAL;
-        if (this.developer_only) return CommandError.DEVELOPER_ONLY;
+        if (this.disabled) return CommandErrorName.DISABLED_GLOBAL;
+        if (this.developer_only) return CommandErrorName.DEVELOPER_ONLY;
 
         if (interaction.guild) {
-            if (!interaction.member) return CommandError.UNKNOWN;
+            if (!interaction.member) return CommandErrorName.UNKNOWN;
 
             /*
             if (this.permissions.length > 0) {
@@ -99,12 +99,12 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
 
             if (this.discord_permissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
-                    return CommandError.UNKNOWN;
+                    return CommandErrorName.UNKNOWN;
                 }
                 if (!interaction.member.permissions.has("Administrator")) {
                     for (const permission of this.discord_permissions) {
                         if (!interaction.member.permissions.has(permission)) {
-                            return CommandError.MISSING_DISCORD_PERMISSIONS;
+                            return CommandErrorName.MISSING_DISCORD_PERMISSIONS;
                         }
                     }
                 }

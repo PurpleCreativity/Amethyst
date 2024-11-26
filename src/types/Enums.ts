@@ -1,4 +1,4 @@
-export enum CommandError {
+export enum CommandErrorName {
     DEVELOPER_ONLY = "DEVELOPER_ONLY",
     DISABLED_GLOBAL = "DISABLED_GLOBAL",
 
