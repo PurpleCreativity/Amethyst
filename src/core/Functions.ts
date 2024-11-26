@@ -1,13 +1,10 @@
-//! Rewrite
-
 import { Buffer } from "node:buffer";
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import process from "node:process";
-import { Colors, Message, type StartThreadOptions, type TextChannel } from "discord.js";
+import { Colors, GuildMember, type User, type Guild } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/Embed.js";
-import type { PlayerInfo } from "../types/Functions.js";
 
 export default class Functions {
     client: Client;
@@ -15,6 +12,126 @@ export default class Functions {
     constructor(client: Client) {
         this.client = client;
     }
+
+    fetchGuild = async (guildId: string, useCache = true) => {
+		let guild: Guild | undefined
+		if (useCache) {
+			guild = this.client.guilds.cache.get(guildId);
+			if (guild) return guild;
+		}
+		try {
+			guild = await this.client.guilds.fetch(guildId);
+		} catch (err) {
+			return undefined;
+		}
+		return guild;
+	};
+
+    fetchUser = async (searcher: string, guild?: Guild, self?: User) => {
+		if (searcher.toLowerCase() === "self" || searcher.toLowerCase() === "me" && self) return self;
+		// See if it matches <@id>;
+		if (searcher.startsWith("<@") && searcher.endsWith(">")) searcher = searcher.slice(2, -1);
+
+		try {
+			const user = await this.client.users.fetch(searcher);
+			return user;
+		} catch (err) {
+			if (guild) {
+				const found = await guild.members.fetch({ query: searcher, limit: 1 })
+				if (found.size > 0) return found.first()?.user;
+			}
+
+			for (const user of this.client.users.cache.values()) {
+
+
+				if (user.username.toLowerCase() === searcher.toLowerCase()) {
+					return user;
+				}
+
+				if (user.displayName.toLowerCase() === searcher.toLowerCase()) {
+					return user;
+				}
+			}
+		}
+	};
+
+    fetchGuildMember = async (searcher: string, guild: Guild, self?: User | GuildMember) => {
+        try {
+            if (searcher.toLowerCase() === "self" || searcher.toLowerCase() === "me" && self) {
+                if (self instanceof GuildMember) return self;
+    
+                return await guild.members.fetch(searcher);
+            }
+
+            return await guild.members.fetch(searcher);
+        } catch (error) {
+            return undefined;
+        }
+    }
+
+    fetchChannel = async (searcher: string, guild?: Guild, limitToGuild = false) => {
+		// See if it matches <#id>;
+		if (searcher.startsWith("<#") && searcher.endsWith(">")) searcher = searcher.slice(2, -1);
+		if (searcher.startsWith("#")) searcher = searcher.slice(1);
+		// Replace all spaces with dashes
+		searcher = searcher.replace(/ /g, "-");
+
+		try {
+			const channel = await this.client.channels.fetch(searcher);
+			if (!channel) throw new Error("Channel not found");
+
+			if (!limitToGuild || !guild) return channel;
+
+
+			if (!("guild" in channel)) throw new Error("Channel not found");
+			if (channel.guild.id === guild.id) return channel;
+
+			throw new Error("Channel not found");
+		} catch (err) {
+			if (guild) {
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.name.toLowerCase() === searcher.toLowerCase()) {
+						return channel;
+					}
+				}
+			}
+
+			for (const channel of this.client.channels.cache.values()) {
+				if (!("name" in channel)) continue;
+				if (!channel.name) continue
+				if (channel.name.toLowerCase() === searcher.toLowerCase()) {
+					if (!limitToGuild || !guild) return channel;
+					if (!("guild" in channel)) continue;
+					if (channel.guild.id === guild.id) return channel;
+				}
+			}
+		}
+
+		return undefined;
+	};
+
+    fetchRole = async (searcher: string, guild: Guild) => {
+		// See if it matches <@&id>;
+		if (searcher.startsWith("<@&") && searcher.endsWith(">")) searcher = searcher.slice(3, -1);
+
+		try {
+			const role = await guild.roles.fetch(searcher);
+			if (role) return role;
+			throw new Error("Role not found");
+		} catch (err) {
+			for (const role of guild.roles.cache.values()) {
+				if (role.name.toLowerCase() === searcher.toLowerCase()) {
+					return role;
+				}
+				if (role.id === searcher) {
+					return role;
+				}
+				if (role.name.toLowerCase().startsWith(searcher.toLowerCase())) {
+					return role;
+				}
+			}
+		}
+	};
 
     wait = async (ms: number) => {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -37,7 +154,7 @@ export default class Functions {
         return Math.round(used);
     };
 
-    CreateAcronym = (string: string) => {
+    createAcronym = (string: string) => {
         // Removes all non-uppercase letters
         return string.replace(/[^A-Z]/g, "");
     };
@@ -69,7 +186,7 @@ export default class Functions {
         return hexColor;
     };
 
-    GetColor = (string: string) => {
+    getColor = (string: string) => {
         if (string.startsWith("#") || string.startsWith("0x")) return string;
 
         const isRGB = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
