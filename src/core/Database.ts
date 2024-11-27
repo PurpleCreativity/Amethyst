@@ -1,6 +1,6 @@
-import mariadb, { SqlError } from "mariadb";
 import fs from "node:fs";
 import path from "node:path";
+import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 
 export default class Database {
@@ -50,15 +50,15 @@ export default class Database {
             "roblox_places",
             "api_keys",
             "point_logs",
-            
+
             "schedule_types",
-            "schedule_events"
-        ]
+            "schedule_events",
+        ];
 
         try {
             for (const tableName of loadingOrder) {
                 const filePath = path.join(filesPath, `${tableName}.sql`);
-                
+
                 if (fs.existsSync(filePath)) {
                     const sql = fs.readFileSync(filePath, "utf-8");
                     await connection.query(sql);
@@ -67,7 +67,7 @@ export default class Database {
                     this.client.warn(`SQL file for table '${tableName}' not found: ${filePath}`);
                 }
             }
-    
+
             this.client.success("Initialized Database tables");
         } catch (error) {
             this.client.error("There was an error initialising the Database tables:");
