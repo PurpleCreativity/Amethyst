@@ -59,6 +59,7 @@ export default class Database {
 
                 if (fs.existsSync(filePath)) {
                     const sql = fs.readFileSync(filePath, "utf-8");
+                    
                     await connection.query(sql);
                     this.client.success(`Initialized table: ${tableName}`);
                 } else {
