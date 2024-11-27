@@ -225,7 +225,7 @@ export default class Client extends DiscordClient {
             useDate?: boolean,
         ): void => {
             originalLog(type, message, useDate);
-            this.Logs.writeLogFile(type, message);
+            //this.Logs.writeLogFile(type, message);
         };
 
         for (const moduleName of Client.loadingOrder) {
