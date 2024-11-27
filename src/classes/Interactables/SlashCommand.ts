@@ -18,10 +18,10 @@ import {
     type SlashCommandSubcommandGroupBuilder,
     type SlashCommandUserOption,
 } from "discord.js";
-import Icons from "../../public/Icons.json" with { type: "json" };
-import client from "../main.js";
-import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../types/Enums.js";
-import type { ValidPermissions } from "../types/global.d.js";
+import Icons from "../../../public/Icons.json" with { type: "json" };
+import client from "../../main.js";
+import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
+import type { ValidPermissions } from "../../types/global.d.js";
 
 export type ValidSlashCommandOptions =
     | SlashCommandStringOption

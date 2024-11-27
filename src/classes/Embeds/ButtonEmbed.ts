@@ -7,7 +7,7 @@ import {
     ComponentType,
     type EmbedBuilder,
 } from "discord.js";
-import client from "../main.js";
+import client from "../../main.js";
 
 export type Button = {
     label: string;
