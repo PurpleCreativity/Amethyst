@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS guild_profiles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    iv VARBINARY(16) NOT NULL,
+    shortname VARCHAR(10) NOT NULL UNIQUE,
+
+    guild_id VARCHAR(20) NOT NULL,
+    guild_name VARCHAR(100) NOT NULL,
+
+    roblox_group_id VARCHAR(20),
+
+    api_rover_key VARCHAR(100),
+    api_bloxlink_key VARCHAR(100),
+    api_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+
+    settings JSON NOT NULL DEFAULT '{}',
+    fflags JSON NOT NULL DEFAULT '{}',
+
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
