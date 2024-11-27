@@ -2,7 +2,6 @@ import {
     ApplicationIntegrationType,
     type AutocompleteInteraction,
     type ChatInputCommandInteraction,
-    GuildMember,
     InteractionContextType,
     type LocalizationMap,
     type PermissionResolvable,
