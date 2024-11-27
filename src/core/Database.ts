@@ -34,10 +34,10 @@ export default class Database {
         this.client.warn("Database pool closed");
     };
 
-    query = async (sql: string | mariadb.QueryOptions, params?: unknown[]): Promise<unknown> => {
+    query = async (sql: string | mariadb.QueryOptions, values?: unknown[]): Promise<unknown> => {
         const connection = await this.getConnection();
         try {
-            return await connection.query(sql, params);
+            return await connection.query(sql, values);
         } finally {
             await connection.end();
         }
