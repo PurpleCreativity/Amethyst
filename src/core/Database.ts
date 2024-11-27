@@ -37,7 +37,6 @@ export default class Database {
         }
     };
 
-    //! TODO: modify some values later
     private initializeTables = async () => {
         const filesPath = path.join(process.cwd(), "sql/tables");
         const connection = await this.getConnection();
