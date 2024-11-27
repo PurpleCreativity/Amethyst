@@ -3,9 +3,9 @@ import path from "node:path";
 import process from "node:process";
 import { Collection, REST, Routes } from "discord.js";
 import type Client from "../classes/Client.js";
-import { MessageContextMenuCommand, UserContextMenuCommand } from "../classes/ContextCommand.js";
-import SlashCommand from "../classes/SlashCommand.js";
-import type StaticButton from "../classes/StaticButton.js";
+import { MessageContextMenuCommand, UserContextMenuCommand } from "../classes/Interactables/ContextCommand.js";
+import SlashCommand from "../classes/Interactables/SlashCommand.js";
+import type StaticButton from "../classes/Interactables/StaticButton.js";
 
 export default class Interactables {
     client: Client;
