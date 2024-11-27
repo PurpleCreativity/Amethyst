@@ -1,4 +1,3 @@
-import type { User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 
@@ -6,12 +5,12 @@ export default class Database {
     client: Client;
     private pool: mariadb.Pool;
     private cache: {
-        users: Map<string, unknown>
-        guilds: Map<string, unknown>
+        users: Map<string, unknown>;
+        guilds: Map<string, unknown>;
     } = {
         users: new Map(),
-        guilds: new Map()
-    }
+        guilds: new Map(),
+    };
 
     constructor(client: Client) {
         this.client = client;
@@ -37,10 +36,12 @@ export default class Database {
 
     query = async (sql: string | mariadb.QueryOptions, params?: unknown[]): Promise<unknown> => {
         const connection = await this.getConnection();
-        return await connection.query(sql, params);
+        try {
+            return await connection.query(sql, params);
+        } finally {
+            await connection.end();
+        }
     };
 
-    Init = async () => {
-        console.log(await this.query("SHOW DATABASES;"));
-    };
+    Init = async () => {};
 }
