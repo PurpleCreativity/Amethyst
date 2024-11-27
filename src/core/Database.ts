@@ -14,7 +14,6 @@ export default class Database {
 
     constructor(client: Client) {
         this.client = client;
-
         this.pool = mariadb.createPool(client.config.credentials.database);
     }
 
