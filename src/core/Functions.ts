@@ -4,7 +4,7 @@ import process from "node:process";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import Embed, { type EmbedOptions } from "../classes/Embed.js";
+import Embed, { type EmbedOptions } from "../classes/Embeds/Embed.js";
 
 export default class Functions {
     client: Client;
@@ -143,7 +143,7 @@ export default class Functions {
     };
 
     GenerateIV = () => {
-        return randomBytes(16).toString("hex");
+        return randomBytes(16);
     };
 
     MemoryUsage = () => {
