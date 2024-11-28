@@ -38,16 +38,13 @@ export default class Database {
         }
     };
 
-    closeConnection = async (): Promise<void> => {
-        await this.pool.end();
-        this.client.warn("Database pool closed");
-    };
-
     private initializeTables = async () => {
         const filesPath = path.join(process.cwd(), "sql");
         const connection = await this.getConnection();
 
         try {
+            await connection.beginTransaction();
+
             for (const tableName of this.loadingOrder) {
                 const filePath = path.join(filesPath, `${tableName}.sql`);
 
@@ -58,14 +55,16 @@ export default class Database {
 
                     this.client.verbose(`Initialized table: ${tableName}`);
                 } else {
-                    // this.client.warn(`SQL file for table '${tableName}' not found: ${filePath}`);
+                    this.client.warn(`SQL file for table '${tableName}' not found: ${filePath}`);
                 }
             }
 
+            await connection.commit();
             this.client.success("Initialized Database tables");
         } catch (error) {
             this.client.error("There was an error initializing the Database tables:");
             this.client.error(error);
+            await connection.rollback();
 
             process.exit(1);
         } finally {
@@ -82,6 +81,8 @@ export default class Database {
         const connection = await this.getConnection();
 
         try {
+            await connection.beginTransaction();
+
             const insertQuery = await connection.query(
                 `INSERT INTO user_profiles (
                     iv, discord_id, discord_username,
@@ -91,10 +92,12 @@ export default class Database {
                 [this.client.Functions.GenerateIV(), user.id, user.username, null, null, "{}", "{}"],
             );
 
+            await connection.commit();
+
             return insertQuery;
         } catch (error) {
-            this.client.error(`Failed to add user [${user.username}:${user.id}] to the database:`);
-            this.client.error(error);
+            await connection.rollback();
+            throw error;
         } finally {
             await connection.end();
         }
@@ -103,6 +106,7 @@ export default class Database {
     getUserProfile = async (userId: string) => {
         const connection = await this.getConnection();
         try {
+
             const existingUser = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
             if (existingUser.length > 0) {
                 const rawdata = existingUser[0];
@@ -114,9 +118,6 @@ export default class Database {
             const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE _id = ?", [profile_id]))[0];
 
             return new UserProfile(rawdata);
-        } catch (error) {
-            this.client.error(`Failed to get user [${userId}] to the database:`);
-            this.client.error(error);
         } finally {
             await connection.end();
         }
