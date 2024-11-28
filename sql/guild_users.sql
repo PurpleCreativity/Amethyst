@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS guild_users__update_before
+CREATE TRIGGER IF NOT EXISTS guild_users__before_update
 BEFORE UPDATE ON guild_users
 FOR EACH ROW
 BEGIN

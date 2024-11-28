@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS schedule_types (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS schedule_types__update_before
+CREATE TRIGGER IF NOT EXISTS schedule_types__before_update
 BEFORE UPDATE ON schedule_types
 FOR EACH ROW
 BEGIN

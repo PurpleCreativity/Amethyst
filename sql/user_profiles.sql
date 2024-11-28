@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS user_profiles__update_before
+CREATE TRIGGER IF NOT EXISTS user_profiles__before_update
 BEFORE UPDATE ON user_profiles
 FOR EACH ROW
 BEGIN

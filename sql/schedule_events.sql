@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS schedule_events (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS schedule_events__update_before
+CREATE TRIGGER IF NOT EXISTS schedule_events__before_update
 BEFORE UPDATE ON schedule_events
 FOR EACH ROW
 BEGIN

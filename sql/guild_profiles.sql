@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS guild_profiles__update_before
+CREATE TRIGGER IF NOT EXISTS guild_profiles__before_update
 BEFORE UPDATE ON guild_profiles
 FOR EACH ROW
 BEGIN

@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS point_logs (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS point_logs__update_before
+CREATE TRIGGER IF NOT EXISTS point_logs__before_update
 BEFORE UPDATE ON point_logs
 FOR EACH ROW
 BEGIN

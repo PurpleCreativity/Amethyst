@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS api_keys__update_before
+CREATE TRIGGER IF NOT EXISTS api_keys__before_update
 BEFORE UPDATE ON api_keys
 FOR EACH ROW
 BEGIN

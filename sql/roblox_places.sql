@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS roblox_places (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS roblox_places__update_before
-BEFORE UPDATE ON schedule_types
+CREATE TRIGGER IF NOT EXISTS roblox_places__before_update
+BEFORE UPDATE ON roblox_places
 FOR EACH ROW
 BEGIN
     SET NEW._v = OLD._v + 1;
