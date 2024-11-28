@@ -62,6 +62,14 @@ export default class UserProfile {
         this.settings[key] = value;
     };
 
+    getFFlag = (key: string): unknown => {
+        return this.fflags[key];
+    };
+
+    setFFlag = (key: string, value: unknown): void => {
+        this.fflags[key] = value;
+    };
+
     save = async (): Promise<void> => {
         const connection = await client.Database.getConnection();
 
@@ -75,7 +83,7 @@ export default class UserProfile {
                     roblox_username = ?,
                     settings = ?,
                     fflags = ?
-                WHERE _id = ?
+                 WHERE _id = ?
                 `,
                 [
                     this.discord_username,
@@ -83,13 +91,12 @@ export default class UserProfile {
                     this.roblox_username,
                     this.settings,
                     this.fflags,
-                    
-                    this._id
-                ]
+
+                    this._id,
+                ],
             );
 
-            console.log(result);
-            console.log("saved");
+            if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
         } catch (error) {
