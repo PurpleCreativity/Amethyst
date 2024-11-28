@@ -105,7 +105,6 @@ export default class Database {
     getUserProfile = async (userId: string) => {
         const connection = await this.getConnection();
         try {
-
             const existingUser = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
             if (existingUser.length > 0) {
                 const rawdata = existingUser[0];
