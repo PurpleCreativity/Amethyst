@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS schedule_types (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _version BIGINT UNSIGNED NOT NULL DEFAULT 1,
+    _v BIGINT UNSIGNED NOT NULL DEFAULT 1,
     
     guild_profile_id BIGINT UNSIGNED NOT NULL,
     
@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS schedule_types (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS schedule_types__before
+CREATE TRIGGER IF NOT EXISTS schedule_types__update_before
 BEFORE UPDATE ON schedule_types
 FOR EACH ROW
 BEGIN
-    SET NEW._version = OLD._version + 1;
+    SET NEW._v = OLD._v + 1;
 END;

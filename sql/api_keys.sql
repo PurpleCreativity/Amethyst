@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS api_keys (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _version BIGINT UNSIGNED NOT NULL DEFAULT 1,
+    _v BIGINT UNSIGNED NOT NULL DEFAULT 1,
     
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS api_keys (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS api_keys__before
+CREATE TRIGGER IF NOT EXISTS api_keys__update_before
 BEFORE UPDATE ON api_keys
 FOR EACH ROW
 BEGIN
-    SET NEW._version = OLD._version + 1;
+    SET NEW._v = OLD._v + 1;
 END;

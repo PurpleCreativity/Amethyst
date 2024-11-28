@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS guild_profiles (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _version BIGINT UNSIGNED NOT NULL DEFAULT 1,
+    _v BIGINT UNSIGNED NOT NULL DEFAULT 1,
 
     iv VARBINARY(16) NOT NULL,
     shortname VARCHAR(10) NOT NULL UNIQUE,
@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS guild_profiles__before
+CREATE TRIGGER IF NOT EXISTS guild_profiles__update_before
 BEFORE UPDATE ON guild_profiles
 FOR EACH ROW
 BEGIN
-    SET NEW._version = OLD._version + 1;
+    SET NEW._v = OLD._v + 1;
 END;

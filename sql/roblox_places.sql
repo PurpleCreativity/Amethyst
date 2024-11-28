@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS roblox_places (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _version BIGINT UNSIGNED NOT NULL DEFAULT 1,
+    _v BIGINT UNSIGNED NOT NULL DEFAULT 1,
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS roblox_places (
 
 -- Triggers
 
-CREATE TRIGGER IF NOT EXISTS roblox_places__before
+CREATE TRIGGER IF NOT EXISTS roblox_places__update_before
 BEFORE UPDATE ON schedule_types
 FOR EACH ROW
 BEGIN
-    SET NEW._version = OLD._version + 1;
+    SET NEW._v = OLD._v + 1;
 END;
