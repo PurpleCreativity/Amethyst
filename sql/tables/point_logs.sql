@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS point_logs (
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
-    id: VARCHAR(32) UNSIGNED NOT NULL,
-    data JSON NOT NULL,
+    id VARCHAR(32) NOT NULL,
+    `data` JSON NOT NULL,
     note_content VARCHAR(500),
 
     creator_name VARCHAR(20) NOT NULL,

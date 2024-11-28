@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS schedule_events (
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
-    type VARCHAR(100) NOT NULL,
+    `type` VARCHAR(100) NOT NULL,
     notes VARCHAR(500),
     place_id BIGINT UNSIGNED,
 
@@ -16,5 +16,5 @@ CREATE TABLE IF NOT EXISTS schedule_events (
     discord_event_id VARCHAR(32) NOT NULL,
     roblox_event_id VARCHAR(32) NOT NULL,
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );

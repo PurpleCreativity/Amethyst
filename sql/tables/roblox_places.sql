@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS roblox_places (
 
     nickname VARCHAR(32) NOT NULL,
     id VARCHAR(20) NOT NULL,
-    key VARCHAR(1000) NOT NULL,
+    `key` VARCHAR(1000) NOT NULL,
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );

@@ -3,10 +3,10 @@ CREATE TABLE IF NOT EXISTS schedule_types (
     
     guild_profile_id BIGINT UNSIGNED NOT NULL,
     
-    name VARCHAR(32) NOT NULL,
+    `name` VARCHAR(32) NOT NULL,
     icon VARCHAR(1024) NOT NULL,
     color VARCHAR(20) NOT NULL,
-    description VARCHAR(500),
+    `description` VARCHAR(500),
 
     use_roblox_schedule BOOLEAN NOT NULL DEFAULT FALSE,
     use_discord_schedule BOOLEAN NOT NULL DEFAULT FALSE,
