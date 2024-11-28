@@ -1,5 +1,5 @@
 import { SlashCommandStringOption } from "discord.js";
-import SlashCommand from "../../classes/Interactables/SlashCommand.js";
+import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import Plugin from "../../classes/Plugin.js";
 
 export default new Plugin({

@@ -1,4 +1,4 @@
-import SlashCommand from "../../classes/Interactables/SlashCommand.js";
+import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
 
 export default new SlashCommand({

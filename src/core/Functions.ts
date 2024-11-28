@@ -4,7 +4,7 @@ import process from "node:process";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import Embed, { type EmbedOptions } from "../classes/Embeds/Embed.js";
+import Embed, { type EmbedOptions } from "../classes/embeds/Embed.js";
 
 export default class Functions {
     client: Client;
