@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS schedule_events (
     notes VARCHAR(500),
     place_id BIGINT UNSIGNED,
 
-    time BIGINT NOT NULL,
+    time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
 
-    host_name VARCHAR(100) NOT NULL,
+    host_name VARCHAR(20) NOT NULL,
     host_id BIGINT UNSIGNED NOT NULL,
 
     discord_event_id VARCHAR(32) NOT NULL,

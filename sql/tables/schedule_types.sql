@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS schedule_types (
     can_schedule_roles JSON NOT NULL DEFAULT '{}',
     can_schedule_users JSON NOT NULL DEFAULT '{}',
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );
