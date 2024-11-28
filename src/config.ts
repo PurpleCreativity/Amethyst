@@ -28,6 +28,10 @@ config.credentials = {
 
         database: "amethyst",
         connectionLimit: 5,
+
+        multipleStatements: true,
+        compress: false,
+        rowsAsArray: false,
     },
 
     robloxCookie: "",
