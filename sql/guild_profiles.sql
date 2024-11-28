@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 
     api_enabled BOOLEAN NOT NULL DEFAULT FALSE,
 
-    permissions JSON NOT NULL DEFAULT '{}',
+    permissions JSON NOT NULL DEFAULT '[]',
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}',

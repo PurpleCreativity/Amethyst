@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS schedule_types (
     use_roblox_schedule BOOLEAN NOT NULL DEFAULT FALSE,
     use_discord_schedule BOOLEAN NOT NULL DEFAULT FALSE,
 
-    can_schedule_roles JSON NOT NULL DEFAULT '{}',
-    can_schedule_users JSON NOT NULL DEFAULT '{}',
+    can_schedule_roles JSON NOT NULL DEFAULT '[]',
+    can_schedule_users JSON NOT NULL DEFAULT '[]',
 
     FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );
