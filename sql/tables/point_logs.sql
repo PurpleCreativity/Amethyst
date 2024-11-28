@@ -1,13 +1,15 @@
 CREATE TABLE IF NOT EXISTS point_logs (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
+    id: VARCHAR(32) UNSIGNED NOT NULL,
     data JSON NOT NULL,
-    notes VARCHAR(500),
+    note_content VARCHAR(500),
 
-    creator_name VARCHAR(100) NOT NULL,
-    creator_id VARCHAR(20) NOT NULL,
+    creator_name VARCHAR(20) NOT NULL,
+    creator_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );

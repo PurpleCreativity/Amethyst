@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS guild_profiles (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     iv VARBINARY(16) NOT NULL,
     shortname VARCHAR(10) NOT NULL UNIQUE,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     guild_id VARCHAR(20) NOT NULL,
     guild_name VARCHAR(100) NOT NULL,
 
-    roblox_group_id VARCHAR(20),
+    roblox_group_id BIGINT,
 
     api_rover_key VARCHAR(100),
     api_bloxlink_key VARCHAR(100),

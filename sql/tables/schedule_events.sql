@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS schedule_events (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
     type VARCHAR(100) NOT NULL,
@@ -11,8 +12,6 @@ CREATE TABLE IF NOT EXISTS schedule_events (
 
     host_name VARCHAR(100) NOT NULL,
     host_id BIGINT UNSIGNED NOT NULL,
-
-    ongoing BOOLEAN NOT NULL DEFAULT FALSE,
 
     discord_event_id VARCHAR(32) NOT NULL,
     roblox_event_id VARCHAR(32) NOT NULL,

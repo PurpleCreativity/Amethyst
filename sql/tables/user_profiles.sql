@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS user_profiles (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     iv VARBINARY(16) NOT NULL,
 
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     discord_username VARCHAR(32) NOT NULL,
 
     roblox_id BIGINT UNSIGNED UNIQUE,
-    roblox_username VARCHAR(20),
+    roblox_username VARCHAR(20) UNIQUE,
 
     settings JSON NOT NULL DEFAULT '{}',
     fflags JSON NOT NULL DEFAULT '{}',
