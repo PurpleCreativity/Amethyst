@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     iv VARBINARY(16) NOT NULL,
 
     discord_id VARCHAR(20) NOT NULL UNIQUE,
-    discord_username VARCHAR(32) NOT NULL,
+    discord_username VARCHAR(32) NOT NULL UNIQUE,
 
     roblox_id BIGINT UNSIGNED UNIQUE,
     roblox_username VARCHAR(20) UNIQUE,
