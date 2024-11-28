@@ -86,10 +86,9 @@ export default class Database {
             const insertQuery = await connection.query(
                 `INSERT INTO user_profiles (
                     iv, discord_id, discord_username,
-                    roblox_id, roblox_username,
-                    settings, fflags
-                ) VALUES (?, ?, ?, ?, ?, ?, ?);`,
-                [this.client.Functions.GenerateIV(), user.id, user.username, null, null, "{}", "{}"],
+                    roblox_id, roblox_username
+                ) VALUES (?, ?, ?, ?, ?);`,
+                [this.client.Functions.GenerateIV(), user.id, user.username, null, null],
             );
 
             await connection.commit();
