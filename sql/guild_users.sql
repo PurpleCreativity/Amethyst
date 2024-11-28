@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS guild_users (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _v BIGINT UNSIGNED NOT NULL DEFAULT 1,
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
     roblox_id BIGINT UNSIGNED NOT NULL,
@@ -19,12 +18,3 @@ CREATE TABLE IF NOT EXISTS guild_users (
 
     FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );
-
--- Triggers
-
-CREATE TRIGGER IF NOT EXISTS guild_users__before_update
-BEFORE UPDATE ON guild_users
-FOR EACH ROW
-BEGIN
-    SET NEW._v = OLD._v + 1;
-END;
