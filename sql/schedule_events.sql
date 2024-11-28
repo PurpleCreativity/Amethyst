@@ -19,3 +19,12 @@ CREATE TABLE IF NOT EXISTS schedule_events (
 
     FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
 );
+
+-- Triggers
+
+CREATE TRIGGER IF NOT EXISTS schedule_events__before
+BEFORE UPDATE ON schedule_events
+FOR EACH ROW
+BEGIN
+    SET NEW._version = OLD._version + 1;
+END;

@@ -15,3 +15,12 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Triggers
+
+CREATE TRIGGER IF NOT EXISTS user_profiles__before
+BEFORE UPDATE ON user_profiles
+FOR EACH ROW
+BEGIN
+    SET NEW._version = OLD._version + 1;
+END;

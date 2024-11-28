@@ -17,3 +17,12 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Triggers
+
+CREATE TRIGGER IF NOT EXISTS guild_profiles__before
+BEFORE UPDATE ON guild_profiles
+FOR EACH ROW
+BEGIN
+    SET NEW._version = OLD._version + 1;
+END;
