@@ -2,7 +2,6 @@ import client from "../../main.js";
 
 export type rawUserData = {
     _id: number;
-    _v: number;
 
     iv: Buffer;
 
@@ -22,7 +21,6 @@ export default class UserProfile {
     readonly rawdata: rawUserData;
 
     readonly _id: number;
-    readonly _v: number;
 
     readonly iv: string;
 
@@ -41,7 +39,6 @@ export default class UserProfile {
         this.rawdata = rawdata;
 
         this._id = rawdata._id;
-        this._v = rawdata._v;
 
         this.iv = rawdata.iv.toString("hex");
 
@@ -65,5 +62,41 @@ export default class UserProfile {
         this.settings[key] = value;
     };
 
-    save = async (): Promise<void> => {};
+    save = async (): Promise<void> => {
+        const connection = await client.Database.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const result = await connection.query(
+                `UPDATE user_profiles SET
+                    discord_username = ?,
+                    roblox_id = ?,
+                    roblox_username = ?,
+                    settings = ?,
+                    fflags = ?
+                WHERE _id = ?
+                `,
+                [
+                    this.discord_username,
+                    this.roblox_id,
+                    this.roblox_username,
+                    this.settings,
+                    this.fflags,
+                    
+                    this._id
+                ]
+            );
+
+            console.log(result);
+            console.log("saved");
+
+            await connection.commit();
+        } catch (error) {
+            console.error(error);
+            await connection.rollback();
+        } finally {
+            await connection.end();
+        }
+    };
 }

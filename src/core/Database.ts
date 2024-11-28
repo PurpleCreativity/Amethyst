@@ -125,13 +125,15 @@ export default class Database {
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
 
-        /*
         const profile = await this.getUserProfile("762329291169857537");
         if (!profile) return;
         console.log(profile);
 
         profile.setSetting("hello", 1);
         console.log(profile.getSetting("hello"));
-        */
+
+        console.log(profile);
+
+        await profile.save();
     };
 }
