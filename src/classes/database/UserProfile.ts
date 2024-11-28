@@ -100,8 +100,9 @@ export default class UserProfile {
 
             await connection.commit();
         } catch (error) {
-            console.error(error);
             await connection.rollback();
+
+            throw error;
         } finally {
             await connection.end();
         }
