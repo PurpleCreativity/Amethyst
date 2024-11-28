@@ -1,6 +1,6 @@
 import { SlashCommandStringOption } from "discord.js";
-import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import Plugin from "../../classes/Plugin.js";
+import SlashCommand from "../../classes/interactables/SlashCommand.js";
 
 export default new Plugin({
     name: "capeId",

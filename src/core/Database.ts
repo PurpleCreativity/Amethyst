@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { type Snowflake, User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
-import { type Snowflake, User } from "discord.js";
 import UserProfile from "../classes/database/UserProfile.js";
 
 export default class Database {

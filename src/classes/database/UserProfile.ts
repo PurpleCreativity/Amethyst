@@ -1,22 +1,22 @@
 import client from "../../main.js";
 
 export type rawUserData = {
-    _id: number,
+    _id: number;
     _v: number;
 
-    iv: Buffer,
+    iv: Buffer;
 
-    discord_id: string,
-    discord_username: string,
+    discord_id: string;
+    discord_username: string;
 
-    roblox_id: number | null,
-    roblox_username: string | null,
+    roblox_id: number | null;
+    roblox_username: string | null;
 
-    settings: Record<string, unknown>,
-    fflags: Record<string, unknown>,
+    settings: Record<string, unknown>;
+    fflags: Record<string, unknown>;
 
-    updated_at: Date,
-}
+    updated_at: Date;
+};
 
 export default class UserProfile {
     readonly rawdata: rawUserData;
@@ -55,17 +55,15 @@ export default class UserProfile {
         this.fflags = rawdata.fflags;
 
         this.updated_at = rawdata.updated_at;
-    };
+    }
 
     getSetting = (key: string): unknown => {
         return this.settings[key];
-    }
+    };
 
     setSetting = (key: string, value: unknown): void => {
         this.settings[key] = value;
     };
 
-    save = async (): Promise<void> => {
-        
-    };
+    save = async (): Promise<void> => {};
 }
