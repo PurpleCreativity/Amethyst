@@ -9,8 +9,6 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 
     roblox_group_id BIGINT,
 
-    api_rover_key VARCHAR(100),
-    api_bloxlink_key VARCHAR(100),
     api_enabled BOOLEAN NOT NULL DEFAULT FALSE,
 
     settings JSON NOT NULL DEFAULT '{}',
