@@ -43,15 +43,6 @@ export default class Database {
         this.client.warn("Database pool closed");
     };
 
-    query = async (sql: string | mariadb.QueryOptions, values?: unknown[]): Promise<unknown> => {
-        const connection = await this.getConnection();
-        try {
-            return await connection.query(sql, values);
-        } finally {
-            await connection.end();
-        }
-    };
-
     private initializeTables = async () => {
         const filesPath = path.join(process.cwd(), "sql");
         const connection = await this.getConnection();
