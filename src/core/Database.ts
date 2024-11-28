@@ -61,7 +61,7 @@ export default class Database {
                     const sql = fs.readFileSync(filePath, "utf-8");
 
                     await connection.query(sql);
-                    this.client.success(`Initialized table: ${tableName}`);
+                    this.client.verbose(`Initialized table: ${tableName}`);
                 } else {
                     this.client.warn(`SQL file for table '${tableName}' not found: ${filePath}`);
                 }
