@@ -2,8 +2,7 @@ import client from "../../main.js";
 
 export type rawUserData = {
     _id: number;
-
-    iv: Buffer;
+    _iv: Buffer;
 
     discord_id: string;
     discord_username: string;
@@ -21,8 +20,7 @@ export default class UserProfile {
     readonly rawdata: rawUserData;
 
     readonly _id: number;
-
-    readonly iv: string;
+    readonly _iv: string;
 
     readonly discord_id: string;
     readonly discord_username: string;
@@ -39,8 +37,7 @@ export default class UserProfile {
         this.rawdata = rawdata;
 
         this._id = rawdata._id;
-
-        this.iv = rawdata.iv.toString("hex");
+        this._iv = rawdata._iv.toString("hex");
 
         this.discord_id = rawdata.discord_id;
         this.discord_username = rawdata.discord_username;
