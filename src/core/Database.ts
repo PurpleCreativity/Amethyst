@@ -13,6 +13,7 @@ export default class Database {
         "user_profiles",
         "guild_profiles",
 
+        "guild_users",
         "roblox_places",
         "api_keys",
         "point_logs",

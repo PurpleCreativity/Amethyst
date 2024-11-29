@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
+    user_profile_id BIGINT UNSIGNED,
     roblox_id BIGINT UNSIGNED NOT NULL,
     roblox_username VARCHAR(20) NOT NULL,
 
@@ -16,5 +17,6 @@ CREATE TABLE IF NOT EXISTS guild_users (
     ranklock_reason VARCHAR(500),
     ranklock_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
+    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id),
+    FOREIGN KEY (user_profile_id) REFERENCES user_profiles(_id)
 );
