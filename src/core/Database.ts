@@ -3,8 +3,8 @@ import path from "node:path";
 import { Guild, type Snowflake, User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
-import UserProfile from "../classes/database/UserProfile.js";
 import GuildProfile from "../classes/database/GuildProfile.js";
+import UserProfile from "../classes/database/UserProfile.js";
 
 export default class Database {
     client: Client;
@@ -123,7 +123,7 @@ export default class Database {
     };
 
     addGuildProfile = async (shortname: string, guild: Guild | string | Snowflake) => {
-        if (typeof guild === "string") guild = await this.client.Functions.fetchGuild(guild) as Guild;
+        if (typeof guild === "string") guild = (await this.client.Functions.fetchGuild(guild)) as Guild;
         if (!guild || !(guild instanceof Guild)) throw new Error("Guild not found.");
 
         const connection = await this.getConnection();
