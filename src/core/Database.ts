@@ -75,7 +75,7 @@ export default class Database {
 
     //? Data handling
 
-    private addUserProfile = async (user: User | string | Snowflake) => {
+    addUserProfile = async (user: User | string | Snowflake) => {
         if (typeof user === "string") user = (await this.client.Functions.fetchUser(user)) as User;
         if (!user || !(user instanceof User)) throw new Error("Unknown user.");
 
