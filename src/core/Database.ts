@@ -105,6 +105,7 @@ export default class Database {
 
     getUserProfile = async (userId: string) => {
         const connection = await this.getConnection();
+
         try {
             const existing = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
             if (existing.length > 0) {
@@ -152,6 +153,7 @@ export default class Database {
 
     getGuildProfile = async (guildId: string) => {
         const connection = await this.getConnection();
+
         try {
             const existing = await connection.query("SELECT * FROM guild_profiles WHERE guild_id = ?", [guildId]);
             if (existing.length > 0) {
