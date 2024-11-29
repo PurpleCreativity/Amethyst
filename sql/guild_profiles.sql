@@ -7,10 +7,6 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     guild_id VARCHAR(20) NOT NULL,
     guild_name VARCHAR(100) NOT NULL,
 
-    roblox_group_id BIGINT,
-
-    api_enabled BOOLEAN NOT NULL DEFAULT FALSE,
-
     permissions JSON NOT NULL DEFAULT '[]',
     channels JSON NOT NULL DEFAULT '{}',
 
