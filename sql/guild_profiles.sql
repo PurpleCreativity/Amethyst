@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     guild_id VARCHAR(20) NOT NULL,
     guild_name VARCHAR(100) NOT NULL,
 
-    permissions JSON NOT NULL DEFAULT '[]',
+    permissions JSON NOT NULL DEFAULT '{}',
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}',

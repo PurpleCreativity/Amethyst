@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { type Snowflake, User } from "discord.js";
+import { Guild, type Snowflake, User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 import UserProfile from "../classes/database/UserProfile.js";
+import GuildProfile from "../classes/database/GuildProfile.js";
 
 export default class Database {
     client: Client;
@@ -105,9 +106,9 @@ export default class Database {
     getUserProfile = async (userId: string) => {
         const connection = await this.getConnection();
         try {
-            const existingUser = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
-            if (existingUser.length > 0) {
-                const rawdata = existingUser[0];
+            const existing = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
+            if (existing.length > 0) {
+                const rawdata = existing[0];
 
                 return new UserProfile(rawdata);
             }
@@ -116,6 +117,50 @@ export default class Database {
             const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE _id = ?", [profile_id]))[0];
 
             return new UserProfile(rawdata);
+        } finally {
+            await connection.end();
+        }
+    };
+
+    addGuildProfile = async (shortname: string, guild: Guild | string | Snowflake) => {
+        if (typeof guild === "string") guild = await this.client.Functions.fetchGuild(guild) as Guild;
+        if (!guild || !(guild instanceof Guild)) throw new Error("Guild not found.");
+
+        const connection = await this.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const insertQuery = await connection.query(
+                `INSERT INTO guild_profiles (
+                    _iv, shortname,
+                    guild_id, guild_name
+                ) VALUES (?, ?, ?, ?);`,
+                [this.client.Functions.GenerateIV(), shortname, guild.id, guild.name],
+            );
+
+            await connection.commit();
+
+            return insertQuery;
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            await connection.end();
+        }
+    };
+
+    getGuildProfile = async (guildId: string) => {
+        const connection = await this.getConnection();
+        try {
+            const existing = await connection.query("SELECT * FROM guild_profiles WHERE guild_id = ?", [guildId]);
+            if (existing.length > 0) {
+                const rawdata = existing[0];
+
+                return new GuildProfile(rawdata);
+            }
+
+            return undefined;
         } finally {
             await connection.end();
         }
@@ -134,5 +179,8 @@ export default class Database {
         console.log(profile);
 
         await profile.save();
+
+        //await this.addGuildProfile("DEV", "1276574166937505925");
+        console.log(await this.getGuildProfile("1276574166937505925"));
     };
 }
