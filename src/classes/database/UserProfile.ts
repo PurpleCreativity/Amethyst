@@ -22,9 +22,8 @@ export default class UserProfile {
     readonly _id: number;
     readonly _iv: string;
 
-    readonly discord: { id: string, username: string };
-    readonly roblox: { id: number | null, username: string | null };
-
+    readonly discord: { id: string; username: string };
+    readonly roblox: { id: number | null; username: string | null };
 
     readonly settings: Record<string, unknown>;
     readonly fflags: Record<string, unknown>;
