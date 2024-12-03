@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS guild_users (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
     guild_profile_id BIGINT UNSIGNED NOT NULL,
     user_profile_id BIGINT UNSIGNED,
@@ -20,3 +21,10 @@ CREATE TABLE IF NOT EXISTS guild_users (
     FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id),
     FOREIGN KEY (user_profile_id) REFERENCES user_profiles(_id)
 );
+
+CREATE TRIGGER IF NOT EXISTS trigger_GuildUsers_BeforeUpdate
+BEFORE UPDATE ON guild_users
+FOR EACH ROW
+BEGIN
+    SET NEW.__v = OLD.__v + 1;
+END;

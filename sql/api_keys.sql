@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS api_keys (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
     
     guild_profile_id BIGINT UNSIGNED NOT NULL,
 
@@ -14,3 +15,10 @@ CREATE TABLE IF NOT EXISTS api_keys (
     FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id),
     FOREIGN KEY (created_by) REFERENCES user_profiles(_id)
 );
+
+CREATE TRIGGER IF NOT EXISTS trigger_ApiKeys_BeforeUpdate
+BEFORE UPDATE ON api_keys
+FOR EACH ROW
+BEGIN
+    SET NEW.__v = OLD.__v + 1;
+END;
