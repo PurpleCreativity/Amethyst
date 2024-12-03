@@ -22,11 +22,9 @@ export default class UserProfile {
     readonly _id: number;
     readonly _iv: string;
 
-    readonly discord_id: string;
-    readonly discord_username: string;
+    readonly discord: { id: string, username: string };
+    readonly roblox: { id: number | null, username: string | null };
 
-    readonly roblox_id: number | null;
-    readonly roblox_username: string | null;
 
     readonly settings: Record<string, unknown>;
     readonly fflags: Record<string, unknown>;
@@ -39,11 +37,8 @@ export default class UserProfile {
         this._id = rawdata._id;
         this._iv = rawdata._iv.toString("hex");
 
-        this.discord_id = rawdata.discord_id;
-        this.discord_username = rawdata.discord_username;
-
-        this.roblox_id = rawdata.roblox_id;
-        this.roblox_username = rawdata.roblox_username;
+        this.discord = { id: rawdata.discord_id, username: rawdata.discord_username };
+        this.roblox = { id: rawdata.roblox_id, username: rawdata.roblox_username };
 
         this.settings = rawdata.settings;
         this.fflags = rawdata.fflags;
@@ -83,9 +78,9 @@ export default class UserProfile {
                  WHERE _id = ?
                 `,
                 [
-                    this.discord_username,
-                    this.roblox_id,
-                    this.roblox_username,
+                    this.discord.username,
+                    this.roblox.id,
+                    this.roblox.username,
                     this.settings,
                     this.fflags,
 
