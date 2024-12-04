@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS guild_profiles (
     id BIGINT UNSIGNED PRIMARY KEY,
     `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    encryption_iv VARBINARY(16) NOT NULL,
     
     shortname VARCHAR(10) NOT NULL UNIQUE,
 
