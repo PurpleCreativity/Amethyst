@@ -8,9 +8,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}',
-    fflags JSON NOT NULL DEFAULT '{}',
-
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    fflags JSON NOT NULL DEFAULT '{}'
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildProfiles_BeforeUpdate
