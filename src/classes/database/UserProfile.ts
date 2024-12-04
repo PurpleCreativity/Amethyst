@@ -67,7 +67,7 @@ export default class UserProfile {
                 `,
                 [
                     this.robloxId,
-                    
+
                     this.settings,
                     this.fflags,
 
