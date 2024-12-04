@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS guild_groups (
     _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
-    id BIGINT UNIQUE NOT NULL,
     `name` VARCHAR(255) UNIQUE NOT NULL
 );
 
@@ -22,7 +21,7 @@ CREATE TABLE IF NOT EXISTS guild_group_memberships (
 
     settings JSON NOT NULL DEFAULT '{}',
 
-    FOREIGN KEY (group_id) REFERENCES guild_groups(id),
+    FOREIGN KEY (group_id) REFERENCES guild_groups(_id),
     FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id),
 
     UNIQUE(group_id, guild_id)
