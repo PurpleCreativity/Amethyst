@@ -5,18 +5,11 @@ CREATE TABLE IF NOT EXISTS guild_users (
     guild_id BIGINT UNSIGNED NOT NULL,
     discord_id BIGINT UNSIGNED,
     roblox_id BIGINT UNSIGNED NOT NULL,
-    roblox_username VARCHAR(20) NOT NULL,
 
-    points INT NOT NULL,
+    points BIGINT NOT NULL,
 
-    note_content VARCHAR(500),
-    note_visible BOOLEAN NOT NULL DEFAULT TRUE,
-    note_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    ranklock_rank INT UNSIGNED NOT NULL DEFAULT 0,
-    ranklock_shadow BOOLEAN NOT NULL DEFAULT FALSE,
-    ranklock_reason VARCHAR(500),
-    ranklock_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    notes JSON NOT NULL DEFAULT '{}',
+    ranklock JSON NOT NULL DEFAULT '{}',
 
     FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
     FOREIGN KEY (discord_id) REFERENCES user_profiles(id)

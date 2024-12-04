@@ -1,12 +1,9 @@
 CREATE TABLE IF NOT EXISTS guild_profiles (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT UNSIGNED PRIMARY KEY,
     `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
     encryption_iv VARBINARY(16) NOT NULL,
     
     shortname VARCHAR(10) NOT NULL UNIQUE,
-
-    guild_id VARCHAR(20) NOT NULL,
-    `name` VARCHAR(100) NOT NULL,
 
     permissions JSON NOT NULL DEFAULT '{}',
     channels JSON NOT NULL DEFAULT '{}',
