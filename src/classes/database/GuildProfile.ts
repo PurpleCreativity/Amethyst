@@ -35,7 +35,7 @@ export default class GuildProfile {
     constructor(rawdata: rawGuildData) {
         this.rawdata = rawdata;
 
-        this._id = rawdata._id
+        this._id = rawdata._id;
         this.__v = rawdata.__v;
 
         this.guildId = rawdata.guild_id.toString();
