@@ -6,9 +6,8 @@ CREATE TABLE IF NOT EXISTS point_logs (
 
     log_id VARCHAR(32) NOT NULL,
     `data` JSON NOT NULL,
-    note_content VARCHAR(500),
+    note VARCHAR(500),
 
-    creator_name VARCHAR(20) NOT NULL,
     creator_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
