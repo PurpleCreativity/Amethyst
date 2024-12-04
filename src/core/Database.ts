@@ -116,7 +116,7 @@ export default class Database {
             }
 
             const profile_id = (await this.addUserProfile(userId)).insertId;
-            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE id = ?", [profile_id]))[0];
+            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE id = ?", [userId]))[0];
 
             return new UserProfile(rawdata);
         } finally {
