@@ -4,13 +4,10 @@ export type PermissionEntry = {
 };
 
 export type rawGuildData = {
-    _id: number;
-    _iv: Buffer;
+    id: number;
+    version: number;
 
     shortname: string;
-
-    guild_id: string;
-    guild_name: string;
 
     permissions: Record<string, PermissionEntry>;
     channels: Record<string, string>;
@@ -24,10 +21,9 @@ export type rawGuildData = {
 export default class GuildProfile {
     readonly rawdata: rawGuildData;
 
-    readonly _id: number;
-    readonly _iv: string;
+    readonly id: string;
+    readonly version: number;
 
-    readonly guild: { id: string; name: string };
     readonly shortname: string;
 
     readonly permissions: Record<string, PermissionEntry>;
@@ -36,15 +32,12 @@ export default class GuildProfile {
     readonly settings: Record<string, unknown>;
     readonly fflags: Record<string, unknown>;
 
-    readonly updated_at: Date;
-
     constructor(rawdata: rawGuildData) {
         this.rawdata = rawdata;
 
-        this._id = rawdata._id;
-        this._iv = rawdata._iv.toString("hex");
+        this.id = rawdata.id.toString();
+        this.version = rawdata.version;
 
-        this.guild = { id: this.rawdata.guild_id, name: this.rawdata.guild_name };
         this.shortname = rawdata.shortname;
 
         this.permissions = rawdata.permissions;
@@ -52,8 +45,6 @@ export default class GuildProfile {
 
         this.settings = rawdata.settings;
         this.fflags = rawdata.fflags;
-
-        this.updated_at = rawdata.updated_at;
     }
 
     getSetting = (key: string): unknown => {
