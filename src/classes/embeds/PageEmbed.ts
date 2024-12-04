@@ -6,7 +6,7 @@ export type PageEmbedOptions = {
     PageFooter?: boolean;
     fieldsPerPage?: number;
     fields?: APIEmbedField[];
-    allowedUsers?: string[];
+    allowed_users?: string[];
 };
 
 export default class PageEmbed extends ButtonEmbed {
@@ -42,7 +42,7 @@ export default class PageEmbed extends ButtonEmbed {
             label: "⬅️",
             disabled: true,
             style: ButtonStyle.Primary,
-            allowedUsers: opts.allowedUsers,
+            allowed_users: opts.allowed_users,
             function: (interaction) => {
                 this.previousPage(interaction);
             },
@@ -51,7 +51,7 @@ export default class PageEmbed extends ButtonEmbed {
         this.nextButton = this.addButton({
             label: "➡️",
             style: ButtonStyle.Primary,
-            allowedUsers: opts.allowedUsers,
+            allowed_users: opts.allowed_users,
             function: (interaction) => {
                 this.nextPage(interaction);
             },
