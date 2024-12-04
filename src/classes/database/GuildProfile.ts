@@ -4,9 +4,10 @@ export type PermissionEntry = {
 };
 
 export type rawGuildData = {
-    id: number;
-    version: number;
+    _id: number;
+    __v: number;
 
+    guild_id: number;
     shortname: string;
 
     permissions: Record<string, PermissionEntry>;
@@ -14,16 +15,15 @@ export type rawGuildData = {
 
     settings: Record<string, unknown>;
     fflags: Record<string, unknown>;
-
-    updated_at: Date;
 };
 
 export default class GuildProfile {
     readonly rawdata: rawGuildData;
 
-    readonly id: string;
-    readonly version: number;
+    readonly _id: number;
+    readonly __v: number;
 
+    readonly guildId: string;
     readonly shortname: string;
 
     readonly permissions: Record<string, PermissionEntry>;
@@ -35,9 +35,10 @@ export default class GuildProfile {
     constructor(rawdata: rawGuildData) {
         this.rawdata = rawdata;
 
-        this.id = rawdata.id.toString();
-        this.version = rawdata.version;
+        this._id = rawdata._id
+        this.__v = rawdata.__v;
 
+        this.guildId = rawdata.guild_id.toString();
         this.shortname = rawdata.shortname;
 
         this.permissions = rawdata.permissions;

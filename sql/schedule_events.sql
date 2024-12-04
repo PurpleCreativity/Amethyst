@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS schedule_events (
-    id VARCHAR(32) PRIMARY KEY,
-    `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
+    id VARCHAR(36) UNIQUE NOT NULL,
     guild_id BIGINT UNSIGNED NOT NULL,
 
     `type` VARCHAR(100) NOT NULL,
@@ -17,12 +18,12 @@ CREATE TABLE IF NOT EXISTS schedule_events (
     discord_event_id VARCHAR(32) NOT NULL,
     roblox_event_id VARCHAR(32) NOT NULL,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_ScheduleEvents_BeforeUpdate
 BEFORE UPDATE ON schedule_events
 FOR EACH ROW
 BEGIN
-    SET NEW.version = OLD.version + 1;
+    SET NEW.__v = OLD.__v + 1;
 END;

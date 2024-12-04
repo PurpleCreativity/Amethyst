@@ -88,7 +88,7 @@ export default class Database {
 
             const insertQuery = await connection.query(
                 `INSERT INTO user_profiles (
-                    id, roblox_id
+                    discord_id, roblox_id
                 ) VALUES (?, ?);`,
                 [user.id, null],
             );
@@ -108,15 +108,15 @@ export default class Database {
         const connection = await this.getConnection();
 
         try {
-            const existing = await connection.query("SELECT * FROM user_profiles WHERE id = ?", [userId]);
+            const existing = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
                 return new UserProfile(rawdata);
             }
 
-            const profile_id = (await this.addUserProfile(userId)).insertId;
-            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE id = ?", [userId]))[0];
+            await this.addUserProfile(userId);
+            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]))[0];
 
             return new UserProfile(rawdata);
         } finally {
@@ -135,7 +135,7 @@ export default class Database {
 
             const insertQuery = await connection.query(
                 `INSERT INTO guild_profiles (
-                    id, shortname
+                    guild_id, shortname
                 ) VALUES (?, ?);`,
                 [guild.id, shortname],
             );
@@ -155,7 +155,7 @@ export default class Database {
         const connection = await this.getConnection();
 
         try {
-            const existing = await connection.query("SELECT * FROM guild_profiles WHERE id = ?", [guildId]);
+            const existing = await connection.query("SELECT * FROM guild_profiles WHERE guild_id = ?", [guildId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 

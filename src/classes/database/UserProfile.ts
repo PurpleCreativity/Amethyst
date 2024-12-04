@@ -1,9 +1,10 @@
 import client from "../../main.js";
 
 export type rawUserData = {
-    id: number;
-    version: number;
+    _id: number;
+    __v: number;
 
+    discord_id: number;
     roblox_id: number | null;
 
     settings: Record<string, unknown>;
@@ -13,9 +14,10 @@ export type rawUserData = {
 export default class UserProfile {
     readonly rawdata: rawUserData;
 
-    readonly id: string;
-    readonly version: number;
-
+    readonly _id: number;
+    readonly __v: number;
+    
+    readonly discordId: string;
     readonly robloxId: number | null;
 
     readonly settings: Record<string, unknown>;
@@ -24,9 +26,10 @@ export default class UserProfile {
     constructor(rawdata: rawUserData) {
         this.rawdata = rawdata;
 
-        this.id = rawdata.id.toString();
-        this.version = rawdata.version;
-
+        this._id = rawdata._id;
+        this.__v = rawdata.__v;
+        
+        this.discordId = rawdata.discord_id.toString();
         this.robloxId = rawdata.roblox_id;
 
         this.settings = rawdata.settings;
@@ -60,14 +63,14 @@ export default class UserProfile {
                     roblox_id = ?,
                     settings = ?,
                     fflags = ?
-                 WHERE id = ?
+                 WHERE _id = ?
                 `,
                 [
                     this.robloxId,
                     this.settings,
                     this.fflags,
 
-                    this.id,
+                    this._id,
                 ],
             );
 
