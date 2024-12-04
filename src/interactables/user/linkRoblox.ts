@@ -135,9 +135,10 @@ export default new SlashCommand({
                     });
                     return await buttonInteraction.deleteReply();
                 } catch (error) {
-                    const message: string = (error && typeof error === 'object' && 'message' in error)
-                        ? (error as { message: string }).message
-                        : "Unknown error";
+                    const message: string =
+                        error && typeof error === "object" && "message" in error
+                            ? (error as { message: string }).message
+                            : "Unknown error";
 
                     await interaction.editReply({
                         embeds: [
