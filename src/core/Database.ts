@@ -171,13 +171,6 @@ export default class Database {
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
 
-        const profile = await this.getUserProfile("762329291169857537");
-        if (!profile) return;
-        profile.robloxId = 1;
-        console.log(profile);
-        await profile.save();
-
-        //await this.addGuildProfile("DEV", "1276574166937505925");
-        console.log(await this.getGuildProfile("1276574166937505925"));
+        this.client.success("Initialized Database");
     };
 }
