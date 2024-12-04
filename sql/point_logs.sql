@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS point_logs (
-    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
-    guild_profile_id BIGINT UNSIGNED NOT NULL,
+    guild_id BIGINT UNSIGNED NOT NULL,
 
-    id VARCHAR(32) NOT NULL,
+    log_id VARCHAR(32) NOT NULL,
     `data` JSON NOT NULL,
     note_content VARCHAR(500),
 
@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS point_logs (
     creator_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (guild_profile_id) REFERENCES guild_profiles(_id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_PointLogs_BeforeUpdate
 BEFORE UPDATE ON point_logs
 FOR EACH ROW
 BEGIN
-    SET NEW.__v = OLD.__v + 1;
+    SET NEW.version = OLD.version + 1;
 END;

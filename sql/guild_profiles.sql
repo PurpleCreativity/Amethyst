@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS guild_profiles (
-    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    _iv VARBINARY(16) NOT NULL,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    encryption_iv VARBINARY(16) NOT NULL,
     
     shortname VARCHAR(10) NOT NULL UNIQUE,
 
     guild_id VARCHAR(20) NOT NULL,
-    guild_name VARCHAR(100) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
 
     permissions JSON NOT NULL DEFAULT '{}',
     channels JSON NOT NULL DEFAULT '{}',
@@ -21,5 +21,5 @@ CREATE TRIGGER IF NOT EXISTS trigger_GuildProfiles_BeforeUpdate
 BEFORE UPDATE ON guild_profiles
 FOR EACH ROW
 BEGIN
-    SET NEW.__v = OLD.__v + 1;
+    SET NEW.version = OLD.version + 1;
 END;
