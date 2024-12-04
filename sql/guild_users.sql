@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
 
     points BIGINT NOT NULL,
 
-    notes JSON NOT NULL DEFAULT '{}',
+    note JSON NOT NULL DEFAULT '{}',
     ranklock JSON NOT NULL DEFAULT '{}',
 
     FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
