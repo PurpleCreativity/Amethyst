@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS point_logs (
     creator_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
+    FOREIGN KEY (creator_id) REFERENCES user_profiles(roblox_id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_PointLogs_BeforeUpdate
