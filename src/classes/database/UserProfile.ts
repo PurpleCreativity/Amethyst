@@ -17,8 +17,8 @@ export default class UserProfile {
     readonly _id: number;
     readonly __v: number;
 
-    readonly discordId: string;
-    readonly robloxId: number | null;
+    readonly discordId: number;
+    robloxId: number | null;
 
     readonly settings: Record<string, unknown>;
     readonly fflags: Record<string, unknown>;
@@ -29,7 +29,7 @@ export default class UserProfile {
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 
-        this.discordId = rawdata.discord_id.toString();
+        this.discordId = rawdata.discord_id;
         this.robloxId = rawdata.roblox_id;
 
         this.settings = rawdata.settings;
@@ -37,7 +37,7 @@ export default class UserProfile {
     }
 
     getSetting = (key: string): unknown => {
-        return this.settings[key];
+        return this.settings[key] ?? null;
     };
 
     setSetting = (key: string, value: unknown): void => {
@@ -45,7 +45,7 @@ export default class UserProfile {
     };
 
     getFFlag = (key: string): unknown => {
-        return this.fflags[key];
+        return this.fflags[key] ?? null;
     };
 
     setFFlag = (key: string, value: unknown): void => {
@@ -67,6 +67,7 @@ export default class UserProfile {
                 `,
                 [
                     this.robloxId,
+                    
                     this.settings,
                     this.fflags,
 
