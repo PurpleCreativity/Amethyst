@@ -51,7 +51,6 @@ export default class UserProfile {
 
     save = async (): Promise<void> => {
         let connection: mariadb.Connection | undefined;
-
         try {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
