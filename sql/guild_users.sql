@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
     roblox_id BIGINT UNSIGNED NOT NULL,
     discord_id BIGINT UNSIGNED,
 
-    points BIGINT NOT NULL,
+    points BIGINT NOT NULL DEFAULT 0,
 
     notes JSON NOT NULL,
     ranklock JSON NOT NULL,
