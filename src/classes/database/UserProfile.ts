@@ -16,7 +16,7 @@ export default class UserProfile {
     readonly _id: number;
     readonly __v: number;
 
-    readonly discordId: number;
+    readonly discordId: string;
     robloxId: number | null;
 
     readonly settings: Record<string, unknown>;
@@ -26,7 +26,7 @@ export default class UserProfile {
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 
-        this.discordId = rawdata.discord_id;
+        this.discordId = rawdata.discord_id.toString();
         this.robloxId = rawdata.roblox_id;
 
         this.settings = rawdata.settings;

@@ -33,7 +33,7 @@ export default class GuildUser {
     readonly _id: number;
     readonly __v: number;
 
-    readonly guildId: number;
+    readonly guildId: string;
     readonly robloxId: number;
 
     points: number;
@@ -45,7 +45,7 @@ export default class GuildUser {
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 
-        this.guildId = rawdata.guild_id;
+        this.guildId = rawdata.guild_id.toString();
         this.robloxId = rawdata.roblox_id;
 
         this.points = rawdata.points;

@@ -24,7 +24,7 @@ export default class PointLog {
     readonly __v: number;
 
     readonly id: string;
-    readonly guildId: number;
+    readonly guildId: string;
 
     readonly data: dataEntry[];
     note: string | null;
@@ -41,7 +41,7 @@ export default class PointLog {
         this.__v = rawdata.__v;
 
         this.id = rawdata.id;
-        this.guildId = rawdata.guild_id;
+        this.guildId = rawdata.guild_id.toString();
 
         this.data = rawdata.data || [];
         this.note = rawdata.note;
