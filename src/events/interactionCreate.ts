@@ -21,7 +21,24 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                await interaction.deferReply({ ephemeral: command.ephemeral });
+
+                const guildProfile = interaction.guild
+                    ? await client.Database.getGuildProfile(interaction.guild.id)
+                    : undefined;
+
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 const message: string =
                     error && typeof error === "object" && "message" in error
@@ -29,18 +46,7 @@ export default new Event({
                         : "Unknown error";
                 if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
-                if (interaction.deferred) {
-                    return await interaction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "An error occurred",
-                                description: `\`\`\`${message}\`\`\``,
-                            }),
-                        ],
-                    });
-                }
-
-                return await interaction.reply({
+                return await interaction.editReply({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
@@ -80,7 +86,24 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                await interaction.deferReply({ ephemeral: command.ephemeral });
+
+                const guildProfile = interaction.guild
+                    ? await client.Database.getGuildProfile(interaction.guild.id)
+                    : undefined;
+
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 const message: string =
                     error && typeof error === "object" && "message" in error
@@ -88,18 +111,7 @@ export default new Event({
                         : "Unknown error";
                 if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
-                if (interaction.deferred) {
-                    return await interaction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "An error occurred",
-                                description: `\`\`\`${message}\`\`\``,
-                            }),
-                        ],
-                    });
-                }
-
-                return await interaction.reply({
+                return await interaction.editReply({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
@@ -124,7 +136,24 @@ export default new Event({
             }
 
             try {
-                return await command.execute(interaction);
+                await interaction.deferReply({ ephemeral: command.ephemeral });
+
+                const guildProfile = interaction.guild
+                    ? await client.Database.getGuildProfile(interaction.guild.id)
+                    : undefined;
+
+                if (interaction.guild && !guildProfile) {
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "An error occurred",
+                                description: "This guild is not registered in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                return await command.execute(interaction, guildProfile);
             } catch (error) {
                 const message: string =
                     error && typeof error === "object" && "message" in error
@@ -132,18 +161,7 @@ export default new Event({
                         : "Unknown error";
                 if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
-                if (interaction.deferred) {
-                    return await interaction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "An error occurred",
-                                description: `\`\`\`${message}\`\`\``,
-                            }),
-                        ],
-                    });
-                }
-
-                return await interaction.reply({
+                return await interaction.editReply({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
@@ -169,7 +187,22 @@ export default new Event({
                 }
 
                 try {
-                    return await button.execute(interaction);
+                    const guildProfile = interaction.guild
+                        ? await client.Database.getGuildProfile(interaction.guild.id)
+                        : undefined;
+
+                    if (interaction.guild && !guildProfile) {
+                        return await interaction.reply({
+                            embeds: [
+                                client.Functions.makeErrorEmbed({
+                                    title: "An error occurred",
+                                    description: "This guild is not registered in the database.",
+                                }),
+                            ],
+                        });
+                    }
+
+                    return await button.execute(interaction, guildProfile);
                 } catch (error) {
                     const message: string =
                         error && typeof error === "object" && "message" in error

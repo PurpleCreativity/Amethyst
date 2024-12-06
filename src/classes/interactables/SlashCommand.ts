@@ -2,6 +2,7 @@ import {
     ApplicationIntegrationType,
     type AutocompleteInteraction,
     type ChatInputCommandInteraction,
+    GuildMember,
     InteractionContextType,
     type LocalizationMap,
     type PermissionResolvable,
@@ -22,6 +23,7 @@ import Icons from "../../../public/Icons.json" with { type: "json" };
 import client from "../../main.js";
 import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
 import type { ValidPermissions } from "../../types/shared.js";
+import type GuildProfile from "../database/GuildProfile.js";
 
 export type ValidSlashCommandOptions =
     | SlashCommandStringOption
@@ -59,8 +61,11 @@ export type SlashCommandOptions = {
     options?: ValidSlashCommandOptions[];
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
-    function: (interaction: ChatInputCommandInteraction) => Promise<unknown>;
-    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    function: (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+    autocomplete?: (
+        interaction: AutocompleteInteraction,
+        guildProfile?: GuildProfile,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 export default class SlashCommand extends SlashCommandBuilder {
@@ -72,8 +77,14 @@ export default class SlashCommand extends SlashCommandBuilder {
     readonly permissions: ValidPermissions[];
     readonly developer_only: boolean;
 
-    private function: (interaction: ChatInputCommandInteraction) => unknown | Promise<unknown>;
-    autocomplete?: (interaction: AutocompleteInteraction) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    private function: (
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: GuildProfile,
+    ) => unknown | Promise<unknown>;
+    autocomplete?: (
+        interaction: AutocompleteInteraction,
+        guildProfile?: GuildProfile,
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
     disabled = false;
 
@@ -133,7 +144,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
     }
 
-    private check = async (interaction: ChatInputCommandInteraction): Promise<CommandErrorName | undefined> => {
+    private check = async (
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: GuildProfile,
+    ): Promise<CommandErrorName | undefined> => {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandErrorName.DISABLED_GLOBAL;
@@ -142,16 +156,14 @@ export default class SlashCommand extends SlashCommandBuilder {
         if (interaction.guild) {
             if (!interaction.member) return CommandErrorName.UNKNOWN;
 
-            /*
             if (this.permissions.length > 0) {
-                if (!guildProfile) return CommandError.UNKNOWN;
-                if (!(interaction.member instanceof GuildMember)) return CommandError.UNKNOWN;
+                if (!guildProfile) return CommandErrorName.UNKNOWN;
+                if (!(interaction.member instanceof GuildMember)) return CommandErrorName.UNKNOWN;
 
                 const boolean = guildProfile.checkPermissions(interaction.member, this.permissions);
-                if (!boolean) return CommandError.MISSING_PERMISSIONS;
+                if (!boolean) return CommandErrorName.MISSING_PERMISSIONS;
                 return undefined;
             }
-            */
 
             if (this.discord_permissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
@@ -170,10 +182,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         return undefined;
     };
 
-    execute = async (interaction: ChatInputCommandInteraction): Promise<unknown> => {
-        await interaction.deferReply({ ephemeral: this.ephemeral });
+    execute = async (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<unknown> => {
+        console.log(guildProfile);
 
-        const error = await this.check(interaction);
+        const error = await this.check(interaction, guildProfile);
         if (error) {
             return await interaction.editReply({
                 embeds: [
@@ -186,6 +198,6 @@ export default class SlashCommand extends SlashCommandBuilder {
             });
         }
 
-        return await this.function(interaction);
+        return await this.function(interaction, guildProfile);
     };
 }

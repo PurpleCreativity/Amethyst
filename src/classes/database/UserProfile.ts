@@ -2,19 +2,19 @@ import type mariadb from "mariadb";
 import client from "../../main.js";
 
 export type rawUserData = {
-    _id: number;
-    __v: number;
+    _id: bigint;
+    __v: bigint;
 
-    discord_id: number;
-    roblox_id: number | null;
+    discord_id: bigint;
+    roblox_id: bigint | null;
 
     settings: Record<string, unknown>;
     fflags: Record<string, unknown>;
 };
 
 export default class UserProfile {
-    readonly _id: number;
-    readonly __v: number;
+    readonly _id: bigint;
+    __v: bigint;
 
     readonly discordId: string;
     robloxId: number | null;
@@ -27,7 +27,7 @@ export default class UserProfile {
         this.__v = rawdata.__v;
 
         this.discordId = rawdata.discord_id.toString();
-        this.robloxId = rawdata.roblox_id;
+        this.robloxId = rawdata.roblox_id ? Number.parseInt(rawdata.roblox_id.toString()) : null;
 
         this.settings = rawdata.settings;
         this.fflags = rawdata.fflags;
@@ -65,8 +65,8 @@ export default class UserProfile {
                 [
                     this.robloxId,
 
-                    this.settings,
-                    this.fflags,
+                    JSON.stringify(this.settings),
+                    JSON.stringify(this.fflags),
 
                     this._id,
                     this.__v
@@ -76,6 +76,7 @@ export default class UserProfile {
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
+            this.__v = BigInt(this.__v) + 1n;
         } catch (error) {
             if (connection) await connection.rollback();
 
