@@ -183,8 +183,6 @@ export default class SlashCommand extends SlashCommandBuilder {
     };
 
     execute = async (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<unknown> => {
-        console.log(guildProfile);
-
         const error = await this.check(interaction, guildProfile);
         if (error) {
             return await interaction.editReply({
