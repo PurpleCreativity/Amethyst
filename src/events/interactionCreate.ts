@@ -23,16 +23,18 @@ export default new Event({
             try {
                 return await command.execute(interaction);
             } catch (error) {
-                if (!(error instanceof Error)) return;
-
-                client.error(error.stack);
+                const message: string =
+                    error && typeof error === "object" && "message" in error
+                        ? (error as { message: string }).message
+                        : "Unknown error";
+                if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
                 if (interaction.deferred) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
                                 title: "An error occurred",
-                                description: `\`\`\`${error.message}\`\`\``,
+                                description: `\`\`\`${message}\`\`\``,
                             }),
                         ],
                     });
@@ -42,7 +44,7 @@ export default new Event({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
-                            description: `\`\`\`${error.message}\`\`\``,
+                            description: `\`\`\`${message}\`\`\``,
                         }),
                     ],
                 });
@@ -54,10 +56,14 @@ export default new Event({
 
             if (!command || !command.autocomplete) return;
 
-            const choiches = (await command.autocomplete(interaction)) || [];
-            if (choiches.length > 25) choiches.splice(25);
+            try {
+                const choiches = (await command.autocomplete(interaction)) || [];
+                if (choiches.length > 25) choiches.splice(25);
 
-            return await interaction.respond(choiches);
+                return await interaction.respond(choiches);
+            } catch (error) {
+                return await interaction.respond([]);
+            }
         }
 
         if (interaction.isUserContextMenuCommand()) {
@@ -76,14 +82,18 @@ export default new Event({
             try {
                 return await command.execute(interaction);
             } catch (error) {
-                if (!(error instanceof Error)) return;
+                const message: string =
+                    error && typeof error === "object" && "message" in error
+                        ? (error as { message: string }).message
+                        : "Unknown error";
+                if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
                 if (interaction.deferred) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
                                 title: "An error occurred",
-                                description: `\`\`\`${error.message}\`\`\``,
+                                description: `\`\`\`${message}\`\`\``,
                             }),
                         ],
                     });
@@ -93,7 +103,7 @@ export default new Event({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
-                            description: `\`\`\`${error.message}\`\`\``,
+                            description: `\`\`\`${message}\`\`\``,
                         }),
                     ],
                 });
@@ -116,14 +126,18 @@ export default new Event({
             try {
                 return await command.execute(interaction);
             } catch (error) {
-                if (!(error instanceof Error)) return;
+                const message: string =
+                    error && typeof error === "object" && "message" in error
+                        ? (error as { message: string }).message
+                        : "Unknown error";
+                if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
                 if (interaction.deferred) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
                                 title: "An error occurred",
-                                description: `\`\`\`${error.message}\`\`\``,
+                                description: `\`\`\`${message}\`\`\``,
                             }),
                         ],
                     });
@@ -133,7 +147,7 @@ export default new Event({
                     embeds: [
                         client.Functions.makeErrorEmbed({
                             title: "An error occurred",
-                            description: `\`\`\`${error.message}\`\`\``,
+                            description: `\`\`\`${message}\`\`\``,
                         }),
                     ],
                 });
@@ -157,14 +171,18 @@ export default new Event({
                 try {
                     return await button.execute(interaction);
                 } catch (error) {
-                    if (!(error instanceof Error)) return;
+                    const message: string =
+                        error && typeof error === "object" && "message" in error
+                            ? (error as { message: string }).message
+                            : "Unknown error";
+                    if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
 
                     if (interaction.deferred) {
                         return await interaction.editReply({
                             embeds: [
                                 client.Functions.makeErrorEmbed({
                                     title: "An error occurred",
-                                    description: `\`\`\`${error.message}\`\`\``,
+                                    description: `\`\`\`${message}\`\`\``,
                                 }),
                             ],
                         });
@@ -174,7 +192,7 @@ export default new Event({
                         embeds: [
                             client.Functions.makeErrorEmbed({
                                 title: "An error occurred",
-                                description: `\`\`\`${error.message}\`\`\``,
+                                description: `\`\`\`${message}\`\`\``,
                             }),
                         ],
                     });
