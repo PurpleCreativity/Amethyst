@@ -11,7 +11,7 @@ import {
 import Icons from "../../../public/Icons.json" with { type: "json" };
 import client from "../../main.js";
 import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
-import type { ValidPermissions } from "../../types/global.js";
+import type { ValidPermissions } from "../../types/shared.js";
 
 export type BaseContextMenuCommandOptions = {
     name: string;

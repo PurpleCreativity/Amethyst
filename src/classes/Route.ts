@@ -1,5 +1,5 @@
 import type express from "express";
-import type { ValidPermissions } from "../types/global.js";
+import type { ValidPermissions } from "../types/shared.js";
 
 export type RouteMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
 export type rateLimit = {
