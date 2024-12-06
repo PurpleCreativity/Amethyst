@@ -61,7 +61,7 @@ export default class UserProfile {
                     roblox_id = ?,
                     settings = ?,
                     fflags = ?
-                 WHERE _id = ?
+                 WHERE _id = ? AND __v = ?
                 `,
                 [
                     this.robloxId,
@@ -70,6 +70,7 @@ export default class UserProfile {
                     this.fflags,
 
                     this._id,
+                    this.__v
                 ],
             );
 
