@@ -12,13 +12,14 @@ CREATE TABLE IF NOT EXISTS schedule_events (
     time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
 
-    host_name VARCHAR(20) NOT NULL,
-    host_id BIGINT UNSIGNED NOT NULL,
+    host_roblox_name VARCHAR(20) NOT NULL,
+    host_roblox_id BIGINT UNSIGNED NOT NULL,
 
     discord_event_id VARCHAR(32) NOT NULL,
     roblox_event_id VARCHAR(32) NOT NULL,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id),
+    FOREIGN KEY (host_roblox_id) REFERENCES user_profiles(roblox_id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_ScheduleEvents_BeforeUpdate
