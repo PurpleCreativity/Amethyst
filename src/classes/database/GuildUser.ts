@@ -86,12 +86,17 @@ export default class GuildUser {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
-            const pointLogs = await connection.query<{ data: dataEntry[] }[]>("SELECT data FROM point_logs");
 
-            return pointLogs.reduce((total, row) => {
-                const rowPoints = row.data.reduce((sum, entry) => sum + entry.points, 0);
-                return total + rowPoints;
-            }, 0);
+            const result = await connection.query<{ pendingPoints: number }[]>(
+                `
+                SELECT SUM(JSON_EXTRACT(data, '$[*].points')) AS pendingPoints
+                FROM point_logs
+                WHERE JSON_CONTAINS(data, JSON_OBJECT('roblox_id', ?), '$[*]')
+                `,
+                [this.robloxId],
+            );
+
+            return result[0]?.pendingPoints || 0;
         } finally {
             if (connection) await connection.end();
         }
