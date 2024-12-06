@@ -85,7 +85,6 @@ export default class GuildUser {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
-
             const result = await connection.query<{ pendingPoints: number }[]>(
                 `
                 SELECT SUM(JSON_EXTRACT(data, '$[*].points')) AS pendingPoints
