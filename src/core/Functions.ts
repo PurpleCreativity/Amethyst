@@ -158,7 +158,7 @@ export default class Functions {
         return [...map].find(([key, val]) => val === value)?.[0];
     };
 
-    GenerateID = () => {
+    GenerateUUID = () => {
         return crypto.randomUUID();
     };
 

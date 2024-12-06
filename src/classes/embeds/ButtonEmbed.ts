@@ -61,7 +61,7 @@ export default class ButtonEmbed {
     }
 
     addButton(button: Button) {
-        const id = button.customId || client.Functions.GenerateID();
+        const id = button.customId || client.Functions.GenerateUUID();
 
         if (button.style === ButtonStyle.Link && button.link !== undefined) {
             this.Rows[this.CurrentRow - 1].push(
