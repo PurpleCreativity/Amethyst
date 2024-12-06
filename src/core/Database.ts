@@ -168,9 +168,7 @@ export default class Database {
         }
     };
 
-    addGuildUserProfile = async (robloxId: number) => {
-
-    };
+    addGuildUserProfile = async (robloxId: number) => {};
 
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
