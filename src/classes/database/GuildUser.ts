@@ -1,4 +1,5 @@
 import client from "../../main.js";
+import type mariadb from "mariadb";
 import type { dataEntry } from "./PointLog.js";
 
 export type ranklockData = {
@@ -89,9 +90,9 @@ export default class GuildUser {
     };
 
     getPendingPoints = async (): Promise<number> => {
-        const connection = await client.Database.getConnection();
-
+        let connection: mariadb.Connection | undefined;
         try {
+            connection = await client.Database.getConnection();
             const pointLogs = await connection.query<{ data: dataEntry[] }[]>("SELECT data FROM point_logs");
 
             return pointLogs.reduce((total, row) => {
@@ -99,7 +100,7 @@ export default class GuildUser {
                 return total + rowPoints;
             }, 0);
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
     };
 }

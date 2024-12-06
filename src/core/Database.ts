@@ -81,9 +81,9 @@ export default class Database {
         if (typeof user === "string") user = (await this.client.Functions.fetchUser(user)) as User;
         if (!user || !(user instanceof User)) throw new Error("Unknown user.");
 
-        const connection = await this.getConnection();
-
+        let connection: mariadb.Connection | undefined;
         try {
+            connection = await this.getConnection();
             await connection.beginTransaction();
 
             const insertQuery = await connection.query(
@@ -97,17 +97,17 @@ export default class Database {
 
             return insertQuery;
         } catch (error) {
-            await connection.rollback();
+            if (connection) await connection.rollback();
             throw error;
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
     };
 
     getUserProfile = async (userId: string) => {
-        const connection = await this.getConnection();
-
+        let connection: mariadb.Connection | undefined;
         try {
+            connection = await this.getConnection();
             const existing = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
@@ -120,7 +120,7 @@ export default class Database {
 
             return new UserProfile(rawdata);
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
     };
 
@@ -128,9 +128,9 @@ export default class Database {
         if (typeof guild === "string") guild = (await this.client.Functions.fetchGuild(guild)) as Guild;
         if (!guild || !(guild instanceof Guild)) throw new Error("Guild not found.");
 
-        const connection = await this.getConnection();
-
+        let connection: mariadb.Connection | undefined;
         try {
+            connection = await this.getConnection();
             await connection.beginTransaction();
 
             const insertQuery = await connection.query(
@@ -144,17 +144,17 @@ export default class Database {
 
             return insertQuery;
         } catch (error) {
-            await connection.rollback();
+            if (connection) await connection.rollback();
             throw error;
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
     };
 
     getGuildProfile = async (guildId: string) => {
-        const connection = await this.getConnection();
-
+        let connection: mariadb.Connection | undefined;
         try {
+            connection = await this.getConnection();
             const existing = await connection.query("SELECT * FROM guild_profiles WHERE guild_id = ?", [guildId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
@@ -164,8 +164,12 @@ export default class Database {
 
             return undefined;
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
+    };
+
+    addGuildUserProfile = async (robloxId: number) => {
+
     };
 
     Init = async () => {

@@ -1,3 +1,4 @@
+import type mariadb from "mariadb";
 import client from "../../main.js";
 
 export type rawUserData = {
@@ -53,9 +54,10 @@ export default class UserProfile {
     };
 
     save = async (): Promise<void> => {
-        const connection = await client.Database.getConnection();
+        let connection: mariadb.Connection | undefined;
 
         try {
+            connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
             const result = await connection.query(
@@ -79,11 +81,11 @@ export default class UserProfile {
 
             await connection.commit();
         } catch (error) {
-            await connection.rollback();
+            if (connection) await connection.rollback();
 
             throw error;
         } finally {
-            await connection.end();
+            if (connection) await connection.end();
         }
     };
 }
