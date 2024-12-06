@@ -5,7 +5,17 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     guild_id BIGINT UNSIGNED UNIQUE NOT NULL,
     shortname VARCHAR(10) NOT NULL UNIQUE,
 
-    permissions JSON NOT NULL DEFAULT '{}',
+    permissions JSON NOT NULL DEFAULT '{
+        "Administrator":{"users":[],"roles":[]},
+        "Moderator":{"users":[],"roles":[]},
+        "RobloxModerator":{"users":[],"roles":[]},
+        "RobloxGroupManager":{"users":[],"roles":[]},
+        "PointsManager":{"users":[],"roles":[]},
+        "PointsViewer":{"users":[],"roles":[]},
+        "PointLogCreator":{"users":[],"roles":[]},
+        "EventScheduler":{"users":[],"roles":[]},
+        "ScheduleManager":{"users":[],"roles":[]}
+    }',
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}',
