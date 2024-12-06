@@ -4,8 +4,8 @@ import { Guild, type Snowflake, User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 import GuildProfile from "../classes/database/GuildProfile.js";
-import UserProfile from "../classes/database/UserProfile.js";
 import GuildUser from "../classes/database/GuildUser.js";
+import UserProfile from "../classes/database/UserProfile.js";
 
 export default class Database {
     client: Client;
@@ -187,8 +187,8 @@ export default class Database {
                     {
                         rank: 0,
                         reason: null,
-                        shadow: false
-                    }
+                        shadow: false,
+                    },
                 ],
             );
 
@@ -207,7 +207,10 @@ export default class Database {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [guildId, robloxId]);
+            const existing = await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [
+                guildId,
+                robloxId,
+            ]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
@@ -215,7 +218,12 @@ export default class Database {
             }
 
             await this.addGuildUserProfile(guildId, robloxId);
-            const rawdata = (await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [guildId, robloxId]))[0];
+            const rawdata = (
+                await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [
+                    guildId,
+                    robloxId,
+                ])
+            )[0];
 
             return new GuildUser(rawdata);
         } finally {
