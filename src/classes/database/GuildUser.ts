@@ -1,6 +1,5 @@
 import type mariadb from "mariadb";
 import client from "../../main.js";
-import type { dataEntry } from "./PointLog.js";
 
 export type ranklockData = {
     rank: number;
