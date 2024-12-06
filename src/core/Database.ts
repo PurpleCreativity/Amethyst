@@ -234,14 +234,6 @@ export default class Database {
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
 
-        const profile = await this.getGuildProfile("1276574166937505925");
-        if (profile) {
-            profile.addUsersToPermission("Administrator", ["762329291169857537", "650150363772747776"]);
-            await profile.save();
-
-            console.log((await this.getGuildProfile("1276574166937505925"))?.permissions.Administrator)
-        }
-
         this.client.success("Initialized Database");
     };
 }

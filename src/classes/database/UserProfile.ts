@@ -69,7 +69,7 @@ export default class UserProfile {
                     JSON.stringify(this.fflags),
 
                     this._id,
-                    this.__v
+                    this.__v,
                 ],
             );
 
