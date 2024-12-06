@@ -1,5 +1,7 @@
 export type dataEntry = {
-    roblox_id: number; roblox_username: string; points: number
+    roblox_id: number;
+    roblox_username: string;
+    points: number;
 };
 
 export type rawPointLogData = {
@@ -14,7 +16,7 @@ export type rawPointLogData = {
 
     creator_roblox_id: number;
     creator_roblox_username: string;
-    created_at: Date,
+    created_at: Date;
 };
 
 export default class PointLog {
@@ -55,4 +57,4 @@ export default class PointLog {
 
         this.createdAt = rawdata.created_at || new Date();
     }
-};
+}

@@ -10,7 +10,7 @@ export type ranklockData = {
 export type noteData = {
     creator_discord_id: number;
     content: string;
-    created_at: Date,
+    created_at: Date;
 
     id: string;
 };
@@ -27,7 +27,7 @@ export type rawGuildUserData = {
 
     notes: noteData[];
     ranklock: ranklockData;
-}
+};
 
 export default class GuildUser {
     readonly rawdata: rawGuildUserData;
@@ -61,22 +61,22 @@ export default class GuildUser {
     }
 
     getNote = (noteId: string): noteData | undefined => {
-        return this.notes.find((data) => data.id === noteId)
+        return this.notes.find((data) => data.id === noteId);
     };
 
     removeNote = (noteId: string) => {
         this.notes = this.notes.filter((data) => data.id !== noteId);
-    }
+    };
 
     addNote = (creatorId: number, content: string): string => {
-        const id = client.Functions.GenerateUUID()
+        const id = client.Functions.GenerateUUID();
 
         this.notes.push({
             creator_discord_id: creatorId,
             content: content,
             created_at: new Date(),
 
-            id: id
+            id: id,
         });
 
         return id;
@@ -84,16 +84,16 @@ export default class GuildUser {
 
     getNotes = (query: Partial<noteData>): noteData[] => {
         return this.notes.filter((note) =>
-            Object.entries(query).every(([key, value]) => note[key as keyof noteData] === value)
+            Object.entries(query).every(([key, value]) => note[key as keyof noteData] === value),
         );
     };
 
     getPendingPoints = async (): Promise<number> => {
         const connection = await client.Database.getConnection();
-    
+
         try {
             const pointLogs = await connection.query<{ data: dataEntry[] }[]>("SELECT data FROM point_logs");
-    
+
             return pointLogs.reduce((total, row) => {
                 const rowPoints = row.data.reduce((sum, entry) => sum + entry.points, 0);
                 return total + rowPoints;
@@ -102,4 +102,4 @@ export default class GuildUser {
             await connection.end();
         }
     };
-};
+}
