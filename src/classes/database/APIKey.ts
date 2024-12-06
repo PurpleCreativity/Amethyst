@@ -37,8 +37,8 @@ export default class APIKey {
         this.value = rawdata.value;
         this.enabled = rawdata.enabled;
         this.permissions = rawdata.permissions;
-        
+
         this.createdAt = rawdata.created_at;
         this.createdBy = rawdata.created_by.toString();
     }
-};
+}
