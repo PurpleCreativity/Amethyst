@@ -36,9 +36,9 @@ export default class GuildUser {
     readonly _id: number;
     readonly __v: number;
 
-    readonly guild_id: number;
-    readonly roblox_id: number;
-    discord_id: number | null;
+    readonly guildId: number;
+    readonly robloxId: number;
+    discordId: number | null;
 
     points: number;
 
@@ -51,9 +51,9 @@ export default class GuildUser {
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 
-        this.guild_id = rawdata.guild_id;
-        this.roblox_id = rawdata.roblox_id;
-        this.discord_id = rawdata.discord_id;
+        this.guildId = rawdata.guild_id;
+        this.robloxId = rawdata.roblox_id;
+        this.discordId = rawdata.discord_id;
 
         this.points = rawdata.points;
 
