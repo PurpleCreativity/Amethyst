@@ -8,7 +8,7 @@ const config = {} as Config;
 
 config.version = "1.1.3"
 
-config.baseURL = "https://amethyst-e1050d4a61a7.herokuapp.com/"
+config.baseURL = "https://amethyst-app-pzo7w.ondigitalocean.app/"
 config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8080
 
 config.devList = [
