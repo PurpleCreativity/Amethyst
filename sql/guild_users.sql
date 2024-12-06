@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
     notes JSON NOT NULL,
     ranklock JSON NOT NULL,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id),
-    FOREIGN KEY (discord_id) REFERENCES user_profiles(discord_id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildUsers_BeforeUpdate
