@@ -22,7 +22,6 @@ export type rawGuildUserData = {
 
     guild_id: number;
     roblox_id: number;
-    discord_id: number | null;
 
     points: number;
 
@@ -38,7 +37,6 @@ export default class GuildUser {
 
     readonly guildId: number;
     readonly robloxId: number;
-    discordId: number | null;
 
     points: number;
 
@@ -53,7 +51,6 @@ export default class GuildUser {
 
         this.guildId = rawdata.guild_id;
         this.robloxId = rawdata.roblox_id;
-        this.discordId = rawdata.discord_id;
 
         this.points = rawdata.points;
 

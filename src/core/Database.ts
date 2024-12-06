@@ -5,6 +5,7 @@ import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 import GuildProfile from "../classes/database/GuildProfile.js";
 import UserProfile from "../classes/database/UserProfile.js";
+import GuildUser from "../classes/database/GuildUser.js";
 
 export default class Database {
     client: Client;
@@ -168,7 +169,59 @@ export default class Database {
         }
     };
 
-    addGuildUserProfile = async (robloxId: number) => {};
+    private addGuildUserProfile = async (guildId: string, robloxId: number) => {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await this.getConnection();
+            await connection.beginTransaction();
+
+            const insertQuery = await connection.query(
+                `INSERT INTO guild_users (
+                    guild_id, roblox_id,
+                    notes, ranklock
+                ) VALUES (?, ?, ?, ?);`,
+                [
+                    guildId,
+                    robloxId,
+                    JSON.stringify([]),
+                    {
+                        rank: 0,
+                        reason: null,
+                        shadow: false
+                    }
+                ],
+            );
+
+            await connection.commit();
+
+            return insertQuery;
+        } catch (error) {
+            if (connection) await connection.rollback();
+            throw error;
+        } finally {
+            if (connection) await connection.end();
+        }
+    };
+
+    getGuildUserProfile = async (guildId: string, robloxId: number) => {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await this.getConnection();
+            const existing = await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [guildId, robloxId]);
+            if (existing.length > 0) {
+                const rawdata = existing[0];
+
+                return new GuildUser(rawdata);
+            }
+
+            await this.addGuildUserProfile(guildId, robloxId);
+            const rawdata = (await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [guildId, robloxId]))[0];
+
+            return new GuildUser(rawdata);
+        } finally {
+            if (connection) await connection.end();
+        }
+    };
 
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
