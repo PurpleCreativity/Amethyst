@@ -13,8 +13,6 @@ export type rawUserData = {
 };
 
 export default class UserProfile {
-    readonly rawdata: rawUserData;
-
     readonly _id: number;
     readonly __v: number;
 
@@ -25,8 +23,6 @@ export default class UserProfile {
     readonly fflags: Record<string, unknown>;
 
     constructor(rawdata: rawUserData) {
-        this.rawdata = rawdata;
-
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 

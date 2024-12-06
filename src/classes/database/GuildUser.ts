@@ -30,8 +30,6 @@ export type rawGuildUserData = {
 };
 
 export default class GuildUser {
-    readonly rawdata: rawGuildUserData;
-
     readonly _id: number;
     readonly __v: number;
 
@@ -44,8 +42,6 @@ export default class GuildUser {
     ranklock: ranklockData;
 
     constructor(rawdata: rawGuildUserData) {
-        this.rawdata = rawdata;
-
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 

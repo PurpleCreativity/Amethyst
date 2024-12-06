@@ -20,8 +20,6 @@ export type rawPointLogData = {
 };
 
 export default class PointLog {
-    readonly rawdata: rawPointLogData;
-
     readonly _id: number;
     readonly __v: number;
 
@@ -39,8 +37,6 @@ export default class PointLog {
     createdAt: Date;
 
     constructor(rawdata: rawPointLogData) {
-        this.rawdata = rawdata;
-
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 

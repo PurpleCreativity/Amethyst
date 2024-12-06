@@ -18,8 +18,6 @@ export type rawGuildData = {
 };
 
 export default class GuildProfile {
-    readonly rawdata: rawGuildData;
-
     readonly _id: number;
     readonly __v: number;
 
@@ -33,8 +31,6 @@ export default class GuildProfile {
     readonly fflags: Record<string, unknown>;
 
     constructor(rawdata: rawGuildData) {
-        this.rawdata = rawdata;
-
         this._id = rawdata._id;
         this.__v = rawdata.__v;
 
