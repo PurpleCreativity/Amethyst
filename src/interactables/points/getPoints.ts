@@ -66,6 +66,8 @@ const slashCommand = new SlashCommand({
                     baseEmbed: client.Functions.makeInfoEmbed({
                         title: `${robloxProfile.username}'s notes`,
                     }),
+
+                    fieldsPerPage: 5,
                     fields: fields,
                 });
 
@@ -153,6 +155,8 @@ const contextCommand = new UserContextMenuCommand({
                     baseEmbed: client.Functions.makeInfoEmbed({
                         title: `${robloxProfile.username}'s notes`,
                     }),
+
+                    fieldsPerPage: 5,
                     fields: fields,
                 });
 
