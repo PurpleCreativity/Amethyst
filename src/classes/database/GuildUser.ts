@@ -148,7 +148,7 @@ export default class GuildUser {
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
-            this.__v = BigInt(this.__v) + 1n;
+            this.__v += 1n;
         } catch (error) {
             if (connection) await connection.rollback();
 

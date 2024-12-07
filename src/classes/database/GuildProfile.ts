@@ -165,7 +165,7 @@ export default class GuildProfile {
             }
 
             await connection.commit();
-            this.__v = BigInt(this.__v) + 1n;
+            this.__v += 1n;
         } catch (error) {
             if (connection) await connection.rollback();
             throw error;
