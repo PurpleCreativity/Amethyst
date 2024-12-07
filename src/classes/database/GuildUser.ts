@@ -8,7 +8,7 @@ export type ranklockData = {
 };
 
 export type rawNoteData = {
-    creator_discord_id: number;
+    creator_discord_id: bigint;
     content: string;
     created_at: string; // Date-string
 
@@ -119,12 +119,15 @@ export default class GuildUser {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
-            const rawNoteData: rawNoteData[] = this.notes.map((note: noteData) => ({
-                creator_discord_id: Number.parseInt(note.creatorId),
-                created_at: note.createdAt.toISOString(),
-                content: note.content,
-                id: note.id,
-            }));
+            const rawNoteData = JSON.stringify(
+                this.notes.map((note: noteData) => ({
+                    creator_discord_id: note.creatorId,
+                    created_at: note.createdAt.toISOString(),
+                    content: note.content,
+                    id: note.id,
+                })),
+                (_, value) => (typeof value === "bigint" ? value.toString() : value),
+            );
 
             const result = await connection.query(
                 `UPDATE guild_users SET
@@ -136,7 +139,7 @@ export default class GuildUser {
                 [
                     this.points,
 
-                    JSON.stringify(rawNoteData),
+                    rawNoteData,
                     JSON.stringify(this.ranklock),
 
                     this._id,
