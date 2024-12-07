@@ -1,4 +1,4 @@
-export type dataEntry = {
+export type rawDataEntry = {
     roblox_id: number;
     roblox_username: string;
     points: number;
@@ -11,12 +11,20 @@ export type rawPointLogData = {
     id: string;
     guild_id: number;
 
-    data?: dataEntry[];
+    data?: rawDataEntry[];
     note: string | null;
 
     creator_roblox_id: number;
     creator_roblox_username: string;
     created_at: Date;
+};
+
+export type dataEntry = {
+    roblox: {
+        id: number;
+        username: string;
+    },
+    points: number;
 };
 
 export default class PointLog {
@@ -43,7 +51,7 @@ export default class PointLog {
         this.id = rawdata.id;
         this.guildId = rawdata.guild_id.toString();
 
-        this.data = rawdata.data || [];
+        this.data = rawdata.data?.map((data: rawDataEntry) => ({ roblox: { id: data.roblox_id, username: data.roblox_username }, points: data.points })) || [];
         this.note = rawdata.note;
 
         this.creator = {
