@@ -16,8 +16,8 @@ export type noteData = {
 };
 
 export type rawGuildUserData = {
-    _id: number;
-    __v: number;
+    _id: bigint;
+    __v: bigint;
 
     guild_id: number;
     roblox_id: number;
@@ -29,8 +29,8 @@ export type rawGuildUserData = {
 };
 
 export default class GuildUser {
-    readonly _id: number;
-    readonly __v: number;
+    readonly _id: bigint;
+    __v: bigint;
 
     readonly guildId: string;
     readonly robloxId: number;
@@ -61,11 +61,11 @@ export default class GuildUser {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     };
 
-    addNote = (creatorId: number, content: string): string => {
+    addNote = (creatorId: string, content: string): string => {
         const id = client.Functions.GenerateUUID();
 
         this.notes.push({
-            creator_discord_id: creatorId,
+            creator_discord_id: Number.parseInt(creatorId),
             content: content,
             created_at: new Date(),
 
@@ -95,6 +95,43 @@ export default class GuildUser {
             );
 
             return result[0]?.pendingPoints || 0;
+        } finally {
+            if (connection) await connection.end();
+        }
+    };
+
+    save = async (): Promise<void> => {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await client.Database.getConnection();
+            await connection.beginTransaction();
+
+            const result = await connection.query(
+                `UPDATE guild_users SET
+                    points = ?,
+                    notes = ?,
+                    ranklock = ?
+                 WHERE _id = ? AND __v = ?
+                `,
+                [
+                    this.points,
+
+                    JSON.stringify(this.notes),
+                    JSON.stringify(this.ranklock),
+
+                    this._id,
+                    this.__v,
+                ],
+            );
+
+            if (result.affectedRows < 0) throw new Error("Failed to save changes.");
+
+            await connection.commit();
+            this.__v = BigInt(this.__v) + 1n;
+        } catch (error) {
+            if (connection) await connection.rollback();
+
+            throw error;
         } finally {
             if (connection) await connection.end();
         }
