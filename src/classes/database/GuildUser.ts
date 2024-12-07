@@ -1,5 +1,6 @@
 import type mariadb from "mariadb";
 import client from "../../main.js";
+import type { GuildMember, User } from "discord.js";
 
 export type ranklockData = {
     rank: number;
@@ -7,10 +8,22 @@ export type ranklockData = {
     shadow: boolean;
 };
 
-export type noteData = {
+export type rawNoteData = {
     creator_discord_id: number;
+    creator_discord_username: string;
     content: string;
     created_at: string; // Date-string
+
+    id: string;
+};
+
+export type noteData = {
+    creator: {
+        id: string;
+        username: string;
+    };
+    content: string;
+    createdAt: Date;
 
     id: string;
 };
@@ -24,7 +37,7 @@ export type rawGuildUserData = {
 
     points: number;
 
-    notes: noteData[];
+    notes: rawNoteData[];
     ranklock: ranklockData;
 };
 
@@ -49,7 +62,15 @@ export default class GuildUser {
 
         this.points = rawdata.points;
 
-        this.notes = rawdata.notes;
+        this.notes = rawdata.notes.map((note: rawNoteData) => ({
+            creator: {
+                id: note.creator_discord_id.toString(),
+                username: note.creator_discord_username,
+            },
+            content: note.content,
+            createdAt: new Date(note.created_at),
+            id: note.id,
+        }));
         this.ranklock = rawdata.ranklock;
     }
 
@@ -60,14 +81,17 @@ export default class GuildUser {
     removeNote = (noteId: string) => {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     };
-
-    addNote = (creatorId: string, content: string): string => {
+    addNote = (creator: User, content: string): string => {
         const id = client.Functions.GenerateUUID();
 
         this.notes.push({
-            creator_discord_id: Number.parseInt(creatorId),
+            creator: {
+                id: creator.id,
+                username: creator.username
+            },
+            
             content: content,
-            created_at: new Date().toISOString(),
+            createdAt: new Date(),
 
             id: id,
         });
@@ -106,6 +130,8 @@ export default class GuildUser {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
+            const rawNoteData: rawNoteData[] = this.notes.map((note: noteData) => ({ creator_discord_id: Number.parseInt(note.creator.id), creator_discord_username: note.creator.username, created_at: note.createdAt.toISOString(), content: note.content, id: note.id }));
+
             const result = await connection.query(
                 `UPDATE guild_users SET
                     points = ?,
@@ -116,7 +142,7 @@ export default class GuildUser {
                 [
                     this.points,
 
-                    JSON.stringify(this.notes),
+                    JSON.stringify(rawNoteData),
                     JSON.stringify(this.ranklock),
 
                     this._id,
