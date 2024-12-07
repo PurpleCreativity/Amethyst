@@ -89,7 +89,7 @@ export default class PageEmbed extends ButtonEmbed {
 
         if (this.embeds.length < 2) {
             this.disableButton(this.forwardButton);
-            this.disableButton(this.firstPageButton);
+            this.disableButton(this.lastPageButton);
         }
     }
 
