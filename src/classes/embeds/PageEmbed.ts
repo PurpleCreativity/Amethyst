@@ -103,7 +103,7 @@ export default class PageEmbed extends ButtonEmbed {
         } else {
             this.enableButton(this.backButton);
             this.enableButton(this.firstPageButton);
-        };
+        }
 
         if (this.currentPage === this.embeds.length) {
             this.disableButton(this.forwardButton);
@@ -111,8 +111,8 @@ export default class PageEmbed extends ButtonEmbed {
         } else {
             this.enableButton(this.forwardButton);
             this.enableButton(this.lastPageButton);
-        };
-        
-        await interaction.update(this.getMessageData())
+        }
+
+        await interaction.update(this.getMessageData());
     };
 }
