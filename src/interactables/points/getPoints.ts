@@ -1,11 +1,11 @@
 import { type APIEmbedField, ButtonStyle, SlashCommandStringOption } from "discord.js";
+import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import type { noteData } from "../../classes/database/GuildUser.js";
 import ButtonEmbed from "../../classes/embeds/ButtonEmbed.js";
+import PageEmbed from "../../classes/embeds/PageEmbed.js";
 import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
-import Emojis from "../../../public/Emojis.json" with { type: "json" };
-import type { noteData } from "../../classes/database/GuildUser.js";
-import PageEmbed from "../../classes/embeds/PageEmbed.js";
 
 const slashCommand = new SlashCommand({
     name: "getpoints",
