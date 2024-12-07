@@ -10,7 +10,7 @@ export type ranklockData = {
 export type noteData = {
     creator_discord_id: number;
     content: string;
-    created_at: Date;
+    created_at: string; // Date-string
 
     id: string;
 };
@@ -67,7 +67,7 @@ export default class GuildUser {
         this.notes.push({
             creator_discord_id: Number.parseInt(creatorId),
             content: content,
-            created_at: new Date(),
+            created_at: new Date().toISOString(),
 
             id: id,
         });
