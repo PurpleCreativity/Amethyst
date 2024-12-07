@@ -141,7 +141,7 @@ export default class GuildProfile {
                     JSON.stringify(this.permissions),
                     JSON.stringify(this.channels),
                     JSON.stringify(this.settings),
-                    
+
                     this._id,
                     this.__v,
                 ],
