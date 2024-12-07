@@ -1,8 +1,8 @@
 import { SlashCommandStringOption } from "discord.js";
+import ButtonEmbed from "../../classes/embeds/ButtonEmbed.js";
+import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
-import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
-import ButtonEmbed from "../../classes/embeds/ButtonEmbed.js";
 
 const slashCommand = new SlashCommand({
     name: "getpoints",
