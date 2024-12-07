@@ -120,7 +120,8 @@ export default new SlashCommand({
                     }
 
                     const userProfile = await client.Database.getUserProfile(buttonInteraction.user.id);
-                    userProfile.robloxId = robloxUser.id;
+                    userProfile.roblox.id = robloxUser.id;
+                    userProfile.roblox.username = robloxUser.username;
                     await userProfile.save();
 
                     await interaction.editReply({
