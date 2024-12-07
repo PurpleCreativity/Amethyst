@@ -5,8 +5,8 @@ export type dataEntry = {
 };
 
 export type rawPointLogData = {
-    _id: number;
-    __v: number;
+    _id: bigint;
+    __v: bigint;
 
     id: string;
     guild_id: number;
@@ -20,8 +20,8 @@ export type rawPointLogData = {
 };
 
 export default class PointLog {
-    readonly _id: number;
-    readonly __v: number;
+    readonly _id: bigint;
+    __v: bigint;
 
     readonly id: string;
     readonly guildId: string;

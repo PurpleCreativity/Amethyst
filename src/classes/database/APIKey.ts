@@ -1,6 +1,6 @@
 export type rawAPIKeyData = {
-    _id: number;
-    __v: number;
+    _id: bigint;
+    __v: bigint;
 
     guild_id: number;
 
@@ -14,8 +14,8 @@ export type rawAPIKeyData = {
 };
 
 export default class APIKey {
-    readonly _id: number;
-    readonly __v: number;
+    readonly _id: bigint;
+    readonly __v: bigint;
 
     readonly guildId: string;
 
