@@ -1,4 +1,5 @@
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
+import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import ButtonEmbed from "./ButtonEmbed.js";
 
 export type PageEmbedOptions = {
@@ -14,12 +15,16 @@ export default class PageEmbed extends ButtonEmbed {
     fieldsPerPage: number;
     embeds: EmbedBuilder[] = [];
     currentPage = 1;
+
+    firstPageButton: string;
+    lastPageButton: string;
+
+    forwardButton: string;
     backButton: string;
-    nextButton: string;
 
     constructor(opts: PageEmbedOptions) {
         super(opts.baseEmbed);
-        this.PageFooter = opts.PageFooter ?? false;
+        this.PageFooter = opts.PageFooter ?? true;
         this.fieldsPerPage = opts.fieldsPerPage ?? 25;
 
         if (opts.fields) {
@@ -39,50 +44,75 @@ export default class PageEmbed extends ButtonEmbed {
         this.Embed = this.embeds[0];
 
         this.backButton = this.addButton({
-            label: "⬅️",
+            label: "Back",
+            emoji: Emojis.back,
             disabled: true,
             style: ButtonStyle.Primary,
             allowed_users: opts.allowed_users,
-            function: (interaction) => {
-                this.previousPage(interaction);
+            function: async (interaction) => {
+                await this.toPage(interaction, this.currentPage - 1);
             },
         });
 
-        this.nextButton = this.addButton({
-            label: "➡️",
+        this.forwardButton = this.addButton({
+            label: "Forward",
+            emoji: Emojis.forward,
             style: ButtonStyle.Primary,
             allowed_users: opts.allowed_users,
-            function: (interaction) => {
-                this.nextPage(interaction);
+            function: async (interaction) => {
+                await this.toPage(interaction, this.currentPage + 1);
+            },
+        });
+
+        this.nextRow();
+
+        this.firstPageButton = this.addButton({
+            label: "Start",
+            emoji: Emojis.skip_previous,
+            disabled: true,
+            style: ButtonStyle.Secondary,
+            allowed_users: opts.allowed_users,
+            function: async (interaction) => {
+                await this.toPage(interaction, 1);
+            },
+        });
+
+        this.lastPageButton = this.addButton({
+            label: "End",
+            emoji: Emojis.skip_next,
+            style: ButtonStyle.Secondary,
+            allowed_users: opts.allowed_users,
+            function: async (interaction) => {
+                await this.toPage(interaction, this.embeds.length);
             },
         });
 
         if (this.embeds.length < 2) {
-            this.disableButton(this.nextButton);
+            this.disableButton(this.forwardButton);
+            this.disableButton(this.firstPageButton);
         }
     }
 
-    async previousPage(interaction: ButtonInteraction) {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-            this.Embed = this.embeds[this.currentPage - 1];
-            if (this.currentPage === 1) {
-                this.disableButton(this.backButton);
-            }
-            this.enableButton(this.nextButton);
-            await interaction.update(this.getMessageData());
-        }
-    }
+    toPage = async (interaction: ButtonInteraction, pageNumber: number) => {
+        this.currentPage = pageNumber;
+        this.Embed = this.embeds[this.currentPage - 1];
 
-    async nextPage(interaction: ButtonInteraction) {
-        if (this.currentPage < this.embeds.length) {
-            this.currentPage++; // Becomes 2
-            this.Embed = this.embeds[this.currentPage - 1];
-            if (this.currentPage === this.embeds.length) {
-                this.disableButton(this.nextButton);
-            }
+        if (this.currentPage === 1) {
+            this.disableButton(this.backButton);
+            this.disableButton(this.firstPageButton);
+        } else {
             this.enableButton(this.backButton);
-            await interaction.update(this.getMessageData());
-        }
-    }
+            this.enableButton(this.firstPageButton);
+        };
+
+        if (this.currentPage === this.embeds.length) {
+            this.disableButton(this.forwardButton);
+            this.disableButton(this.lastPageButton);
+        } else {
+            this.enableButton(this.forwardButton);
+            this.enableButton(this.lastPageButton);
+        };
+        
+        await interaction.update(this.getMessageData())
+    };
 }
