@@ -1,9 +1,4 @@
-import {
-    type APIEmbedField,
-    type ButtonInteraction,
-    ButtonStyle,
-    EmbedBuilder,
-} from "discord.js";
+import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import ButtonEmbed from "./ButtonEmbed.js";
 
