@@ -73,7 +73,7 @@ export default class GuildUser {
     removeNote = (noteId: string) => {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     };
-    
+
     addNote = (creatorId: string, content: string): string => {
         const id = client.Functions.GenerateUUID();
 
@@ -120,16 +120,6 @@ export default class GuildUser {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
-            const rawNoteData = JSON.stringify(
-                this.notes.map((note: noteData) => ({
-                    creator_discord_id: note.creatorId,
-                    created_at: note.createdAt.toISOString(),
-                    content: note.content,
-                    id: note.id,
-                })),
-                (_, value) => (typeof value === "bigint" ? value.toString() : value),
-            );
-
             const result = await connection.query(
                 `UPDATE guild_users SET
                     points = ?,
@@ -140,7 +130,14 @@ export default class GuildUser {
                 [
                     this.points,
 
-                    rawNoteData,
+                    JSON.stringify(
+                        this.notes.map((note: noteData) => ({
+                            creator_discord_id: note.creatorId,
+                            created_at: note.createdAt.toISOString(),
+                            content: note.content,
+                            id: note.id,
+                        })),
+                    ),
                     JSON.stringify(this.ranklock),
 
                     this._id,
