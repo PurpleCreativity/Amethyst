@@ -73,6 +73,7 @@ export default class GuildUser {
     removeNote = (noteId: string) => {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     };
+    
     addNote = (creatorId: string, content: string): string => {
         const id = client.Functions.GenerateUUID();
 
