@@ -1,6 +1,6 @@
+import type { GuildMember, User } from "discord.js";
 import type mariadb from "mariadb";
 import client from "../../main.js";
-import type { GuildMember, User } from "discord.js";
 
 export type ranklockData = {
     rank: number;
@@ -87,9 +87,9 @@ export default class GuildUser {
         this.notes.push({
             creator: {
                 id: creator.id,
-                username: creator.username
+                username: creator.username,
             },
-            
+
             content: content,
             createdAt: new Date(),
 
@@ -130,7 +130,13 @@ export default class GuildUser {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
-            const rawNoteData: rawNoteData[] = this.notes.map((note: noteData) => ({ creator_discord_id: Number.parseInt(note.creator.id), creator_discord_username: note.creator.username, created_at: note.createdAt.toISOString(), content: note.content, id: note.id }));
+            const rawNoteData: rawNoteData[] = this.notes.map((note: noteData) => ({
+                creator_discord_id: Number.parseInt(note.creator.id),
+                creator_discord_username: note.creator.username,
+                created_at: note.createdAt.toISOString(),
+                content: note.content,
+                id: note.id,
+            }));
 
             const result = await connection.query(
                 `UPDATE guild_users SET
