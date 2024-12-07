@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     roblox_id BIGINT UNSIGNED UNIQUE,
     roblox_username VARCHAR(20) UNIQUE,
 
-    settings JSON NOT NULL DEFAULT '{}',
+    settings JSON NOT NULL DEFAULT '{}'
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_UserProfiles_BeforeUpdate
