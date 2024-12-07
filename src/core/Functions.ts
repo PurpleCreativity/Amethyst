@@ -154,6 +154,10 @@ export default class Functions {
         return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
+    clamp = (value: number, min: number, max: number) => {
+        return Math.min(Math.max(value, min), max);
+    };
+
     findKeyfromValue = (map: Map<unknown, unknown>, value: unknown) => {
         return [...map].find(([key, val]) => val === value)?.[0];
     };

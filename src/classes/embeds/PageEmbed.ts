@@ -1,4 +1,9 @@
-import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
+import {
+    type APIEmbedField,
+    type ButtonInteraction,
+    ButtonStyle,
+    EmbedBuilder,
+} from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import ButtonEmbed from "./ButtonEmbed.js";
 
@@ -16,11 +21,11 @@ export default class PageEmbed extends ButtonEmbed {
     embeds: EmbedBuilder[] = [];
     currentPage = 1;
 
-    firstPageButton: string;
-    lastPageButton: string;
-
     forwardButton: string;
     backButton: string;
+
+    firstPageButton: string;
+    lastPageButton: string;
 
     constructor(opts: PageEmbedOptions) {
         super(opts.baseEmbed);
