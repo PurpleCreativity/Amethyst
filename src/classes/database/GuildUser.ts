@@ -1,4 +1,3 @@
-import type { GuildMember, User } from "discord.js";
 import type mariadb from "mariadb";
 import client from "../../main.js";
 
@@ -10,7 +9,6 @@ export type ranklockData = {
 
 export type rawNoteData = {
     creator_discord_id: number;
-    creator_discord_username: string;
     content: string;
     created_at: string; // Date-string
 
@@ -18,10 +16,7 @@ export type rawNoteData = {
 };
 
 export type noteData = {
-    creator: {
-        id: string;
-        username: string;
-    };
+    creatorId: string;
     content: string;
     createdAt: Date;
 
@@ -63,10 +58,7 @@ export default class GuildUser {
         this.points = rawdata.points;
 
         this.notes = rawdata.notes.map((note: rawNoteData) => ({
-            creator: {
-                id: note.creator_discord_id.toString(),
-                username: note.creator_discord_username,
-            },
+            creatorId: note.creator_discord_id.toString(),
             content: note.content,
             createdAt: new Date(note.created_at),
             id: note.id,
@@ -81,14 +73,11 @@ export default class GuildUser {
     removeNote = (noteId: string) => {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     };
-    addNote = (creator: User, content: string): string => {
+    addNote = (creatorId: string, content: string): string => {
         const id = client.Functions.GenerateUUID();
 
         this.notes.push({
-            creator: {
-                id: creator.id,
-                username: creator.username,
-            },
+            creatorId: creatorId,
 
             content: content,
             createdAt: new Date(),
@@ -131,8 +120,7 @@ export default class GuildUser {
             await connection.beginTransaction();
 
             const rawNoteData: rawNoteData[] = this.notes.map((note: noteData) => ({
-                creator_discord_id: Number.parseInt(note.creator.id),
-                creator_discord_username: note.creator.username,
+                creator_discord_id: Number.parseInt(note.creatorId),
                 created_at: note.createdAt.toISOString(),
                 content: note.content,
                 id: note.id,

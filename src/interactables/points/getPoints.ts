@@ -55,7 +55,7 @@ const slashCommand = new SlashCommand({
 
                 let fields: APIEmbedField[] = guildUserProfile.notes.map((note: noteData) => ({
                     name: `\`${note.id}\``,
-                    value: `Added by \`${note.creator.username}:${note.creator.id}\`, on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\nContent: \`${note.content.slice(0, 500)}\`${note.content.length > 500 ? "..." : ""}`,
+                    value: `Added by [${note.creatorId}](https://discord.com/users/${note.creatorId}), on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\nContent: \`${note.content.slice(0, 500)}\`${note.content.length > 500 ? "..." : ""}`,
                     inline: false,
                 }));
 
@@ -142,7 +142,7 @@ const contextCommand = new UserContextMenuCommand({
 
                 let fields: APIEmbedField[] = guildUserProfile.notes.map((note: noteData) => ({
                     name: `\`${note.id}\``,
-                    value: `Added by \`${note.creator.username}:${note.creator.id}\`, on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\nContent: \`${note.content.slice(0, 500)}\`${note.content.length > 500 ? "..." : ""}`,
+                    value: `Added by <@${note.creatorId}>, on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\nContent: \`${note.content.slice(0, 500)}\`${note.content.length > 500 ? "..." : ""}`,
                     inline: false,
                 }));
 
