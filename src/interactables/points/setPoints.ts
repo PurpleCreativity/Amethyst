@@ -36,9 +36,9 @@ export default new SlashCommand({
                     fields: [
                         { name: "Old Amount", value: `\`\`\`${oldAmount}\`\`\``, inline: true },
                         { name: "New Amount", value: `\`\`\`${newAmount}\`\`\``, inline: true },
-                    ]
-                })
-            ]
-        })
+                    ],
+                }),
+            ],
+        });
     },
 });
