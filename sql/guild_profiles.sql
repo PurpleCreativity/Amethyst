@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}',
-    fflags JSON NOT NULL DEFAULT '{}'
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildProfiles_BeforeUpdate

@@ -17,9 +17,7 @@ export type rawGuildData = {
 
     permissions: Record<string, PermissionEntry>;
     channels: Record<string, string>;
-
     settings: Record<string, unknown>;
-    fflags: Record<string, unknown>;
 };
 
 export default class GuildProfile {
@@ -33,7 +31,6 @@ export default class GuildProfile {
     readonly channels: Record<string, string>;
 
     readonly settings: Record<string, unknown>;
-    readonly fflags: Record<string, unknown>;
 
     constructor(rawdata: rawGuildData) {
         this._id = rawdata._id;
@@ -44,9 +41,7 @@ export default class GuildProfile {
 
         this.permissions = rawdata.permissions;
         this.channels = rawdata.channels;
-
         this.settings = rawdata.settings;
-        this.fflags = rawdata.fflags;
     }
 
     getSetting = (key: string): unknown => {
@@ -55,14 +50,6 @@ export default class GuildProfile {
 
     setSetting = (key: string, value: unknown): void => {
         this.settings[key] = value;
-    };
-
-    getFFlag = (key: string): unknown => {
-        return this.fflags[key];
-    };
-
-    setFFlag = (key: string, value: unknown): void => {
-        this.fflags[key] = value;
     };
 
     getPermission = (name: ValidPermissions): PermissionEntry | undefined => {
@@ -148,13 +135,13 @@ export default class GuildProfile {
 
             const result = await connection.query(
                 `UPDATE guild_profiles 
-                 SET permissions = ?, channels = ?, settings = ?, fflags = ? 
+                 SET permissions = ?, channels = ?, settings = ?
                  WHERE _id = ? AND __v = ?`,
                 [
                     JSON.stringify(this.permissions),
                     JSON.stringify(this.channels),
                     JSON.stringify(this.settings),
-                    JSON.stringify(this.fflags),
+                    
                     this._id,
                     this.__v,
                 ],

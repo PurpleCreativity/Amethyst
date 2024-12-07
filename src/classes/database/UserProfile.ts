@@ -10,7 +10,6 @@ export type rawUserData = {
     roblox_username: string | null;
 
     settings: Record<string, unknown>;
-    fflags: Record<string, unknown>;
 };
 
 export default class UserProfile {
@@ -24,7 +23,6 @@ export default class UserProfile {
     };
 
     readonly settings: Record<string, unknown>;
-    readonly fflags: Record<string, unknown>;
 
     constructor(rawdata: rawUserData) {
         this._id = rawdata._id;
@@ -37,7 +35,6 @@ export default class UserProfile {
         };
 
         this.settings = rawdata.settings;
-        this.fflags = rawdata.fflags;
     }
 
     getSetting = (key: string): unknown => {
@@ -46,14 +43,6 @@ export default class UserProfile {
 
     setSetting = (key: string, value: unknown): void => {
         this.settings[key] = value;
-    };
-
-    getFFlag = (key: string): unknown => {
-        return this.fflags[key] ?? null;
-    };
-
-    setFFlag = (key: string, value: unknown): void => {
-        this.fflags[key] = value;
     };
 
     save = async (): Promise<void> => {
@@ -66,8 +55,7 @@ export default class UserProfile {
                 `UPDATE user_profiles SET
                     roblox_id = ?,
                     roblox_username = ?,
-                    settings = ?,
-                    fflags = ?
+                    settings = ?
                  WHERE _id = ? AND __v = ?
                 `,
                 [
@@ -75,7 +63,6 @@ export default class UserProfile {
                     this.roblox.username,
 
                     JSON.stringify(this.settings),
-                    JSON.stringify(this.fflags),
 
                     this._id,
                     this.__v,
