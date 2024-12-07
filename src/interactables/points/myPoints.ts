@@ -11,7 +11,7 @@ export default new SlashCommand({
         if (!guildProfile || !interaction.guild) throw new Error("Unknown error");
 
         const userProfile = await client.Database.getUserProfile(interaction.user.id);
-        if (!userProfile.robloxId) {
+        if (!userProfile.roblox.id) {
             return await interaction.editReply({
                 embeds: [
                     client.Functions.makeErrorEmbed({
@@ -22,8 +22,8 @@ export default new SlashCommand({
             });
         }
 
-        const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.robloxId);
-        const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.robloxId);
+        const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.roblox.id);
+        const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.roblox.id);
         const pendingPoints = await guildUserProfile.getPendingPoints();
 
         const embed = client.Functions.makeInfoEmbed({
@@ -31,7 +31,7 @@ export default new SlashCommand({
             footer: {
                 text: robloxProfile.username,
                 iconURL: (
-                    await client.noblox.getPlayerThumbnail(userProfile.robloxId, "150x150", "png", true, "headshot")
+                    await client.noblox.getPlayerThumbnail(userProfile.roblox.id, "150x150", "png", true, "headshot")
                 )[0].imageUrl,
             },
         });
