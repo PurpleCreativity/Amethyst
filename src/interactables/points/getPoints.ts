@@ -38,7 +38,7 @@ const slashCommand = new SlashCommand({
             }),
         );
 
-        buttonEmbed.Embed.addFields({
+        buttonEmbed.embed.addFields({
             name: guildProfile.shortname,
             value: `${guildUserProfile.points} points${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
             inline: false,
@@ -125,7 +125,7 @@ const contextCommand = new UserContextMenuCommand({
             }),
         );
 
-        buttonEmbed.Embed.addFields({
+        buttonEmbed.embed.addFields({
             name: guildProfile.shortname,
             value: `${guildUserProfile.points} points${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
             inline: false,

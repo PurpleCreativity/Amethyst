@@ -4,14 +4,14 @@ import ButtonEmbed from "./ButtonEmbed.js";
 
 export type PageEmbedOptions = {
     baseEmbed: EmbedBuilder;
-    PageFooter?: boolean;
+    pageFooter?: boolean;
     fieldsPerPage?: number;
     fields?: APIEmbedField[];
     allowed_users?: string[];
 };
 
 export default class PageEmbed extends ButtonEmbed {
-    PageFooter: boolean;
+    pageFooter: boolean;
     fieldsPerPage: number;
     embeds: EmbedBuilder[] = [];
     currentPage = 1;
@@ -24,7 +24,7 @@ export default class PageEmbed extends ButtonEmbed {
 
     constructor(opts: PageEmbedOptions) {
         super(opts.baseEmbed);
-        this.PageFooter = opts.PageFooter ?? true;
+        this.pageFooter = opts.pageFooter ?? true;
         this.fieldsPerPage = opts.fieldsPerPage ?? 25;
 
         if (opts.fields) {
@@ -32,7 +32,7 @@ export default class PageEmbed extends ButtonEmbed {
                 const embed = EmbedBuilder.from(opts.baseEmbed.data).addFields(
                     opts.fields.slice(i, i + this.fieldsPerPage),
                 );
-                if (this.PageFooter) {
+                if (this.pageFooter) {
                     embed.setFooter({
                         text: `Page ${this.embeds.length + 1} of ${Math.ceil(opts.fields.length / this.fieldsPerPage)}`,
                     });
@@ -41,7 +41,7 @@ export default class PageEmbed extends ButtonEmbed {
             }
         }
 
-        this.Embed = this.embeds[0];
+        this.embed = this.embeds[0];
 
         this.backButton = this.addButton({
             label: "Back",
@@ -95,7 +95,7 @@ export default class PageEmbed extends ButtonEmbed {
 
     toPage = async (interaction: ButtonInteraction, pageNumber: number) => {
         this.currentPage = pageNumber;
-        this.Embed = this.embeds[this.currentPage - 1];
+        this.embed = this.embeds[this.currentPage - 1];
 
         if (this.currentPage === 1) {
             this.disableButton(this.backButton);

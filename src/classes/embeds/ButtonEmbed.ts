@@ -22,40 +22,40 @@ export type Button = {
 };
 
 export default class ButtonEmbed {
-    Embed: EmbedBuilder;
-    Ephemeral: boolean;
-    CurrentRow = 1;
-    Rows: ButtonBuilder[][] = [];
+    embed: EmbedBuilder;
+    ephemeral: boolean;
+    currentRow = 1;
+    rows: ButtonBuilder[][] = [];
 
     constructor(embed: EmbedBuilder, buttons?: Button[]) {
-        this.Embed = embed;
-        this.Rows[0] = [];
-        this.Ephemeral = false;
+        this.embed = embed;
+        this.rows[0] = [];
+        this.ephemeral = false;
 
         if (buttons) this.setButtons(buttons);
     }
 
     getMessageData() {
-        if (this.Rows.length === 0 || this.Rows.every((row) => row.length === 0)) {
+        if (this.rows.length === 0 || this.rows.every((row) => row.length === 0)) {
             return {
-                ephemeral: this.Ephemeral,
-                embeds: [this.Embed],
+                ephemeral: this.ephemeral,
+                embeds: [this.embed],
                 components: [],
             };
         }
 
         const components = [];
-        for (let i = 0; i < this.Rows.length; i++) {
-            if (this.Rows[i].length === 0) continue;
+        for (let i = 0; i < this.rows.length; i++) {
+            if (this.rows[i].length === 0) continue;
             components.push({
                 type: ComponentType.ActionRow,
-                components: this.Rows[i],
+                components: this.rows[i],
             });
         }
 
         return {
-            ephemeral: this.Ephemeral,
-            embeds: [this.Embed],
+            ephemeral: this.ephemeral,
+            embeds: [this.embed],
             components: components.length > 0 ? components : undefined,
         };
     }
@@ -64,7 +64,7 @@ export default class ButtonEmbed {
         const id = button.customId || client.Functions.GenerateUUID();
 
         if (button.style === ButtonStyle.Link && button.link !== undefined) {
-            this.Rows[this.CurrentRow - 1].push(
+            this.rows[this.currentRow - 1].push(
                 new ButtonBuilder().setLabel(button.label).setStyle(button.style).setURL(button.link),
             );
             return id;
@@ -77,7 +77,7 @@ export default class ButtonEmbed {
             .setDisabled(button.disabled ?? false);
         if (button.emoji) Bbutton.setEmoji(button.emoji);
 
-        this.Rows[this.CurrentRow - 1].push(Bbutton);
+        this.rows[this.currentRow - 1].push(Bbutton);
 
         if (button.function) {
             client.on("buttonInteraction", async (interaction: ButtonInteraction) => {
@@ -105,12 +105,12 @@ export default class ButtonEmbed {
 
     setButtons(buttons: Button[]) {
         if (buttons.length === 0) {
-            this.Rows = [[]];
+            this.rows = [[]];
             return;
         }
 
-        if (this.Rows[this.CurrentRow - 1] === undefined) {
-            this.Rows[this.CurrentRow - 1] = [];
+        if (this.rows[this.currentRow - 1] === undefined) {
+            this.rows[this.currentRow - 1] = [];
         }
         for (let i = 0; i < buttons.length; i++) {
             this.addButton(buttons[i]);
@@ -118,7 +118,7 @@ export default class ButtonEmbed {
     }
 
     disableButton(id: string) {
-        for (const row of this.Rows) {
+        for (const row of this.rows) {
             for (const button of row) {
                 if (button.data.style === ButtonStyle.Link) continue;
                 const real = button.data as APIButtonComponentWithCustomId;
@@ -130,7 +130,7 @@ export default class ButtonEmbed {
     }
 
     enableButton(id: string) {
-        for (const row of this.Rows) {
+        for (const row of this.rows) {
             for (const button of row) {
                 if (button.data.style === ButtonStyle.Link) continue;
                 const real = button.data as APIButtonComponentWithCustomId;
@@ -142,15 +142,11 @@ export default class ButtonEmbed {
     }
 
     setEmbed(embed: EmbedBuilder) {
-        this.Embed = embed;
-    }
-
-    setEphemeral(value: boolean) {
-        this.Ephemeral = value;
+        this.embed = embed;
     }
 
     nextRow() {
-        this.CurrentRow++;
-        this.Rows[this.CurrentRow - 1] = [];
+        this.currentRow++;
+        this.rows[this.currentRow - 1] = [];
     }
 }

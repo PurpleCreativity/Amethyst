@@ -186,7 +186,7 @@ export default new SlashCommand({
                 await buttonInteraction.deferUpdate();
 
                 code = generateCode();
-                buttonEmbed.Embed.setDescription(
+                buttonEmbed.embed.setDescription(
                     `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your roblox description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`,
                 );
 
