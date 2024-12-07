@@ -73,7 +73,13 @@ const contextCommand = new UserContextMenuCommand({
                 footer: {
                     text: robloxProfile.username,
                     iconURL: (
-                        await client.noblox.getPlayerThumbnail(userProfile.roblox.id, "150x150", "png", true, "headshot")
+                        await client.noblox.getPlayerThumbnail(
+                            userProfile.roblox.id,
+                            "150x150",
+                            "png",
+                            true,
+                            "headshot",
+                        )
                     )[0].imageUrl,
                 },
             }),
