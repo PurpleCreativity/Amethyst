@@ -13,14 +13,14 @@ import client from "../../main.js";
 export type ModalOptions = {
     /**
      * The title of the popup modal
-     * 
+     *
      * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData#title APIModalInteractionResponseCallbackData.title}
      */
     title: string;
 
     /**
      * Between 1 and 5 (inclusive) `TextInputBuilders` that make up the modal
-     * 
+     *
      * @see {@link https://discord.js.org/docs/packages/builders/main/TextInputBuilder:Class TextInputBuilder}
      * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData#components APIModalInteractionResponseCallbackData.components}
      */
@@ -30,7 +30,7 @@ export type ModalOptions = {
 export default class Modal {
     /**
      * The `ModalBuilder` instance
-     * 
+     *
      * @see {@link https://discord.js.org/docs/packages/builders/main/ModalBuilder:Class ModalBuilder}
      */
     modal: ModalBuilder;
@@ -38,7 +38,7 @@ export default class Modal {
     /**
      * An array of action rows containing modal components such as text inputs.
      * These rows are added to the modal upon creation.
-     * 
+     *
      * @see {@link https://discord.js.org/docs/packages/builders/main/ActionRowBuilder:Class ActionRowBuilder}
      * @see {@link https://discord.js.org/docs/packages/builders/main/ModalActionRowComponentBuilder:TypeAlias ModalActionRowComponentBuilder}
      */
