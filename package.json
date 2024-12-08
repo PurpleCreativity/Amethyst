@@ -37,6 +37,7 @@
         "express": "^4.21.1",
         "express-rate-limit": "^7.4.1",
         "mariadb": "^3.4.0",
+        "next-auth": "^4.24.11",
         "noblox.js": "^6.0.2"
     }
 }
