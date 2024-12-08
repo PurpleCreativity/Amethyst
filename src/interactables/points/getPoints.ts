@@ -103,8 +103,8 @@ const slashCommand = new SlashCommand({
 
         const robloxProfile = await client.Functions.fetchRobloxUser(user);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, robloxProfile.id);
-        
-        return await callback(interaction, guildProfile, guildUserProfile, robloxProfile)
+
+        return await callback(interaction, guildProfile, guildUserProfile, robloxProfile);
     },
 });
 
@@ -131,7 +131,7 @@ const contextCommand = new UserContextMenuCommand({
 
         const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.roblox.id);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.roblox.id);
-        
+
         return await callback(interaction, guildProfile, guildUserProfile, robloxProfile);
     },
 });
