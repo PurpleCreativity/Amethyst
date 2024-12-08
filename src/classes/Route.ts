@@ -1,21 +1,68 @@
 import type express from "express";
 import type { ValidPermissions } from "../types/shared.js";
+import type GuildProfile from "./database/GuildProfile.js";
 
 export type RouteMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
+
 export type rateLimit = {
+    /**
+     * The time window in milliseconds for which the rate limit applies.
+     * For example, setting `windowMs: 60000` means a 1-minute window.
+     */
     windowMs: number;
+
+    /**
+     * The maximum number of requests allowed during the time window.
+     * Requests exceeding this limit will be rejected.
+     */
     limit: number;
 };
+
 export type RouteOptions = {
     method: RouteMethod;
+
+    /**
+     * Represents the rate limit configuration for a route.
+     */
     rateLimit: rateLimit;
+
+    /**
+     * An optional array of Express request handlers (middlewares).
+     * These functions run before the route's main function is executed.
+     */
     middlewares?: express.RequestHandler[];
 
+    /**
+     * Indicates whether the route is publicly accessible.
+     * - `true` (default): No authentication required.
+     * - `false`: Requires an API key and permissions check.
+     */
     public?: boolean;
+
+    /**
+     * A list of permissions required to access the route.
+     * This property is only relevant when `public` is set to `false`.
+     * Each permission corresponds to a specific allowed action in the system.
+     */
     permissions?: ValidPermissions[];
+
+    /**
+     * Marks the route as deprecated.
+     * If `true`, this indicates that the route will be removed in future versions.
+     */
     deprecated?: boolean;
 
-    function: (req: express.Request, res: express.Response) => Promise<unknown>;
+    /**
+     * The main function executed when the route is accessed.
+     * This function receives the Express request and response objects,
+     * along with an optional `guildProfile` if the route is not public.
+     *
+     * @param req - The incoming HTTP request object.
+     * @param res - The outgoing HTTP response object.
+     * @param guildProfile - The guild profile data, available only when `public` is `false`.
+     * @returns A promise representing the result of the operation.
+     */
+    function: (req: express.Request, res: express.Response, guildProfile?: GuildProfile) => Promise<unknown>;
 };
 
 export default class Route {
@@ -27,7 +74,7 @@ export default class Route {
     readonly permissions: ValidPermissions[];
     readonly deprecated: boolean;
 
-    private function: (req: express.Request, res: express.Response) => Promise<unknown>;
+    private function: (req: express.Request, res: express.Response, guildProfile?: GuildProfile) => Promise<unknown>;
 
     constructor(options: RouteOptions) {
         this.method = options.method;
