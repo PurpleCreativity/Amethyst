@@ -36,37 +36,126 @@ export type ValidSlashCommandOptions =
     | SlashCommandMentionableOption
     | SlashCommandAttachmentOption;
 
+/**
+ * Represents an entry used in autocomplete responses.
+ */
 export type AutocompleteEntry = {
+    /**
+     * The display name shown to the user during autocomplete.
+     */
     name: string;
+
+    /**
+     * The value associated with the entry, used when the user selects the option.
+     * Can be either a string or a number.
+     */
     value: string | number;
 };
 
+/**
+ * Options for defining a slash command in Discord.
+ */
 export type SlashCommandOptions = {
+    /**
+     * The name of the command, used when invoking it in Discord.
+     */
     name: string;
+
+    /**
+     * Localized names for the command, supporting internationalization.
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/LocalizationMap LocalizationMap}
+     */
     name_localizations?: LocalizationMap;
 
+    /**
+     * The command's description, explaining its purpose.
+     */
     description: string;
+
+    /**
+     * Localized descriptions for the command, allowing internationalization.
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/LocalizationMap LocalizationMap}
+     */
     description_localizations?: LocalizationMap;
 
+    /**
+     * Whether the command is marked as NSFW (Not Safe for Work).
+     * Default: `false`
+     */
     nsfw?: boolean;
+
+    /**
+     * The module the command belongs to, used for organization.
+     */
     module?: CommandModule;
+
+    /**
+     * A list of guild IDs where the command is enabled. If not provided, the command is enabled globally.
+     */
     selected_guilds?: string[];
+
+    /**
+     * Whether the command's responses should be ephemeral (visible only to the user).
+     * Default: `false`
+     */
     ephemeral?: boolean;
+
+    /**
+     * Whether the command can be installed by regular users (not just guild admins).
+     * Default: `false`
+     */
     user_installable?: boolean;
 
+    /**
+     * Required Discord permissions for using the command.
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/PermissionResolvable PermissionResolvable}
+     */
     discord_permissions?: PermissionResolvable[];
+
+    /**
+     * Custom application-specific permissions required to use the command.
+     */
     permissions?: ValidPermissions[];
+
+    /**
+     * Whether the command is restricted to developers only.
+     * Default: `false`
+     */
     developer_only?: boolean;
 
+    /**
+     * The list of command options, including arguments and flags.
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandBuilder SlashCommandBuilder}
+     */
     options?: ValidSlashCommandOptions[];
+
+    /**
+     * A list of subcommands or subcommand groups for the command.
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandSubcommandBuilder SlashCommandSubcommandBuilder}
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandSubcommandGroupBuilder SlashCommandSubcommandGroupBuilder}
+     */
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
+    /**
+     * The function executed when the command is triggered.
+     * @param interaction The command interaction instance.
+     * @param guildProfile The profile of the guild, if applicable.
+     * @returns A promise resolving to an unknown value.
+     */
     function: (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+
+    /**
+     * The function executed during autocomplete requests.
+     * @param interaction The autocomplete interaction instance.
+     * @param guildProfile The profile of the guild, if applicable.
+     * @returns A list of autocomplete entries or a promise resolving to such a list.
+     */
     autocomplete?: (
         interaction: AutocompleteInteraction,
         guildProfile?: GuildProfile,
     ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
+
 /**
  * Represents a custom slash command extending Discord.js's `SlashCommandBuilder`.
  *
