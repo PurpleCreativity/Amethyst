@@ -63,7 +63,6 @@ export type SlashCommandOptions = {
 
     /**
      * Localized names for the command, supporting internationalization.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/LocalizationMap LocalizationMap}
      */
     name_localizations?: LocalizationMap;
 
@@ -74,7 +73,6 @@ export type SlashCommandOptions = {
 
     /**
      * Localized descriptions for the command, allowing internationalization.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/LocalizationMap LocalizationMap}
      */
     description_localizations?: LocalizationMap;
 
@@ -108,7 +106,7 @@ export type SlashCommandOptions = {
 
     /**
      * Required Discord permissions for using the command.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/PermissionResolvable PermissionResolvable}
+     * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
     discord_permissions?: PermissionResolvable[];
 
@@ -125,14 +123,14 @@ export type SlashCommandOptions = {
 
     /**
      * The list of command options, including arguments and flags.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandBuilder SlashCommandBuilder}
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/SlashCommandBuilder:Class SlashCommandBuilder}
      */
     options?: ValidSlashCommandOptions[];
 
     /**
      * A list of subcommands or subcommand groups for the command.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandSubcommandBuilder SlashCommandSubcommandBuilder}
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandSubcommandGroupBuilder SlashCommandSubcommandGroupBuilder}
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/SlashCommandSubcommandBuilder:Class SlashCommandSubcommandBuilder}
+     * @see {@link https://discord.js.org/#/docs/discord.js/main/SlashCommandSubcommandGroupBuilder:Class SlashCommandSubcommandGroupBuilder}
      */
     subcommands?: SlashCommandSubcommandBuilder[] | SlashCommandSubcommandGroupBuilder[];
 
@@ -159,7 +157,7 @@ export type SlashCommandOptions = {
 /**
  * Represents a custom slash command extending Discord.js's `SlashCommandBuilder`.
  *
- * @see {@link https://discord.js.org/#/docs/discord.js/main/class/SlashCommandBuilder SlashCommandBuilder}
+ * @see {@link https://discord.js.org/#/docs/discord.js/main/SlashCommandBuilder:Class SlashCommandBuilder}
  */
 export default class SlashCommand extends SlashCommandBuilder {
     /**
@@ -187,7 +185,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      * Required Discord permissions for executing the command.
      *
      * @type {PermissionResolvable[]}
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/PermissionResolvable PermissionResolvable}
+     * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
     readonly discord_permissions: PermissionResolvable[];
 
@@ -210,7 +208,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      *
      * @private
      * @type {(interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => unknown | Promise<unknown>}
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/ChatInputCommandInteraction ChatInputCommandInteraction}
+     * @see {@link https://discord.js.org/docs/packages/discord.js/main/ChatInputCommandInteraction:Class ChatInputCommandInteraction}
      */
     private function: (
         interaction: ChatInputCommandInteraction,
@@ -221,7 +219,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      * Optional function for handling autocomplete interactions.
      *
      * @type {(interaction: AutocompleteInteraction, guildProfile?: GuildProfile) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | []}
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/class/AutocompleteInteraction AutocompleteInteraction}
+     * @see {@link https://discord.js.org/docs/packages/discord.js/main/AutocompleteInteraction:Class AutocompleteInteraction}
      */
     autocomplete?: (
         interaction: AutocompleteInteraction,

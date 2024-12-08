@@ -25,7 +25,6 @@ export type BaseContextMenuCommandOptions = {
 
     /**
      * Localized names for the command, allowing internationalization support.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/LocalizationMap LocalizationMap}
      */
     name_localizations?: LocalizationMap;
 
@@ -54,7 +53,7 @@ export type BaseContextMenuCommandOptions = {
 
     /**
      * Required Discord permissions for executing the command.
-     * @see {@link https://discord.js.org/#/docs/discord.js/main/typedef/PermissionResolvable PermissionResolvable}
+     * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
     discord_permissions?: PermissionResolvable[];
 
