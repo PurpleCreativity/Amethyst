@@ -1,5 +1,3 @@
-import type Client from "./Client.ts";
-
 export type EventOptions = {
     type: "client" | "process" | "custom";
     callback: (...args: unknown[]) => unknown | Promise<unknown>;
