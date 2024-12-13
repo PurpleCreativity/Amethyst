@@ -1,11 +1,11 @@
 import { Buffer } from "node:buffer";
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import process from "node:process";
+import type { UserData } from "@purple_creativity/bloxfetch";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/embeds/Embed.js";
-import type { UserData } from "@purple_creativity/bloxfetch";
 
 export default class Functions {
     client: Client;

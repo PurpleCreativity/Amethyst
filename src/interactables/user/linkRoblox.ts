@@ -73,7 +73,8 @@ export default new SlashCommand({
                 await buttonInteraction.deferReply();
 
                 try {
-                    const updatedDescription = (await client.Functions.fetchRobloxUser(robloxUser.id, false)).description;
+                    const updatedDescription = (await client.Functions.fetchRobloxUser(robloxUser.id, false))
+                        .description;
                     if (!updatedDescription.includes(code.trim())) {
                         await interaction.editReply({
                             embeds: [

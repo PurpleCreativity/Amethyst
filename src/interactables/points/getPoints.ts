@@ -1,3 +1,4 @@
+import type { UserData } from "@purple_creativity/bloxfetch";
 import {
     type APIEmbedField,
     ButtonStyle,
@@ -14,7 +15,6 @@ import PageEmbed from "../../classes/embeds/PageEmbed.js";
 import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
-import type { UserData } from "@purple_creativity/bloxfetch";
 
 const callback = async (
     interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction,

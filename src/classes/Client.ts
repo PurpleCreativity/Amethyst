@@ -1,8 +1,8 @@
 import process from "node:process";
+import BloxFetch from "@purple_creativity/bloxfetch";
 import axios, { type Axios } from "axios";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
-import BloxFetch from "@purple_creativity/bloxfetch";
 import config from "../config.js";
 import type { configType } from "../types/config.d.js";
 dotenv.config();
@@ -178,7 +178,7 @@ export default class Client extends DiscordClient {
             this.error(error);
         }
         */
-       this.BloxFetch.fetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
+        this.BloxFetch.fetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
 
         for (const channel in this.config.channels) {
             const channelId = this.config.channels[channel];
