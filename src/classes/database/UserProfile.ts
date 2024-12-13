@@ -53,7 +53,7 @@ export default class UserProfile {
                     roblox_id = ?,
                     roblox_username = ?,
                     settings = ?
-                 WHERE id = ? AND __v = ?
+                 WHERE id = ? AND _v = ?
                 `,
                 [
                     this.roblox.id,
