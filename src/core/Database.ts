@@ -78,9 +78,9 @@ export default class Database {
 
     //? Data handling
 
-    addUserProfile = async (user: User | string | Snowflake) => {
-        if (typeof user === "string") user = (await this.client.Functions.fetchUser(user)) as User;
-        if (!user || !(user instanceof User)) throw new Error("Unknown user.");
+    addUserProfile = async (discordUser: User | string | Snowflake) => {
+        if (typeof discordUser === "string") discordUser = (await this.client.Functions.fetchUser(discordUser)) as User;
+        if (!discordUser || !(discordUser instanceof User)) throw new Error("Unknown user.");
 
         let connection: mariadb.Connection | undefined;
         try {
@@ -89,9 +89,9 @@ export default class Database {
 
             const insertQuery = await connection.query(
                 `INSERT INTO user_profiles (
-                    discord_id, roblox_id
+                    id, roblox_id
                 ) VALUES (?, ?);`,
-                [user.id, null],
+                [discordUser.id, null],
             );
 
             await connection.commit();
@@ -105,19 +105,19 @@ export default class Database {
         }
     };
 
-    getUserProfile = async (userId: string) => {
+    getUserProfile = async (discordId: string) => {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]);
+            const existing = await connection.query("SELECT * FROM user_profiles WHERE id = ?", [discordId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
                 return new UserProfile(rawdata);
             }
 
-            await this.addUserProfile(userId);
-            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE discord_id = ?", [userId]))[0];
+            await this.addUserProfile(discordId);
+            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE id = ?", [discordId]))[0];
 
             return new UserProfile(rawdata);
         } finally {
@@ -136,7 +136,7 @@ export default class Database {
 
             const insertQuery = await connection.query(
                 `INSERT INTO guild_profiles (
-                    guild_id, shortname
+                    id, shortname
                 ) VALUES (?, ?);`,
                 [guild.id, shortname],
             );
@@ -156,7 +156,7 @@ export default class Database {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM guild_profiles WHERE guild_id = ?", [guildId]);
+            const existing = await connection.query("SELECT * FROM guild_profiles WHERE id = ?", [guildId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
@@ -234,6 +234,7 @@ export default class Database {
     Init = async () => {
         if (this.client.devMode) await this.initializeTables();
 
+        //await this.addGuildProfile("DEV", "1276574166937505925");
         this.client.success("Initialized Database");
     };
 }

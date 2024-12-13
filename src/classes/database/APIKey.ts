@@ -1,6 +1,6 @@
 export type rawAPIKeyData = {
-    _id: bigint;
-    __v: bigint;
+    id: bigint;
+    _v: bigint;
 
     guild_id: number;
 
@@ -14,8 +14,8 @@ export type rawAPIKeyData = {
 };
 
 export default class APIKey {
-    readonly _id: bigint;
-    readonly __v: bigint;
+    readonly id: bigint;
+    readonly _v: bigint;
 
     readonly guildId: string;
 
@@ -28,8 +28,8 @@ export default class APIKey {
     createdBy: string;
 
     constructor(rawdata: rawAPIKeyData) {
-        this._id = rawdata._id;
-        this.__v = rawdata.__v;
+        this.id = rawdata.id;
+        this._v = rawdata._v;
 
         this.guildId = rawdata.guild_id.toString();
 

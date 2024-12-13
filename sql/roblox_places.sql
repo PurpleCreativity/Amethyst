@@ -1,19 +1,19 @@
 CREATE TABLE IF NOT EXISTS roblox_places (
-    _id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    __v BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    _v BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
     guild_id BIGINT UNSIGNED NOT NULL,
 
-    nickname VARCHAR(32) NOT NULL,
-    id BIGINT UNSIGNED NOT NULL,
-    `key` VARCHAR(1000) NOT NULL,
+    place_nickname VARCHAR(32) NOT NULL,
+    place_id BIGINT UNSIGNED NOT NULL,
+    place_key VARCHAR(1000) NOT NULL,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(guild_id)
+    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_RobloxPlaces_BeforeUpdate
 BEFORE UPDATE ON roblox_places
 FOR EACH ROW
 BEGIN
-    SET NEW.__v = OLD.__v + 1;
+    SET NEW._v = OLD._v + 1;
 END;

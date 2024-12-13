@@ -9,10 +9,9 @@ export type PermissionEntry = {
 };
 
 export type rawGuildData = {
-    _id: bigint;
-    __v: bigint;
+    id: bigint;
+    _v: bigint;
 
-    guild_id: bigint;
     shortname: string;
 
     permissions: Record<string, PermissionEntry>;
@@ -21,10 +20,9 @@ export type rawGuildData = {
 };
 
 export default class GuildProfile {
-    readonly _id: bigint;
-    __v: bigint;
+    readonly id: string;
+    _v: bigint;
 
-    readonly guildId: string;
     readonly shortname: string;
 
     readonly permissions: Record<ValidPermissions, PermissionEntry>;
@@ -33,10 +31,9 @@ export default class GuildProfile {
     readonly settings: Record<string, unknown>;
 
     constructor(rawdata: rawGuildData) {
-        this._id = rawdata._id;
-        this.__v = rawdata.__v;
+        this.id = rawdata.id.toString();
+        this._v = rawdata._v;
 
-        this.guildId = rawdata.guild_id.toString();
         this.shortname = rawdata.shortname;
 
         this.permissions = rawdata.permissions;
@@ -136,14 +133,14 @@ export default class GuildProfile {
             const result = await connection.query(
                 `UPDATE guild_profiles 
                  SET permissions = ?, channels = ?, settings = ?
-                 WHERE _id = ? AND __v = ?`,
+                 WHERE id = ? AND _v = ?`,
                 [
                     JSON.stringify(this.permissions),
                     JSON.stringify(this.channels),
                     JSON.stringify(this.settings),
 
-                    this._id,
-                    this.__v,
+                    this.id,
+                    this._v,
                 ],
             );
 
@@ -152,7 +149,7 @@ export default class GuildProfile {
             }
 
             await connection.commit();
-            this.__v += 1n;
+            this._v += 1n;
         } catch (error) {
             if (connection) await connection.rollback();
             throw error;

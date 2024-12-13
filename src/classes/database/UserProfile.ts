@@ -2,10 +2,9 @@ import type mariadb from "mariadb";
 import client from "../../main.js";
 
 export type rawUserData = {
-    _id: bigint;
-    __v: bigint;
+    id: bigint;
+    _v: bigint;
 
-    discord_id: bigint;
     roblox_id: bigint | null;
     roblox_username: string | null;
 
@@ -13,10 +12,9 @@ export type rawUserData = {
 };
 
 export default class UserProfile {
-    readonly _id: bigint;
-    __v: bigint;
+    readonly id: string;
+    _v: bigint;
 
-    readonly discordId: string;
     readonly roblox: {
         id: number | null;
         username: string | null;
@@ -25,10 +23,9 @@ export default class UserProfile {
     readonly settings: Record<string, unknown>;
 
     constructor(rawdata: rawUserData) {
-        this._id = rawdata._id;
-        this.__v = rawdata.__v;
+        this.id = rawdata.id.toString();
+        this._v = rawdata._v;
 
-        this.discordId = rawdata.discord_id.toString();
         this.roblox = {
             id: rawdata.roblox_id ? Number.parseInt(rawdata.roblox_id.toString()) : null,
             username: rawdata.roblox_username,
@@ -56,7 +53,7 @@ export default class UserProfile {
                     roblox_id = ?,
                     roblox_username = ?,
                     settings = ?
-                 WHERE _id = ? AND __v = ?
+                 WHERE id = ? AND __v = ?
                 `,
                 [
                     this.roblox.id,
@@ -64,15 +61,15 @@ export default class UserProfile {
 
                     JSON.stringify(this.settings),
 
-                    this._id,
-                    this.__v,
+                    this.id,
+                    this._v,
                 ],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
-            this.__v += 1n;
+            this._v += 1n;
         } catch (error) {
             if (connection) await connection.rollback();
 

@@ -8,46 +8,15 @@ const permittedWords = [
     "apple",
     "banana",
     "cherry",
-    "date",
-    "elderberry",
-    "fig",
     "grape",
-    "honeydew",
     "kiwi",
     "lemon",
     "mango",
-    "nectarine",
     "orange",
     "papaya",
-    "quince",
     "raspberry",
     "strawberry",
-    "tangerine",
-    "ugli",
-    "vanilla",
-    "watermelon",
-    "xigua",
-    "yellowfruit",
     "grapefruit",
-    "huckleberry",
-    "imbe",
-    "jackfruit",
-    "kumquat",
-    "lime",
-    "mulberry",
-    "navel",
-    "olive",
-    "peach",
-    "plum",
-    "quandong",
-    "rambutan",
-    "soursop",
-    "tamarind",
-    "ugni",
-    "voavanga",
-    "wolfberry",
-    "ximenia",
-    "yumberry",
 ];
 
 const generateCode = () => {
@@ -104,8 +73,8 @@ export default new SlashCommand({
                 await buttonInteraction.deferReply();
 
                 try {
-                    const updatedDescription = (await client.Functions.fetchRobloxUser(user)).blurb;
-                    if (!updatedDescription.includes(code.trim())) {
+                    const updatedDescription = await client.Functions.fetchRobloxUser(robloxUser.id);
+                    if (!updatedDescription.description.includes(code.trim())) {
                         await interaction.editReply({
                             embeds: [
                                 client.Functions.makeErrorEmbed({
@@ -140,7 +109,9 @@ export default new SlashCommand({
                         error && typeof error === "object" && "message" in error
                             ? (error as { message: string }).message
                             : "Unknown error";
-
+                    
+                    client.error(error);
+                    
                     await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({

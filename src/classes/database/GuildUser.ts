@@ -24,8 +24,8 @@ export type noteData = {
 };
 
 export type rawGuildUserData = {
-    _id: bigint;
-    __v: bigint;
+    id: bigint;
+    _v: bigint;
 
     guild_id: number;
     roblox_id: number;
@@ -37,8 +37,8 @@ export type rawGuildUserData = {
 };
 
 export default class GuildUser {
-    readonly _id: bigint;
-    __v: bigint;
+    readonly id: bigint;
+    _v: bigint;
 
     readonly guildId: string;
     readonly robloxId: number;
@@ -49,8 +49,8 @@ export default class GuildUser {
     ranklock: ranklockData;
 
     constructor(rawdata: rawGuildUserData) {
-        this._id = rawdata._id;
-        this.__v = rawdata.__v;
+        this.id = rawdata.id;
+        this._v = rawdata._v;
 
         this.guildId = rawdata.guild_id.toString();
         this.robloxId = rawdata.roblox_id;
@@ -125,7 +125,7 @@ export default class GuildUser {
                     points = ?,
                     notes = ?,
                     ranklock = ?
-                 WHERE _id = ? AND __v = ?
+                 WHERE id = ? AND __v = ?
                 `,
                 [
                     this.points,
@@ -140,15 +140,15 @@ export default class GuildUser {
                     ),
                     JSON.stringify(this.ranklock),
 
-                    this._id,
-                    this.__v,
+                    this.id,
+                    this._v,
                 ],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
-            this.__v += 1n;
+            this._v += 1n;
         } catch (error) {
             if (connection) await connection.rollback();
 

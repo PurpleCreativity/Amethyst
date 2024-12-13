@@ -5,10 +5,9 @@ export type rawDataEntry = {
 };
 
 export type rawPointLogData = {
-    _id: bigint;
-    __v: bigint;
-
     id: string;
+    _v: bigint;
+
     guild_id: number;
 
     data?: rawDataEntry[];
@@ -28,10 +27,9 @@ export type dataEntry = {
 };
 
 export default class PointLog {
-    readonly _id: bigint;
-    __v: bigint;
-
     readonly id: string;
+    _v: bigint;
+
     readonly guildId: string;
 
     readonly data: dataEntry[];
@@ -45,8 +43,8 @@ export default class PointLog {
     createdAt: Date;
 
     constructor(rawdata: rawPointLogData) {
-        this._id = rawdata._id;
-        this.__v = rawdata.__v;
+        this.id = rawdata.id;
+        this._v = rawdata._v;
 
         this.id = rawdata.id;
         this.guildId = rawdata.guild_id.toString();
