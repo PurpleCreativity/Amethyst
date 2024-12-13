@@ -5,7 +5,7 @@ import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/embeds/Embed.js";
-import type { PlayerInfo } from "../types/Functions.js";
+import type { UserData } from "@purple_creativity/bloxfetch";
 
 export default class Functions {
     client: Client;
@@ -14,23 +14,14 @@ export default class Functions {
         this.client = client;
     }
 
-    fetchRobloxUser = async (searcher: string | number): Promise<PlayerInfo> => {
+    fetchRobloxUser = async (searcher: string | number, useCache = true): Promise<UserData> => {
         if (typeof searcher === "string" && Number.isNaN(Number.parseInt(searcher))) {
-            searcher = await this.client.noblox.getIdFromUsername(searcher);
+            searcher = (await this.client.BloxFetch.fetchUsersByNames(searcher, { excludeBannedUsers: false }))[0].id;
 
             if (Number.isNaN(searcher)) throw new Error(`Username "${searcher}" not found or invalid.`);
         }
 
-        const rawdata = await this.client.noblox.getPlayerInfo(searcher as number);
-        return {
-            id: searcher as number,
-            username: rawdata.username,
-            displayName: rawdata.displayName,
-            blurb: rawdata.blurb,
-            description: rawdata.blurb,
-            joinDate: rawdata.joinDate,
-            isBanned: rawdata.isBanned,
-        };
+        return await this.client.BloxFetch.fetchUserById(searcher as number, { useCache: useCache });
     };
 
     fetchGuild = async (guildId: string, useCache = true) => {

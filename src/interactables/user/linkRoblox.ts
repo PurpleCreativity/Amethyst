@@ -73,8 +73,8 @@ export default new SlashCommand({
                 await buttonInteraction.deferReply();
 
                 try {
-                    const updatedDescription = await client.Functions.fetchRobloxUser(robloxUser.id);
-                    if (!updatedDescription.description.includes(code.trim())) {
+                    const updatedDescription = (await client.Functions.fetchRobloxUser(robloxUser.id, false)).description;
+                    if (!updatedDescription.includes(code.trim())) {
                         await interaction.editReply({
                             embeds: [
                                 client.Functions.makeErrorEmbed({
@@ -90,14 +90,14 @@ export default new SlashCommand({
 
                     const userProfile = await client.Database.getUserProfile(buttonInteraction.user.id);
                     userProfile.roblox.id = robloxUser.id;
-                    userProfile.roblox.username = robloxUser.username;
+                    userProfile.roblox.username = robloxUser.name;
                     await userProfile.save();
 
                     await interaction.editReply({
                         embeds: [
                             client.Functions.makeSuccessEmbed({
                                 title: "Link successful",
-                                description: `Your account has been linked to \`${robloxUser.username}:${robloxUser.id}\``,
+                                description: `Your account has been linked to \`${robloxUser.name}:${robloxUser.id}\``,
                             }),
                         ],
 

@@ -14,25 +14,25 @@ import PageEmbed from "../../classes/embeds/PageEmbed.js";
 import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
-import type { PlayerInfo } from "../../types/Functions.js";
+import type { UserData } from "@purple_creativity/bloxfetch";
 
 const callback = async (
     interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction,
     guildProfile: GuildProfile,
     guildUserProfile: GuildUser,
-    robloxProfile: PlayerInfo,
+    robloxProfile: UserData,
 ) => {
     const pendingPoints = await guildUserProfile.getPendingPoints();
-    const avatarHeadshot = (
-        await client.noblox.getPlayerThumbnail(robloxProfile.id, "150x150", "png", true, "headshot")
-    )[0].imageUrl;
+    //const avatarHeadshot = (
+    //    await client.noblox.getPlayerThumbnail(robloxProfile.id, "150x150", "png", true, "headshot")
+    //)[0].imageUrl;
 
     const buttonEmbed = new ButtonEmbed(
         client.Functions.makeInfoEmbed({
-            title: `${robloxProfile.username}'s points`,
+            title: `${robloxProfile.name}'s points`,
             footer: {
-                text: robloxProfile.username,
-                iconURL: avatarHeadshot,
+                text: robloxProfile.name,
+                //iconURL: avatarHeadshot,
             },
         }),
     );
@@ -63,7 +63,7 @@ const callback = async (
 
             const pageEmbed = new PageEmbed({
                 baseEmbed: client.Functions.makeInfoEmbed({
-                    title: `${robloxProfile.username}'s notes`,
+                    title: `${robloxProfile.name}'s notes`,
                 }),
 
                 fieldsPerPage: 5,

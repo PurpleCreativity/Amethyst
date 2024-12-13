@@ -29,10 +29,10 @@ export default new SlashCommand({
         const embed = client.Functions.makeInfoEmbed({
             title: "Your points",
             footer: {
-                text: robloxProfile.username,
-                iconURL: (
-                    await client.noblox.getPlayerThumbnail(userProfile.roblox.id, "150x150", "png", true, "headshot")
-                )[0].imageUrl,
+                text: robloxProfile.name,
+                //iconURL: (
+                //    await client.noblox.getPlayerThumbnail(userProfile.roblox.id, "150x150", "png", true, "headshot")
+                //)[0].imageUrl,
             },
         });
 

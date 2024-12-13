@@ -2,7 +2,7 @@ import process from "node:process";
 import axios, { type Axios } from "axios";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
-import noblox from "noblox.js";
+import BloxFetch from "@purple_creativity/bloxfetch";
 import config from "../config.js";
 import type { configType } from "../types/config.d.js";
 dotenv.config();
@@ -55,7 +55,7 @@ export default class Client extends DiscordClient {
 
     //? Dependencies
     Axios: Axios = axios.create();
-    noblox: typeof noblox = noblox;
+    BloxFetch: BloxFetch = new BloxFetch();
 
     constructor(options: ClientOptions) {
         super(options);
@@ -170,13 +170,15 @@ export default class Client extends DiscordClient {
         await this.login(this.config.credentials.discordToken);
         this.success(`Logged in to Discord as [${this.user?.username}:${this.user?.id}]`);
 
+        /*
         try {
-            const authuser = await this.noblox.setCookie(this.config.credentials.robloxCookie);
-            this.success(`Logged in to Roblox as [${authuser.name}:${authuser.id}]`);
+            
         } catch (error) {
             this.error("Failed to login to Roblox:");
             this.error(error);
         }
+        */
+       this.BloxFetch.fetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
 
         for (const channel in this.config.channels) {
             const channelId = this.config.channels[channel];
