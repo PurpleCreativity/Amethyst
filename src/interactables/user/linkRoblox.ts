@@ -109,9 +109,9 @@ export default new SlashCommand({
                         error && typeof error === "object" && "message" in error
                             ? (error as { message: string }).message
                             : "Unknown error";
-                    
+
                     client.error(error);
-                    
+
                     await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
