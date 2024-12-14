@@ -178,7 +178,7 @@ export default class Client extends DiscordClient {
             this.error(error);
         }
         */
-        this.BloxFetch.fetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
+        this.BloxFetch.LegacyFetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
 
         for (const channel in this.config.channels) {
             const channelId = this.config.channels[channel];

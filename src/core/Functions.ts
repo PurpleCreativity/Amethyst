@@ -16,7 +16,7 @@ export default class Functions {
 
     fetchRobloxUser = async (searcher: string | number, useCache = true): Promise<UserData> => {
         if (typeof searcher === "string" && Number.isNaN(Number.parseInt(searcher))) {
-            searcher = (await this.client.BloxFetch.fetchUsersByNames(searcher, { excludeBannedUsers: false }))[0].id;
+            searcher = (await this.client.BloxFetch.fetchUsersByUsernames(searcher, false))[0].id;
 
             if (Number.isNaN(searcher)) throw new Error(`Username "${searcher}" not found or invalid.`);
         }
