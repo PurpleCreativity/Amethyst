@@ -84,6 +84,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
     readonly module: CommandModule | undefined;
     readonly selected_guilds: string[];
     readonly ephemeral: boolean;
+    readonly user_installable: boolean;
 
     readonly discord_permissions: PermissionResolvable[];
     readonly permissions: ValidPermissions[];
@@ -116,6 +117,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
         }
 
         this.ephemeral = options.ephemeral ?? false;
+        this.user_installable = options.user_installable ?? false;
         this.module = options.module;
         this.selected_guilds = options.selected_guilds || [];
         this.discord_permissions = options.discord_permissions || [];

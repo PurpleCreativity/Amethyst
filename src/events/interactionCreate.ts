@@ -23,7 +23,7 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild
+                const guildProfile = interaction.guild && !command.user_installable
                     ? await client.Database.getGuildProfile(interaction.guild.id)
                     : undefined;
 
@@ -88,7 +88,7 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild
+                const guildProfile = interaction.guild && !command.user_installable
                     ? await client.Database.getGuildProfile(interaction.guild.id)
                     : undefined;
 
@@ -138,7 +138,7 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild
+                const guildProfile = interaction.guild && !command.user_installable
                     ? await client.Database.getGuildProfile(interaction.guild.id)
                     : undefined;
 

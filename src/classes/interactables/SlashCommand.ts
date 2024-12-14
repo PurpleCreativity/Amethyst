@@ -181,6 +181,8 @@ export default class SlashCommand extends SlashCommandBuilder {
      */
     readonly ephemeral: boolean;
 
+    readonly user_installable: boolean;
+
     /**
      * Required Discord permissions for executing the command.
      *
@@ -252,6 +254,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         this.module = options.module;
         this.selected_guilds = options.selected_guilds || [];
         this.ephemeral = options.ephemeral ?? false;
+        this.user_installable = options.user_installable ?? false;
 
         this.discord_permissions = options.discord_permissions || [];
         this.permissions = options.permissions || [];
