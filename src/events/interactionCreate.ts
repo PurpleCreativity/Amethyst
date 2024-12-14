@@ -23,9 +23,10 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild && !command.user_installable
-                    ? await client.Database.getGuildProfile(interaction.guild.id)
-                    : undefined;
+                const guildProfile =
+                    interaction.guild && !command.user_installable
+                        ? await client.Database.getGuildProfile(interaction.guild.id)
+                        : undefined;
 
                 if (interaction.guild && !guildProfile) {
                     return await interaction.editReply({
@@ -88,9 +89,10 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild && !command.user_installable
-                    ? await client.Database.getGuildProfile(interaction.guild.id)
-                    : undefined;
+                const guildProfile =
+                    interaction.guild && !command.user_installable
+                        ? await client.Database.getGuildProfile(interaction.guild.id)
+                        : undefined;
 
                 if (interaction.guild && !guildProfile) {
                     return await interaction.editReply({
@@ -138,9 +140,10 @@ export default new Event({
             try {
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
-                const guildProfile = interaction.guild && !command.user_installable
-                    ? await client.Database.getGuildProfile(interaction.guild.id)
-                    : undefined;
+                const guildProfile =
+                    interaction.guild && !command.user_installable
+                        ? await client.Database.getGuildProfile(interaction.guild.id)
+                        : undefined;
 
                 if (interaction.guild && !guildProfile) {
                     return await interaction.editReply({
