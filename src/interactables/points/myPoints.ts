@@ -25,14 +25,13 @@ export default new SlashCommand({
         const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.roblox.id);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.roblox.id);
         const pendingPoints = await guildUserProfile.getPendingPoints();
+        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
 
         const embed = client.Functions.makeInfoEmbed({
             title: "Your points",
             footer: {
                 text: robloxProfile.name,
-                //iconURL: (
-                //    await client.noblox.getPlayerThumbnail(userProfile.roblox.id, "150x150", "png", true, "headshot")
-                //)[0].imageUrl,
+                iconURL: avatarHeadshot,
             },
         });
 

@@ -24,6 +24,14 @@ export default class Functions {
         return await this.client.BloxFetch.fetchUserById(searcher as number, { useCache: useCache });
     };
 
+    fetchRobloxUserAvatarHeadshot = async (userId: number): Promise<string | undefined> => {
+        try {
+            return (await this.client.BloxFetch.fetchUserAvatarHeadshot(userId))[0].imageUrl;
+        } catch (error) {
+            return undefined;
+        }
+    };
+
     fetchGuild = async (guildId: string, useCache = true) => {
         let guild: Guild | undefined;
         if (useCache) {

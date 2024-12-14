@@ -23,16 +23,14 @@ const callback = async (
     robloxProfile: UserData,
 ) => {
     const pendingPoints = await guildUserProfile.getPendingPoints();
-    //const avatarHeadshot = (
-    //    await client.noblox.getPlayerThumbnail(robloxProfile.id, "150x150", "png", true, "headshot")
-    //)[0].imageUrl;
+    const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
 
     const buttonEmbed = new ButtonEmbed(
         client.Functions.makeInfoEmbed({
             title: `${robloxProfile.name}'s points`,
             footer: {
                 text: robloxProfile.name,
-                //iconURL: avatarHeadshot,
+                iconURL: avatarHeadshot,
             },
         }),
     );

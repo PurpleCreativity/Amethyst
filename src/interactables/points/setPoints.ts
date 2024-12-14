@@ -20,9 +20,7 @@ export default new SlashCommand({
         const robloxProfile = await client.Functions.fetchRobloxUser(user);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, robloxProfile.id);
         const oldAmount = guildUserProfile.points;
-        //const avatarHeadshot = (
-        //    await client.noblox.getPlayerThumbnail(robloxProfile.id, "150x150", "png", true, "headshot")
-        //)[0].imageUrl;
+        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
 
         guildUserProfile.points = newAmount;
         await guildUserProfile.save();
@@ -32,7 +30,7 @@ export default new SlashCommand({
                 client.Functions.makeSuccessEmbed({
                     title: "Set points",
                     description: `Set ${robloxProfile.name}'s points`,
-                    //footer: { text: robloxProfile.username, iconURL: avatarHeadshot },
+                    footer: { text: robloxProfile.name, iconURL: avatarHeadshot },
                     fields: [
                         { name: "Old Amount", value: `\`\`\`${oldAmount}\`\`\``, inline: true },
                         { name: "New Amount", value: `\`\`\`${newAmount}\`\`\``, inline: true },
