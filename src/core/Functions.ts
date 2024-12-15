@@ -1,7 +1,7 @@
 import { Buffer } from "node:buffer";
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import process from "node:process";
-import type { UserData } from "@purple_creativity/bloxfetch";
+import type { UserData } from "bloxwrap";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
@@ -16,17 +16,17 @@ export default class Functions {
 
     fetchRobloxUser = async (searcher: string | number, useCache = true): Promise<UserData> => {
         if (typeof searcher === "string" && Number.isNaN(Number.parseInt(searcher))) {
-            searcher = (await this.client.BloxFetch.fetchUsersByUsernames(searcher, false))[0].id;
+            searcher = (await this.client.BloxWrap.fetchUsersByUsernames(searcher, false))[0].id;
 
             if (Number.isNaN(searcher)) throw new Error(`Username "${searcher}" not found or invalid.`);
         }
 
-        return await this.client.BloxFetch.fetchUserById(searcher as number, { useCache: useCache });
+        return await this.client.BloxWrap.fetchUserById(searcher as number, { useCache: useCache });
     };
 
     fetchRobloxUserAvatarHeadshot = async (userId: number): Promise<string | undefined> => {
         try {
-            return (await this.client.BloxFetch.fetchUserAvatarHeadshot(userId))[0].imageUrl;
+            return (await this.client.BloxWrap.fetchUserAvatarHeadshot(userId))[0].imageUrl;
         } catch (error) {
             return undefined;
         }

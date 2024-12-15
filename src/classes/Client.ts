@@ -1,5 +1,5 @@
 import process from "node:process";
-import BloxFetch from "@purple_creativity/bloxfetch";
+import BloxWrap from "bloxwrap";
 import axios, { type Axios } from "axios";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
@@ -55,7 +55,7 @@ export default class Client extends DiscordClient {
 
     //? Dependencies
     Axios: Axios = axios.create();
-    BloxFetch: BloxFetch = new BloxFetch();
+    BloxWrap: BloxWrap = new BloxWrap();
 
     constructor(options: ClientOptions) {
         super(options);
@@ -178,7 +178,7 @@ export default class Client extends DiscordClient {
             this.error(error);
         }
         */
-        this.BloxFetch.LegacyFetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
+        this.BloxWrap.LegacyFetchHandler.setCredentials({ cookie: this.config.credentials.robloxCookie });
 
         for (const channel in this.config.channels) {
             const channelId = this.config.channels[channel];

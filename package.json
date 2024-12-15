@@ -31,13 +31,15 @@
     },
     "dependencies": {
         "@auth/express": "^0.8.4",
-        "@purple_creativity/bloxfetch": "^0.1.8",
+        "@date-fns/tz": "^1.2.0",
         "axios": "^1.7.7",
+        "bloxwrap": "^0.1.0",
         "chalk": "^5.3.0",
+        "date-fns": "^4.1.0",
         "discord.js": "^14.16.3",
         "dotenv": "^16.4.5",
-        "express": "^4.21.2",
-        "express-rate-limit": "^7.4.1",
+        "express": "5.0.1",
+        "express-rate-limit": "^7.5.0",
         "mariadb": "^3.4.0",
         "noblox.js": "^6.0.2"
     }

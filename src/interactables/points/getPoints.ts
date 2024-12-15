@@ -1,4 +1,4 @@
-import type { UserData } from "@purple_creativity/bloxfetch";
+import type { UserData } from "bloxwrap";
 import {
     type APIEmbedField,
     ButtonStyle,
