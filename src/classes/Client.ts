@@ -1,6 +1,6 @@
 import process from "node:process";
-import BloxWrap from "bloxwrap";
 import axios, { type Axios } from "axios";
+import BloxWrap from "bloxwrap";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
 import config from "../config.js";
