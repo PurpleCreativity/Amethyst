@@ -20,10 +20,10 @@ config.credentials = {
     discordOAuthRedirectLink: "",
 
     database: {
-        host: process.env.DataBaseHost as string,
+        host: process.env.DatabaseHost as string,
         port: 3306,
 
-        user: process.env.DataBaseUser as string,
+        user: process.env.DatabaseUser as string,
         password: process.env.DatabasePassword as string,
 
         database: "amethyst",
