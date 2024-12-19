@@ -1,16 +1,18 @@
-export type rawDataEntry = {
-    roblox_id: number;
-    roblox_username: string;
+export type pointlogDataEntry = {
+    user: {
+        roblox_id: number,
+        roblox_username: string,
+    },
     points: number;
 };
 
 export type rawPointLogData = {
-    id: string;
-    _v: bigint;
+    id: `${string}-${string}-${string}-${string}-${string}`;
+    __v: number;
 
-    guild_id: number;
+    guild_id: string;
 
-    data?: rawDataEntry[];
+    data: pointlogDataEntry[];
     note: string | null;
 
     creator_roblox_id: number;
@@ -18,49 +20,37 @@ export type rawPointLogData = {
     created_at: Date;
 };
 
-export type dataEntry = {
-    roblox: {
-        id: number;
-        username: string;
-    };
-    points: number;
-};
-
 export default class PointLog {
     readonly id: string;
-    _v: bigint;
+    private __v: number;
 
     readonly guildId: string;
 
-    readonly data: dataEntry[];
+    data: pointlogDataEntry[];
     note: string | null;
 
     readonly creator: {
-        roblox_id: number;
-        roblox_username: string;
+        roblox_id: number,
+        roblox_username: string
     };
 
     createdAt: Date;
 
     constructor(rawdata: rawPointLogData) {
         this.id = rawdata.id;
-        this._v = rawdata._v;
+        this.__v = rawdata.__v;
 
         this.id = rawdata.id;
         this.guildId = rawdata.guild_id.toString();
-
-        this.data =
-            rawdata.data?.map((data: rawDataEntry) => ({
-                roblox: { id: data.roblox_id, username: data.roblox_username },
-                points: data.points,
-            })) || [];
         this.note = rawdata.note;
+
+        this.data = rawdata.data || [];
 
         this.creator = {
             roblox_id: rawdata.creator_roblox_id,
             roblox_username: rawdata.creator_roblox_username,
         };
 
-        this.createdAt = rawdata.created_at || new Date();
+        this.createdAt = rawdata.created_at ?? new Date();
     }
 }

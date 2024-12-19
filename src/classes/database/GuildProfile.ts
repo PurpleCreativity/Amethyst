@@ -9,8 +9,8 @@ export type PermissionEntry = {
 };
 
 export type rawGuildData = {
-    id: bigint;
-    _v: bigint;
+    id: string;
+    __v: number;
 
     shortname: string;
 
@@ -21,7 +21,7 @@ export type rawGuildData = {
 
 export default class GuildProfile {
     readonly id: string;
-    _v: bigint;
+    private __v: number;
 
     readonly shortname: string;
 
@@ -31,8 +31,8 @@ export default class GuildProfile {
     readonly settings: Record<string, unknown>;
 
     constructor(rawdata: rawGuildData) {
-        this.id = rawdata.id.toString();
-        this._v = rawdata._v;
+        this.id = rawdata.id;
+        this.__v = rawdata.__v;
 
         this.shortname = rawdata.shortname;
 
@@ -140,7 +140,7 @@ export default class GuildProfile {
                     JSON.stringify(this.settings),
 
                     this.id,
-                    this._v,
+                    this.__v,
                 ],
             );
 
@@ -149,7 +149,7 @@ export default class GuildProfile {
             }
 
             await connection.commit();
-            this._v += 1n;
+            this.__v += 1;
         } catch (error) {
             if (connection) await connection.rollback();
             throw error;

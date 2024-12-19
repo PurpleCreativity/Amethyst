@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS api_keys (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _v BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    __v INT UNSIGNED NOT NULL DEFAULT 1,
     
-    guild_id BIGINT UNSIGNED NOT NULL,
+    guild_id VARCHAR(20) NOT NULL,
 
     `name` VARCHAR(20) NOT NULL,
     `value` VARCHAR(100) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
     permissions JSON NOT NULL DEFAULT '[]',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    created_by BIGINT UNSIGNED NOT NULL,
+    created_by VARCHAR(20) NOT NULL,
 
     FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
     FOREIGN KEY (created_by) REFERENCES user_profiles(id)
@@ -20,5 +20,5 @@ CREATE TRIGGER IF NOT EXISTS trigger_ApiKeys_BeforeUpdate
 BEFORE UPDATE ON api_keys
 FOR EACH ROW
 BEGIN
-    SET NEW._v = OLD._v + 1;
+    SET NEW.__v = OLD.__v + 1;
 END;

@@ -2,8 +2,8 @@ import type mariadb from "mariadb";
 import client from "../../main.js";
 
 export type rawUserData = {
-    id: bigint;
-    _v: bigint;
+    id: string;
+    __v: number;
 
     roblox_id: bigint | null;
     roblox_username: string | null;
@@ -13,7 +13,7 @@ export type rawUserData = {
 
 export default class UserProfile {
     readonly id: string;
-    _v: bigint;
+    private __v: number;
 
     readonly roblox: {
         id: number | null;
@@ -23,8 +23,8 @@ export default class UserProfile {
     readonly settings: Record<string, unknown>;
 
     constructor(rawdata: rawUserData) {
-        this.id = rawdata.id.toString();
-        this._v = rawdata._v;
+        this.id = rawdata.id;
+        this.__v = rawdata.__v;
 
         this.roblox = {
             id: rawdata.roblox_id ? Number.parseInt(rawdata.roblox_id.toString()) : null,
@@ -62,14 +62,14 @@ export default class UserProfile {
                     JSON.stringify(this.settings),
 
                     this.id,
-                    this._v,
+                    this.__v,
                 ],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
 
             await connection.commit();
-            this._v += 1n;
+            this.__v += 1;
         } catch (error) {
             if (connection) await connection.rollback();
 

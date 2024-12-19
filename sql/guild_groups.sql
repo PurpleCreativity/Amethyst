@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS guild_groups (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _v BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    __v INT UNSIGNED NOT NULL DEFAULT 1,
 
     `name` VARCHAR(255) UNIQUE NOT NULL
 );
@@ -9,15 +9,15 @@ CREATE TRIGGER IF NOT EXISTS trigger_GuildGroups_BeforeUpdate
 BEFORE UPDATE ON guild_groups
 FOR EACH ROW
 BEGIN
-    SET NEW._v = OLD._v + 1;
+    SET NEW.__v = OLD.__v + 1;
 END;
 
 CREATE TABLE IF NOT EXISTS guild_group_memberships (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    _v BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    __v BIGINT UNSIGNED NOT NULL DEFAULT 1,
 
     group_id BIGINT UNSIGNED NOT NULL,
-    guild_id BIGINT UNSIGNED NOT NULL,
+    guild_id VARCHAR(20) NOT NULL,
 
     settings JSON NOT NULL DEFAULT '{}',
 
@@ -31,5 +31,5 @@ CREATE TRIGGER IF NOT EXISTS trigger_GuildGroupMemberships_BeforeUpdate
 BEFORE UPDATE ON guild_group_memberships
 FOR EACH ROW
 BEGIN
-    SET NEW._v = OLD._v + 1;
+    SET NEW.__v = OLD.__v + 1;
 END;
