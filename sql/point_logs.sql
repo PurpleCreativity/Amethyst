@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS point_logs (
     note VARCHAR(500),
 
     creator_roblox_id BIGINT UNSIGNED NOT NULL,
-    creator_roblox_username VARCHAR(32) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),

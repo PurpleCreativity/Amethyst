@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     _v BIGINT UNSIGNED NOT NULL DEFAULT 0,
 
     roblox_id BIGINT UNSIGNED UNIQUE,
-    roblox_username VARCHAR(20) UNIQUE,
 
     settings JSON NOT NULL DEFAULT '{}'
 );
