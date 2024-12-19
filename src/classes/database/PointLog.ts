@@ -40,7 +40,6 @@ export default class PointLog {
         this.id = rawdata.id;
         this.__v = rawdata.__v;
 
-        this.id = rawdata.id;
         this.guildId = rawdata.guild_id.toString();
         this.note = rawdata.note;
 
