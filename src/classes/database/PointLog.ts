@@ -1,8 +1,8 @@
 export type pointlogDataEntry = {
     user: {
-        roblox_id: number,
-        roblox_username: string,
-    },
+        roblox_id: number;
+        roblox_username: string;
+    };
     points: number;
 };
 
@@ -30,8 +30,8 @@ export default class PointLog {
     note: string | null;
 
     readonly creator: {
-        roblox_id: number,
-        roblox_username: string
+        roblox_id: number;
+        roblox_username: string;
     };
 
     createdAt: Date;
