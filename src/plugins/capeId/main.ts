@@ -13,7 +13,7 @@ export default new Plugin({
                 name: "capeid",
                 description: "Returns the image Id of the passed asset Id",
 
-                user_installable: true,
+                userApp: true,
                 ephemeral: true,
 
                 options: [

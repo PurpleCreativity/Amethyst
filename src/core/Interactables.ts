@@ -196,7 +196,7 @@ export default class Interactables {
         await this.REST.put(Routes.applicationCommands(this.client.user.id), {
             body: [
                 ...this.stored.SlashCommands.map((command) => {
-                    if (command.selected_guilds.length > 0) {
+                    if (command.selectedGuilds.length > 0) {
                         return undefined;
                     }
                     return command.toJSON();
@@ -208,12 +208,12 @@ export default class Interactables {
         });
 
         for (const command of this.stored.SlashCommands.values()) {
-            if (!command.selected_guilds || command.selected_guilds.length === 0) continue;
+            if (!command.selectedGuilds || command.selectedGuilds.length === 0) continue;
 
-            for (const guildId of command.selected_guilds) {
+            for (const guildId of command.selectedGuilds) {
                 await this.REST.put(Routes.applicationGuildCommands(this.client.user.id, guildId), {
                     body: this.stored.SlashCommands.map((command) => {
-                        if (!command.selected_guilds.includes(guildId)) {
+                        if (!command.selectedGuilds.includes(guildId)) {
                             return undefined;
                         }
 
@@ -234,9 +234,9 @@ export default class Interactables {
         });
 
         for (const command of this.stored.SlashCommands.values()) {
-            if (command.selected_guilds.length === 0) continue;
+            if (command.selectedGuilds.length === 0) continue;
 
-            for (const guildId of command.selected_guilds) {
+            for (const guildId of command.selectedGuilds) {
                 await this.REST.put(Routes.applicationGuildCommands(this.client.user.id, guildId), {
                     body: [],
                 });

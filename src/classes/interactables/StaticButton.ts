@@ -6,7 +6,7 @@ export type StaticButtonOptions = {
     id: string;
 
     permissions?: ValidPermissions[];
-    discord_permissions?: PermissionResolvable[];
+    discordPermissions?: PermissionResolvable[];
 
     function(interaction: ButtonInteraction, guildProfile?: GuildProfile): Promise<unknown>;
 };
@@ -15,14 +15,14 @@ export default class StaticButton {
     readonly id: string;
 
     readonly permissions: ValidPermissions[];
-    readonly discord_permissions: PermissionResolvable[];
+    readonly discordPermissions: PermissionResolvable[];
 
     private function: (interaction: ButtonInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
 
     constructor(options: StaticButtonOptions) {
         this.id = options.id;
         this.permissions = options.permissions || [];
-        this.discord_permissions = options.discord_permissions || [];
+        this.discordPermissions = options.discordPermissions || [];
 
         this.function = options.function;
     }

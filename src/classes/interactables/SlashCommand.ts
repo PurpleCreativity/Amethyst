@@ -64,7 +64,7 @@ export type SlashCommandOptions = {
     /**
      * Localized names for the command, supporting internationalization.
      */
-    name_localizations?: LocalizationMap;
+    nameLocalizations?: LocalizationMap;
 
     /**
      * The command's description, explaining its purpose.
@@ -90,7 +90,7 @@ export type SlashCommandOptions = {
     /**
      * A list of guild IDs where the command is enabled. If not provided, the command is enabled globally.
      */
-    selected_guilds?: string[];
+    selectedGuilds?: string[];
 
     /**
      * Whether the command's responses should be ephemeral (visible only to the user).
@@ -102,13 +102,13 @@ export type SlashCommandOptions = {
      * Whether the command can be installed by regular users (not just guild admins).
      * Default: `false`
      */
-    user_installable?: boolean;
+    userApp?: boolean;
 
     /**
      * Required Discord permissions for using the command.
      * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
-    discord_permissions?: PermissionResolvable[];
+    discordPermissions?: PermissionResolvable[];
 
     /**
      * Custom application-specific permissions required to use the command.
@@ -119,7 +119,7 @@ export type SlashCommandOptions = {
      * Whether the command is restricted to developers only.
      * Default: `false`
      */
-    developer_only?: boolean;
+    devOnly?: boolean;
 
     /**
      * The list of command options, including arguments and flags.
@@ -172,7 +172,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      *
      * @type {string[]}
      */
-    readonly selected_guilds: string[];
+    readonly selectedGuilds: string[];
 
     /**
      * Indicates if responses from this command are ephemeral (private).
@@ -181,7 +181,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      */
     readonly ephemeral: boolean;
 
-    readonly user_installable: boolean;
+    readonly userApp: boolean;
 
     /**
      * Required Discord permissions for executing the command.
@@ -189,7 +189,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      * @type {PermissionResolvable[]}
      * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
-    readonly discord_permissions: PermissionResolvable[];
+    readonly discordPermissions: PermissionResolvable[];
 
     /**
      * Custom application-specific permissions required for the command.
@@ -203,7 +203,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      *
      * @type {boolean}
      */
-    readonly developer_only: boolean;
+    readonly devOnly: boolean;
 
     /**
      * The function executed when the command is invoked.
@@ -239,7 +239,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         super();
 
         this.setName(options.name);
-        if (options.name_localizations) this.setNameLocalizations(options.name_localizations);
+        if (options.nameLocalizations) this.setNameLocalizations(options.nameLocalizations);
 
         this.setDescription(options.description);
         if (options.description_localizations) this.setDescriptionLocalizations(options.description_localizations);
@@ -247,13 +247,13 @@ export default class SlashCommand extends SlashCommandBuilder {
         this.setNSFW(options.nsfw || false);
 
         this.module = options.module;
-        this.selected_guilds = options.selected_guilds || [];
+        this.selectedGuilds = options.selectedGuilds || [];
         this.ephemeral = options.ephemeral ?? false;
-        this.user_installable = options.user_installable ?? false;
+        this.userApp = options.userApp ?? false;
 
-        this.discord_permissions = options.discord_permissions || [];
+        this.discordPermissions = options.discordPermissions || [];
         this.permissions = options.permissions || [];
-        this.developer_only = options.developer_only ?? false;
+        this.devOnly = options.devOnly ?? false;
 
         if (options.options?.length) {
             for (const option of options.options) this.options.push(option);
@@ -278,7 +278,7 @@ export default class SlashCommand extends SlashCommandBuilder {
             InteractionContextType.PrivateChannel,
         );
 
-        if (options.user_installable && !options.selected_guilds) {
+        if (options.userApp && !options.selectedGuilds) {
             this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
         } else {
             this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
@@ -300,7 +300,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandErrorName.DISABLED_GLOBAL;
-        if (this.developer_only) return CommandErrorName.DEVELOPER_ONLY;
+        if (this.devOnly) return CommandErrorName.DEVELOPER_ONLY;
 
         if (interaction.guild) {
             if (!interaction.member) return CommandErrorName.UNKNOWN;
@@ -314,12 +314,12 @@ export default class SlashCommand extends SlashCommandBuilder {
                 return undefined;
             }
 
-            if (this.discord_permissions.length > 0) {
+            if (this.discordPermissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
                     return CommandErrorName.UNKNOWN;
                 }
                 if (!interaction.member.permissions.has("Administrator")) {
-                    for (const permission of this.discord_permissions) {
+                    for (const permission of this.discordPermissions) {
                         if (!interaction.member.permissions.has(permission)) {
                             return CommandErrorName.MISSING_DISCORD_PERMISSIONS;
                         }

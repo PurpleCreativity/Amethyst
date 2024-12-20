@@ -24,11 +24,11 @@ export default new Event({
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
                 const guildProfile =
-                    interaction.guild && !command.user_installable
+                    interaction.guild && !command.userApp
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile && !command.user_installable) {
+                if (interaction.guild && !guildProfile && !command.userApp) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
@@ -90,11 +90,11 @@ export default new Event({
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
                 const guildProfile =
-                    interaction.guild && !command.user_installable
+                    interaction.guild && !command.userApp
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile && !command.user_installable) {
+                if (interaction.guild && !guildProfile && !command.userApp) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
@@ -141,11 +141,11 @@ export default new Event({
                 await interaction.deferReply({ ephemeral: command.ephemeral });
 
                 const guildProfile =
-                    interaction.guild && !command.user_installable
+                    interaction.guild && !command.userApp
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile && !command.user_installable) {
+                if (interaction.guild && !guildProfile && !command.userApp) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({

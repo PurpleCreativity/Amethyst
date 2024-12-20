@@ -26,7 +26,7 @@ export type BaseContextMenuCommandOptions = {
     /**
      * Localized names for the command, allowing internationalization support.
      */
-    name_localizations?: LocalizationMap;
+    nameLocalizations?: LocalizationMap;
 
     /**
      * The module this command belongs to, used for organization or grouping.
@@ -37,7 +37,7 @@ export type BaseContextMenuCommandOptions = {
      * A list of guild IDs where the command is specifically enabled.
      * If not specified, the command is enabled globally.
      */
-    selected_guilds?: string[];
+    selectedGuilds?: string[];
 
     /**
      * Whether command responses should be ephemeral (only visible to the user).
@@ -49,13 +49,13 @@ export type BaseContextMenuCommandOptions = {
      * Whether the command can be installed by regular users, not just guild admins.
      * Default: `false`
      */
-    user_installable?: boolean;
+    userApp?: boolean;
 
     /**
      * Required Discord permissions for executing the command.
      * @see {@link https://discord.js.org/docs/packages/discord.js/main/PermissionResolvable:TypeAlias PermissionResolvable}
      */
-    discord_permissions?: PermissionResolvable[];
+    discordPermissions?: PermissionResolvable[];
 
     /**
      * Custom application-specific permissions for the command.
@@ -66,7 +66,7 @@ export type BaseContextMenuCommandOptions = {
      * Whether the command is restricted to developers only.
      * Default: `false`
      */
-    developer_only?: boolean;
+    devOnly?: boolean;
 };
 
 export type MessageContextMenuCommandOptions = BaseContextMenuCommandOptions & {
@@ -82,13 +82,13 @@ export type UserContextMenuCommandOptions = BaseContextMenuCommandOptions & {
  */
 class BaseContextMenuCommand extends ContextMenuCommandBuilder {
     readonly module: CommandModule | undefined;
-    readonly selected_guilds: string[];
+    readonly selectedGuilds: string[];
     readonly ephemeral: boolean;
-    readonly user_installable: boolean;
+    readonly userApp: boolean;
 
-    readonly discord_permissions: PermissionResolvable[];
+    readonly discordPermissions: PermissionResolvable[];
     readonly permissions: ValidPermissions[];
-    readonly developer_only: boolean = false;
+    readonly devOnly: boolean = false;
 
     disabled = false;
 
@@ -100,8 +100,8 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
         super();
 
         this.setName(options.name);
-        if (options.name_localizations) {
-            this.setNameLocalizations(options.name_localizations);
+        if (options.nameLocalizations) {
+            this.setNameLocalizations(options.nameLocalizations);
         }
 
         this.setContexts(
@@ -110,19 +110,19 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
             InteractionContextType.PrivateChannel,
         );
 
-        if (options.user_installable) {
+        if (options.userApp) {
             this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
         } else {
             this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
         }
 
         this.ephemeral = options.ephemeral ?? false;
-        this.user_installable = options.user_installable ?? false;
+        this.userApp = options.userApp ?? false;
         this.module = options.module;
-        this.selected_guilds = options.selected_guilds || [];
-        this.discord_permissions = options.discord_permissions || [];
+        this.selectedGuilds = options.selectedGuilds || [];
+        this.discordPermissions = options.discordPermissions || [];
         this.permissions = options.permissions || [];
-        this.developer_only = options.developer_only ?? false;
+        this.devOnly = options.devOnly ?? false;
     }
 
     /**
@@ -138,7 +138,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandErrorName.DISABLED_GLOBAL;
-        if (this.developer_only) return CommandErrorName.DEVELOPER_ONLY;
+        if (this.devOnly) return CommandErrorName.DEVELOPER_ONLY;
 
         if (interaction.guild) {
             if (!interaction.member) return CommandErrorName.UNKNOWN;
@@ -153,12 +153,12 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
                 }
             }
 
-            if (this.discord_permissions.length > 0) {
+            if (this.discordPermissions.length > 0) {
                 if (typeof interaction.member.permissions === "string") {
                     return CommandErrorName.UNKNOWN;
                 }
                 if (!interaction.member.permissions.has("Administrator")) {
-                    for (const permission of this.discord_permissions) {
+                    for (const permission of this.discordPermissions) {
                         if (!interaction.member.permissions.has(permission)) {
                             return CommandErrorName.MISSING_DISCORD_PERMISSIONS;
                         }

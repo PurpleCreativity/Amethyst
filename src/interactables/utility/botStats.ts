@@ -5,7 +5,7 @@ export default new SlashCommand({
     name: "stats",
     description: "Get the bot stats",
 
-    user_installable: true,
+    userApp: true,
 
     function: async (interaction) => {
         if (!client.user || client.uptime === null) throw new Error("Client is not ready yet");

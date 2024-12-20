@@ -33,7 +33,7 @@ export default new SlashCommand({
     name: "linkroblox",
     description: "Link your Roblox account to your Discord account.",
 
-    user_installable: true,
+    userApp: true,
 
     options: [
         new SlashCommandStringOption().setName("user").setDescription("Your Roblox Username or Id.").setRequired(true),
