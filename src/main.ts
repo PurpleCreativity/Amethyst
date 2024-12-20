@@ -17,7 +17,7 @@ const client: Client = new Client({
 client.Startup();
 
 const maxMemory = 512; // in MB
-client.Threader.CreateThread("MemoryMonitor", () => {
+client.Threader.createThread("MemoryMonitor", () => {
     const used = client.Functions.MemoryUsage();
 
     const percentage = Math.ceil((used / maxMemory) * 100);
@@ -26,6 +26,6 @@ client.Threader.CreateThread("MemoryMonitor", () => {
     }
 
     client.verbose(`Memory usage is at [${percentage}%] ${used}MB`);
-}).Loop(1 * 60 * 1000);
+}).loop(1 * 60 * 1000);
 
 export default client;
