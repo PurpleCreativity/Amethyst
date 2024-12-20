@@ -107,7 +107,7 @@ export class Thread<V extends (...args: unknown[]) => unknown> {
      */
     destroy(): void {
         this.end();
-        this.Threader.Threads = this.Threader.Threads.filter((thread) => thread !== this);
+        this.Threader.threads = this.Threader.threads.filter((thread) => thread !== this);
         // Destroy this thread
         for (const key in this) {
             delete this[key];
@@ -117,26 +117,26 @@ export class Thread<V extends (...args: unknown[]) => unknown> {
 
 export default class Threader {
     client: Client;
-    Threads = [] as Thread<(...args: unknown[]) => unknown>[];
+    threads = [] as Thread<(...args: unknown[]) => unknown>[];
 
-    private Thread = Thread;
+    private thread = Thread;
 
     constructor(client: Client) {
         this.client = client;
     }
 
     createThread = <V extends (...args: unknown[]) => unknown>(name: string, func: V): Thread<V> => {
-        const thread = new this.Thread(this, name, func);
-        this.Threads.push(thread);
+        const thread = new this.thread(this, name, func);
+        this.threads.push(thread);
         return thread;
     };
 
     getThreadByName = (name: string): Thread<(...args: unknown[]) => unknown> | undefined => {
-        return this.Threads.find((thread) => thread.Name === name);
+        return this.threads.find((thread) => thread.Name === name);
     };
 
     getThreadById = (id: string): Thread<(...args: unknown[]) => unknown> | undefined => {
-        return this.Threads.find((thread) => thread.Id === id);
+        return this.threads.find((thread) => thread.Id === id);
     };
 
     getThread = (nameOrId: string): Thread<(...args: unknown[]) => unknown> | undefined => {
@@ -144,19 +144,19 @@ export default class Threader {
     };
 
     endAll = (): void => {
-        for (const thread of this.Threads) {
+        for (const thread of this.threads) {
             thread.end();
         }
     };
 
     destroyAll = (): void => {
-        for (const thread of this.Threads) {
+        for (const thread of this.threads) {
             thread.destroy();
         }
     };
 
     haltAll = (): void => {
-        for (const thread of this.Threads) {
+        for (const thread of this.threads) {
             thread.halt();
         }
     };

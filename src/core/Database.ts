@@ -231,7 +231,7 @@ export default class Database {
         }
     };
 
-    Init = async () => {
+    init = async () => {
         if (this.client.devMode) await this.initializeTables();
 
         //await this.addGuildProfile("DEV", "1276574166937505925");

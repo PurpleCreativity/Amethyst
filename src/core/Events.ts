@@ -9,13 +9,13 @@ export default class Events {
         this.client = client;
     }
 
-    ConnectedEvents = [] as {
+    connectedEvents = [] as {
         type: "client" | "process" | "custom";
         event?: string;
         emiiter: EventEmitter;
     }[];
 
-    AddEvent = (
+    addEvent = (
         type: "client" | "process" | "custom",
         event?: string,
         callback?: (...any: unknown[]) => void,
@@ -45,7 +45,7 @@ export default class Events {
 
         this.client.log(`Added event ${event} to ${type} events`);
 
-        this.ConnectedEvents.push({
+        this.connectedEvents.push({
             type: type,
             event: event,
             emiiter: emiiter,
@@ -53,12 +53,12 @@ export default class Events {
         return emiiter;
     };
 
-    RemoveEvent = (emitter: EventEmitter, name?: string): EventEmitter => {
+    removeEvent = (emitter: EventEmitter, name?: string): EventEmitter => {
         emitter.removeAllListeners(name);
 
-        const index = this.ConnectedEvents.findIndex((event) => event.emiiter === emitter);
+        const index = this.connectedEvents.findIndex((event) => event.emiiter === emitter);
         if (index !== -1) {
-            this.ConnectedEvents.splice(index, 1);
+            this.connectedEvents.splice(index, 1);
         } else {
             this.client.warn(`Could not find event ${name} in ${emitter}`);
         }
@@ -72,7 +72,7 @@ export default class Events {
         return emitter;
     };
 
-    Init = (): void => {
+    init = (): void => {
         this.client.setMaxListeners(0);
 
         this.client.success("Initialized Events");

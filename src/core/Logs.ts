@@ -91,7 +91,7 @@ export default class Logs {
         return logLines.join("\n");
     };
 
-    Init = async () => {
+    init = async () => {
         if (fs.existsSync(`${process.cwd()}${this.logFilePath}`)) {
             if (fs.existsSync(`${process.cwd()}${this.logFilePath}/amethyst.log`)) {
                 fs.writeFileSync(`${process.cwd()}${this.logFilePath}/amethyst.log`, "");

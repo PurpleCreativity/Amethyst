@@ -181,13 +181,13 @@ export default class Functions {
 
     TrueStrings = ["true", "yes", "1", "on"];
     FalseStrings = ["false", "no", "0", "off"];
-    StringToBoolean = (string: string) => {
+    stringToBoolean = (string: string) => {
         if (this.TrueStrings.includes(string.toLowerCase())) return true;
         if (this.FalseStrings.includes(string.toLowerCase())) return false;
         return false;
     };
 
-    StringRGBToColorHex = (string: string) => {
+    stringRGBToColorHex = (string: string) => {
         const rgb = string.split(",");
         if (rgb.length !== 3) {
             throw new Error(
@@ -211,7 +211,7 @@ export default class Functions {
 
         const isRGB = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
         if (isRGB) {
-            return this.StringRGBToColorHex(string);
+            return this.stringRGBToColorHex(string);
         }
 
         for (const color of Object.keys(Colors)) {
@@ -224,7 +224,7 @@ export default class Functions {
         return undefined;
     };
 
-    Encypt = (text: string, iv: string) => {
+    encypt = (text: string, iv: string) => {
         const key = Buffer.from(this.client.config.credentials.encryptionKey, "hex");
         const _iv = Buffer.from(iv, "hex");
 
@@ -234,7 +234,7 @@ export default class Functions {
         return encryptedMessage;
     };
 
-    Decrypt = (text: string, iv: string) => {
+    decrypt = (text: string, iv: string) => {
         const key = Buffer.from(this.client.config.credentials.encryptionKey, "hex");
         const _iv = Buffer.from(iv, "hex");
 

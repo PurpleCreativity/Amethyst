@@ -30,19 +30,19 @@ export default class Process {
                     return;
                 }
 
-                this.client.Events.AddEvent(event.type, eventFile.slice(0, -3), event.callback);
+                this.client.Events.addEvent(event.type, eventFile.slice(0, -3), event.callback);
             }
         };
 
         await loadEventsfromDir(eventsDir);
     };
 
-    Init = async (): Promise<void> => {
+    init = async (): Promise<void> => {
         await this.loadEventFiles("build/events");
 
         if (this.client.devMode) {
-            this.client.Events.AddEvent("client", "debug", (message: unknown) => this.client.verbose(message));
-            this.client.Events.AddEvent("client", "warn", (message: unknown) => this.client.warn(message));
+            this.client.Events.addEvent("client", "debug", (message: unknown) => this.client.verbose(message));
+            this.client.Events.addEvent("client", "warn", (message: unknown) => this.client.warn(message));
         }
 
         this.client.success("Initialized Process");

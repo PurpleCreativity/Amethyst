@@ -49,7 +49,7 @@ export default class Plugins {
         await loadPluginFromDir(pluginsDir);
     };
 
-    Init = async (): Promise<void> => {
+    init = async (): Promise<void> => {
         await this.loadPlugins();
 
         for (const plugin of this.loadedPlugins) {

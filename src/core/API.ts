@@ -73,7 +73,7 @@ export default class API {
         };
     };
 
-    GenerateKey() {
+    generateKey() {
         const keyLength = Math.floor(Math.random() * (40 - 20 + 1)) + 40;
         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
         let key = "";
@@ -83,7 +83,7 @@ export default class API {
         return key;
     }
 
-    Init = async () => {
+    init = async () => {
         await this.loadRoutes("build/api");
 
         this.server.use(express.json());
