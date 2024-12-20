@@ -138,9 +138,7 @@ export default new SlashCommand({
                 await buttonInteraction.deferUpdate();
 
                 buttonEmbed.setButtons([]);
-                buttonEmbed.setEmbed(
-                    client.Functions.makeInfoEmbed({ title: "Link Roblox", description: "Linking cancelled." }),
-                );
+                buttonEmbed.embed = client.Functions.makeInfoEmbed({ title: "Link Roblox", description: "Linking cancelled." });
 
                 await buttonInteraction.editReply(buttonEmbed.getMessageData());
             },
