@@ -62,7 +62,7 @@ export type RouteOptions = {
      * @param guildProfile - The guild profile data, available only when `public` is `false`.
      * @returns A promise representing the result of the operation.
      */
-    function: (req: express.Request, res: express.Response, guildProfile?: GuildProfile) => Promise<unknown>;
+    function(req: express.Request, res: express.Response, guildProfile?: GuildProfile): Promise<unknown>;
 };
 
 export default class Route {
@@ -86,7 +86,7 @@ export default class Route {
         this.function = options.function;
     }
 
-    execute = async (req: express.Request, res: express.Response) => {
+    async execute(req: express.Request, res: express.Response) {
         if (this.public) {
             return await this.function(req, res);
         }
@@ -125,5 +125,5 @@ export default class Route {
         */
 
         return await this.function(req, res);
-    };
+    }
 }

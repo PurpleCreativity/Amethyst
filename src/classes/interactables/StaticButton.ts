@@ -8,7 +8,7 @@ export type StaticButtonOptions = {
     permissions?: ValidPermissions[];
     discord_permissions?: PermissionResolvable[];
 
-    function: (interaction: ButtonInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+    function(interaction: ButtonInteraction, guildProfile?: GuildProfile): Promise<unknown>;
 };
 
 export default class StaticButton {
@@ -27,7 +27,7 @@ export default class StaticButton {
         this.function = options.function;
     }
 
-    execute = async (interaction: ButtonInteraction, guildProfile?: GuildProfile) => {
+    async execute(interaction: ButtonInteraction, guildProfile?: GuildProfile) {
         return await this.function(interaction, guildProfile);
-    };
+    }
 }

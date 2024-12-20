@@ -94,7 +94,7 @@ export default class PageEmbed extends ButtonEmbed {
         }
     }
 
-    toPage = async (interaction: ButtonInteraction, pageNumber: number) => {
+    async toPage(interaction: ButtonInteraction, pageNumber: number) {
         this.currentPage = pageNumber;
         this.embed = this.embeds[this.currentPage - 1];
 
@@ -115,5 +115,5 @@ export default class PageEmbed extends ButtonEmbed {
         }
 
         await interaction.update(this.getMessageData());
-    };
+    }
 }

@@ -63,10 +63,10 @@ export default class Modal {
      *
      * @returns {ModalBuilder} The fully configured `ModalBuilder` instance.
      */
-    getModal = (): ModalBuilder => {
+    getModal(): ModalBuilder {
         this.modal.addComponents(this.rows);
         return this.modal;
-    };
+    }
 
     /**
      * Displays the modal to the user and waits for their response.
@@ -77,9 +77,9 @@ export default class Modal {
      * @returns {Promise<ModalSubmitInteraction>} A promise that resolves with the modal submit interaction
      * when the user submits the modal.
      */
-    Prompt = async (
+    async prompt(
         interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction,
-    ): Promise<ModalSubmitInteraction> => {
+    ): Promise<ModalSubmitInteraction> {
         await interaction.showModal(this.getModal());
 
         return new Promise((resolve, reject) => {
@@ -89,5 +89,5 @@ export default class Modal {
                 resolve(newInteraction);
             });
         });
-    };
+    }
 }

@@ -12,16 +12,16 @@ class Connection<Params extends unknown[]> {
      * Disconnects the connection from the signal
      */
 
-    Disconnect = (): void => {
+    disconnect(): void {
         const index = this.Signal.connections.indexOf(this);
         if (index !== -1) {
             this.Signal.connections.splice(index, 1);
         }
-    };
+    }
 
-    IsConnected = (): boolean => {
+    IsConnected(): boolean {
         return this.Signal.connections.includes(this);
-    };
+    }
 }
 
 export default class Signal<Params extends unknown[]> {
@@ -32,11 +32,11 @@ export default class Signal<Params extends unknown[]> {
      * @param callback The function to run when the signal is fired
      * @returns connection object that can be used to disconnect the connection
      */
-    Connect = (callback: (...args: Params) => void | Promise<void>): Connection<Params> => {
+    connect(callback: (...args: Params) => void | Promise<void>): Connection<Params> {
         const con = new Connection(this, callback);
         this.connections.push(con);
         return con;
-    };
+    }
 
     /**
      * Connects to the signal synchronously
@@ -44,17 +44,17 @@ export default class Signal<Params extends unknown[]> {
      * @returns connection object that can be used to disconnect the connection
      */
 
-    ConnectSync = (callback: (...args: Params) => void | Promise<void>): Connection<Params> => {
+    connectSync(callback: (...args: Params) => void | Promise<void>): Connection<Params> {
         const con = new Connection(this, callback, true);
         this.connections.push(con);
         return con;
-    };
+    }
 
     /**
      * Fires the signal and runs all the connections
      * @param args The arguments to pass to the connections
      */
-    Fire = async (...args: Params): Promise<void> => {
+    async fire(...args: Params): Promise<void> {
         for (const con of this.connections) {
             // Run each connect in async
             if (!con.Sync) {
@@ -65,64 +65,64 @@ export default class Signal<Params extends unknown[]> {
                 await con.Function(...args);
             }
         }
-    };
+    }
 
     /**
      * Connects to the signal and runs the callback only once
      * @param callback The function to run when the signal is fired
      * @returns connection object that can be used to disconnect the connection
      */
-    Once = (callback: (...args: Params) => void | Promise<void>): Connection<Params> => {
-        const con = this.Connect(async (...args) => {
-            con.Disconnect();
+    once(callback: (...args: Params) => void | Promise<void>): Connection<Params> {
+        const con = this.connect(async (...args) => {
+            con.disconnect();
             await callback(...args);
         });
         return con;
-    };
+    }
 
-    Emit = this.Fire; // Alias for Fire
-    On = this.Connect; // Alias for Connect
+    emit = this.fire; // Alias for Fire
+    on = this.connect; // Alias for Connect
 
     /**
      * Fires the signal and runs all the connections synchronously
      * @param args The arguments to pass to the connections
      */
-    FireSync = async (...args: Params): Promise<void> => {
+    async fireSync(...args: Params): Promise<void> {
         for (const con of this.connections) {
             await con.Function(...args);
         }
-    };
+    }
 
     /**
      * Forces all connections to run asynchronously
      * @param args The arguments to pass to the connections
      */
-    FireAsync = (...args: Params): void => {
+    fireAsync(...args: Params): void {
         for (const con of this.connections) {
             (() => {
                 con.Function(...args);
             })();
         }
-    };
+    }
 
     /**
      * Disconnects all connections to the signal
      */
-    DisconnectAll = (): void => {
+    disconnectAll(): void {
         this.connections = [];
-    };
+    }
 
     /**
      * Wait for the signal to be fired
      * @returns Promise that resolves when the signal is fired
      */
 
-    Wait = (): Promise<Params> => {
+    wait(): Promise<Params> {
         return new Promise((resolve) => {
-            const con = this.Connect((...args) => {
-                con.Disconnect();
+            const con = this.connect((...args) => {
+                con.disconnect();
                 resolve(args);
             });
         });
-    };
+    }
 }

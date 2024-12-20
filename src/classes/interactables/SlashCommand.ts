@@ -140,7 +140,7 @@ export type SlashCommandOptions = {
      * @param guildProfile The profile of the guild, if applicable.
      * @returns A promise resolving to an unknown value.
      */
-    function: (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+    function(interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<unknown>;
 
     /**
      * The function executed during autocomplete requests.
@@ -148,10 +148,10 @@ export type SlashCommandOptions = {
      * @param guildProfile The profile of the guild, if applicable.
      * @returns A list of autocomplete entries or a promise resolving to such a list.
      */
-    autocomplete?: (
+    autocomplete?(
         interaction: AutocompleteInteraction,
         guildProfile?: GuildProfile,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    ): AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 };
 
 /**
@@ -209,24 +209,19 @@ export default class SlashCommand extends SlashCommandBuilder {
      * The function executed when the command is invoked.
      *
      * @private
-     * @type {(interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => unknown | Promise<unknown>}
      * @see {@link https://discord.js.org/docs/packages/discord.js/main/ChatInputCommandInteraction:Class ChatInputCommandInteraction}
      */
-    private function: (
-        interaction: ChatInputCommandInteraction,
-        guildProfile?: GuildProfile,
-    ) => unknown | Promise<unknown>;
+    function: (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
 
     /**
      * Optional function for handling autocomplete interactions.
      *
-     * @type {(interaction: AutocompleteInteraction, guildProfile?: GuildProfile) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | []}
      * @see {@link https://discord.js.org/docs/packages/discord.js/main/AutocompleteInteraction:Class AutocompleteInteraction}
      */
     autocomplete?: (
         interaction: AutocompleteInteraction,
         guildProfile?: GuildProfile,
-    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
+    ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]>;
 
     /**
      * Indicates if the command is globally disabled.
@@ -298,10 +293,10 @@ export default class SlashCommand extends SlashCommandBuilder {
      * @param {GuildProfile | undefined} guildProfile - Optional guild profile for permissions validation.
      * @returns {Promise<CommandErrorName | undefined>} An error name if a condition fails, otherwise `undefined`.
      */
-    private check = async (
+    private async check(
         interaction: ChatInputCommandInteraction,
         guildProfile?: GuildProfile,
-    ): Promise<CommandErrorName | undefined> => {
+    ): Promise<CommandErrorName | undefined> {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return CommandErrorName.DISABLED_GLOBAL;
@@ -334,7 +329,7 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
 
         return undefined;
-    };
+    }
 
     /**
      * Executes the slash command after performing validation checks.
@@ -343,7 +338,7 @@ export default class SlashCommand extends SlashCommandBuilder {
      * @param {GuildProfile | undefined} guildProfile - Optional guild profile for validation.
      * @returns {Promise<unknown>} The result of the command execution or an error response.
      */
-    execute = async (interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<unknown> => {
+    async execute(interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<unknown> {
         const error = await this.check(interaction, guildProfile);
         if (error) {
             return await interaction.editReply({
@@ -358,5 +353,5 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
 
         return await this.function(interaction, guildProfile);
-    };
+    }
 }

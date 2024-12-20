@@ -39,22 +39,22 @@ export default class Embed extends EmbedBuilder {
         this.setFields(options.fields || []);
     }
 
-    getField = (name: string): APIEmbedField | null => {
+    getField(name: string): APIEmbedField | null {
         return this.data.fields?.find((field: APIEmbedField) => field.name === name) || null;
-    };
+    }
 
-    addField = (name: string, value: string, inline = false): void => {
+    addField(name: string, value: string, inline = false): void {
         this.addFields({ name, value, inline });
-    };
+    }
 
-    removeField = (name: string): void => {
+    removeField(name: string): void {
         const field = this.getField(name);
         if (!field) return;
 
         this.data.fields?.splice(this.data.fields.indexOf(field), 1);
-    };
+    }
 
-    updateField = (name: string, value: string, inline = false): void => {
+    updateField(name: string, value: string, inline = false): void {
         const field = this.getField(name);
 
         if (field) {
@@ -63,9 +63,9 @@ export default class Embed extends EmbedBuilder {
         } else {
             this.addField(name, value, inline);
         }
-    };
+    }
 
-    fromJSON = (json: string | APIEmbed): this => {
+    fromJSON(json: string | APIEmbed): this {
         const data: APIEmbed = typeof json === "string" ? JSON.parse(json) : json;
 
         this.setTitle(data.title || null);
@@ -80,5 +80,5 @@ export default class Embed extends EmbedBuilder {
         this.setFields(data.fields || []);
 
         return this;
-    };
+    }
 }

@@ -70,11 +70,11 @@ export type BaseContextMenuCommandOptions = {
 };
 
 export type MessageContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (interaction: MessageContextMenuCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+    function(interaction: MessageContextMenuCommandInteraction, guildProfile?: GuildProfile): Promise<unknown>;
 };
 
 export type UserContextMenuCommandOptions = BaseContextMenuCommandOptions & {
-    function: (interaction: UserContextMenuCommandInteraction, guildProfile?: GuildProfile) => Promise<unknown>;
+    function(interaction: UserContextMenuCommandInteraction, guildProfile?: GuildProfile): Promise<unknown>;
 };
 
 /**

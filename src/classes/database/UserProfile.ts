@@ -34,15 +34,15 @@ export default class UserProfile {
         this.settings = rawdata.settings;
     }
 
-    getSetting = (key: string): unknown => {
+    getSetting(key: string): unknown {
         return this.settings[key] ?? null;
-    };
+    }
 
-    setSetting = (key: string, value: unknown): void => {
+    setSetting(key: string, value: unknown): void {
         this.settings[key] = value;
-    };
+    }
 
-    save = async (): Promise<void> => {
+    async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
@@ -77,5 +77,5 @@ export default class UserProfile {
         } finally {
             if (connection) await connection.end();
         }
-    };
+    }
 }

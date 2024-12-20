@@ -41,19 +41,19 @@ export default class GuildProfile {
         this.settings = rawdata.settings;
     }
 
-    getSetting = (key: string): unknown => {
+    getSetting(key: string): unknown {
         return this.settings[key];
-    };
+    }
 
-    setSetting = (key: string, value: unknown): void => {
+    setSetting(key: string, value: unknown): void {
         this.settings[key] = value;
-    };
+    }
 
-    getPermission = (name: ValidPermissions): PermissionEntry | undefined => {
+    getPermission(name: ValidPermissions): PermissionEntry | undefined {
         return this.permissions[name];
-    };
+    }
 
-    addUsersToPermission = (name: ValidPermissions, userIds: string | string[]): void => {
+    addUsersToPermission(name: ValidPermissions, userIds: string | string[]): void {
         const permission = this.permissions[name];
         if (!permission) {
             throw new Error(`Permission "${name}" does not exist.`);
@@ -61,9 +61,9 @@ export default class GuildProfile {
 
         const userArray = Array.isArray(userIds) ? userIds : [userIds];
         permission.users = [...new Set([...permission.users, ...userArray])];
-    };
+    }
 
-    addRolesToPermission = (name: ValidPermissions, roleIds: string | string[]): void => {
+    addRolesToPermission(name: ValidPermissions, roleIds: string | string[]): void {
         const permission = this.permissions[name];
         if (!permission) {
             throw new Error(`Permission "${name}" does not exist.`);
@@ -71,9 +71,9 @@ export default class GuildProfile {
 
         const roleArray = Array.isArray(roleIds) ? roleIds : [roleIds];
         permission.roles = [...new Set([...permission.roles, ...roleArray])];
-    };
+    }
 
-    removeUsersFromPermission = (name: ValidPermissions, userIds: string | string[]): void => {
+    removeUsersFromPermission(name: ValidPermissions, userIds: string | string[]): void {
         const permission = this.permissions[name];
         if (!permission) {
             throw new Error(`Permission "${name}" does not exist.`);
@@ -81,9 +81,9 @@ export default class GuildProfile {
 
         const userArray = Array.isArray(userIds) ? userIds : [userIds];
         permission.users = permission.users.filter((userId) => !userArray.includes(userId));
-    };
+    }
 
-    removeRolesFromPermission = (name: ValidPermissions, roleIds: string | string[]): void => {
+    removeRolesFromPermission(name: ValidPermissions, roleIds: string | string[]): void {
         const permission = this.permissions[name];
         if (!permission) {
             throw new Error(`Permission "${name}" does not exist.`);
@@ -91,9 +91,9 @@ export default class GuildProfile {
 
         const roleArray = Array.isArray(roleIds) ? roleIds : [roleIds];
         permission.roles = permission.roles.filter((roleId) => !roleArray.includes(roleId));
-    };
+    }
 
-    checkPermissions = (guildMember: GuildMember, requiredPermissions: ValidPermissions[]): boolean => {
+    checkPermissions(guildMember: GuildMember, requiredPermissions: ValidPermissions[]): boolean {
         if (requiredPermissions.length === 0) return true;
         if (guildMember.permissions.has("Administrator")) return true;
 
@@ -122,9 +122,9 @@ export default class GuildProfile {
         }
 
         return ownedPermissionsCount === requiredPermissions.length;
-    };
+    }
 
-    save = async (): Promise<void> => {
+    async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
@@ -156,5 +156,5 @@ export default class GuildProfile {
         } finally {
             if (connection) await connection.end();
         }
-    };
+    }
 }

@@ -63,15 +63,15 @@ export default class GuildUser {
         this.ranklock = rawdata.ranklock;
     }
 
-    getNote = (noteId: string): noteData | undefined => {
+    getNote(noteId: string): noteData | undefined {
         return this.notes.find((data) => data.id === noteId);
-    };
+    }
 
-    removeNote = (noteId: string) => {
+    removeNote(noteId: string) {
         this.notes = this.notes.filter((data) => data.id !== noteId);
-    };
+    }
 
-    addNote = (creatorId: string, content: string): string => {
+    addNote(creatorId: string, content: string): string {
         const id = client.Functions.GenerateUUID();
 
         this.notes.push({
@@ -84,15 +84,15 @@ export default class GuildUser {
         });
 
         return id;
-    };
+    }
 
-    getNotes = (query: Partial<noteData>): noteData[] => {
+    getNotes(query: Partial<noteData>): noteData[] {
         return this.notes.filter((note) =>
             Object.entries(query).every(([key, value]) => note[key as keyof noteData] === value),
         );
-    };
+    }
 
-    getPendingPoints = async (): Promise<number> => {
+    async getPendingPoints(): Promise<number> {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
@@ -109,9 +109,9 @@ export default class GuildUser {
         } finally {
             if (connection) await connection.end();
         }
-    };
+    }
 
-    save = async (): Promise<void> => {
+    async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
@@ -153,5 +153,5 @@ export default class GuildUser {
         } finally {
             if (connection) await connection.end();
         }
-    };
+    }
 }

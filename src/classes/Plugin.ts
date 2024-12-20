@@ -5,7 +5,7 @@ export type PluginOptions = {
     version: string;
     author: string;
 
-    Init: (client: Client) => unknown | Promise<unknown>;
+    Init(client: Client): unknown | Promise<unknown>;
 };
 
 export default class Plugin {
