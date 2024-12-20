@@ -55,12 +55,7 @@ export default class UserProfile {
                     robloxId = VALUES(robloxId),
                     robloxUsername = VALUES(robloxUsername),
                     settings = VALUES(settings)`,
-                [  
-                    this.id,
-                    this.roblox.id,
-                    this.roblox.username,
-                    JSON.stringify(this.settings),
-                ],
+                [this.id, this.roblox.id, this.roblox.username, JSON.stringify(this.settings)],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
