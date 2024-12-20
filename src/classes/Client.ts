@@ -71,7 +71,7 @@ export default class Client extends DiscordClient {
         this.Plugins = new Plugins(this);
     }
 
-    private Log = (
+    private _log = (
         type: "error" | "success" | "info" | "verbose" | "warn" | "deprecated",
         message: unknown,
         useDate?: boolean,
@@ -113,7 +113,7 @@ export default class Client extends DiscordClient {
                 fullMessage = `[${new Date().toISOString().replace("T", " ").replace("Z", "")}] ${fullMessage}`;
             }
             if (this.config.logConfig[type] === undefined) {
-                this.Log("error", `Invalid log type ${type}`);
+                this._log("error", `Invalid log type ${type}`);
                 return;
             }
             console.log(this.config.logConfig[type].color(fullMessage));
@@ -123,27 +123,27 @@ export default class Client extends DiscordClient {
     };
 
     log = (message: unknown, useDate?: boolean): void => {
-        this.Log("info", message, useDate);
+        this._log("info", message, useDate);
     };
 
     warn = (message: unknown, useDate?: boolean): void => {
-        this.Log("warn", message, useDate);
+        this._log("warn", message, useDate);
     };
 
     error = (message: unknown, useDate?: boolean): void => {
-        this.Log("error", message, useDate);
+        this._log("error", message, useDate);
     };
 
     success = (message: unknown, useDate?: boolean): void => {
-        this.Log("success", message, useDate);
+        this._log("success", message, useDate);
     };
 
     verbose = (message: unknown, useDate?: boolean): void => {
         if (!this.devMode) return;
-        this.Log("verbose", message, useDate);
+        this._log("verbose", message, useDate);
     };
 
-    Startup = async (): Promise<void> => {
+    startup = async (): Promise<void> => {
         this.log(`Starting up Amethyst v${this.config.version}`);
 
         if (this.devMode) {
@@ -220,8 +220,9 @@ export default class Client extends DiscordClient {
             }
         }
 
-        const originalLog = this.Log;
-        this.Log = (
+        /*
+        const originalLog = this._log;
+        this._log = (
             type: "error" | "success" | "info" | "verbose" | "warn" | "deprecated",
             message: unknown,
             useDate?: boolean,
@@ -229,6 +230,7 @@ export default class Client extends DiscordClient {
             originalLog(type, message, useDate);
             //this.Logs.writeLogFile(type, message);
         };
+        */
 
         for (const moduleName of Client.loadingOrder) {
             const moduleObject = this[moduleName];
