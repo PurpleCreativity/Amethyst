@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS point_logs (
     guild_id VARCHAR(20) NOT NULL,
 
     `data` JSON NOT NULL,
-    note VARCHAR(500),
+    note VARCHAR(1024),
 
     creator_roblox_id BIGINT UNSIGNED NOT NULL,
     creator_roblox_username VARCHAR(20) NOT NULL,
