@@ -1,11 +1,11 @@
 class Connection<Params extends unknown[]> {
-    Signal: Signal<Params>;
-    Function: (...args: Params) => void | Promise<void>;
-    Sync = false;
+    signal: Signal<Params>;
+    function: (...args: Params) => void | Promise<void>;
+    sync = false;
     constructor(signal: Signal<Params>, callback: (...args: Params) => void | Promise<void>, sync = false) {
-        this.Signal = signal;
-        this.Function = callback;
-        this.Sync = sync;
+        this.signal = signal;
+        this.function = callback;
+        this.sync = sync;
     }
 
     /**
@@ -13,14 +13,14 @@ class Connection<Params extends unknown[]> {
      */
 
     disconnect(): void {
-        const index = this.Signal.connections.indexOf(this);
+        const index = this.signal.connections.indexOf(this);
         if (index !== -1) {
-            this.Signal.connections.splice(index, 1);
+            this.signal.connections.splice(index, 1);
         }
     }
 
-    IsConnected(): boolean {
-        return this.Signal.connections.includes(this);
+    isConnected(): boolean {
+        return this.signal.connections.includes(this);
     }
 }
 
@@ -57,12 +57,12 @@ export default class Signal<Params extends unknown[]> {
     async fire(...args: Params): Promise<void> {
         for (const con of this.connections) {
             // Run each connect in async
-            if (!con.Sync) {
+            if (!con.sync) {
                 (() => {
-                    con.Function(...args);
+                    con.function(...args);
                 })();
             } else {
-                await con.Function(...args);
+                await con.function(...args);
             }
         }
     }
@@ -89,7 +89,7 @@ export default class Signal<Params extends unknown[]> {
      */
     async fireSync(...args: Params): Promise<void> {
         for (const con of this.connections) {
-            await con.Function(...args);
+            await con.function(...args);
         }
     }
 
@@ -100,7 +100,7 @@ export default class Signal<Params extends unknown[]> {
     fireAsync(...args: Params): void {
         for (const con of this.connections) {
             (() => {
-                con.Function(...args);
+                con.function(...args);
             })();
         }
     }
