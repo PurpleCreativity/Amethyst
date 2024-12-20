@@ -49,7 +49,7 @@ export default class PageEmbed extends ButtonEmbed {
             emoji: Emojis.back,
             disabled: true,
             style: ButtonStyle.Primary,
-            allowed_users: opts.allowed_users,
+            allowedUsers: opts.allowed_users,
             function: async (interaction) => {
                 await this.toPage(interaction, this.currentPage - 1);
             },
@@ -59,7 +59,7 @@ export default class PageEmbed extends ButtonEmbed {
             label: "Forward",
             emoji: Emojis.forward,
             style: ButtonStyle.Primary,
-            allowed_users: opts.allowed_users,
+            allowedUsers: opts.allowed_users,
             function: async (interaction) => {
                 await this.toPage(interaction, this.currentPage + 1);
             },
@@ -72,7 +72,7 @@ export default class PageEmbed extends ButtonEmbed {
             emoji: Emojis.skip_previous,
             disabled: true,
             style: ButtonStyle.Secondary,
-            allowed_users: opts.allowed_users,
+            allowedUsers: opts.allowed_users,
             function: async (interaction) => {
                 await this.toPage(interaction, 1);
             },
@@ -82,7 +82,7 @@ export default class PageEmbed extends ButtonEmbed {
             label: "End",
             emoji: Emojis.skip_next,
             style: ButtonStyle.Secondary,
-            allowed_users: opts.allowed_users,
+            allowedUsers: opts.allowed_users,
             function: async (interaction) => {
                 await this.toPage(interaction, this.embeds.length);
             },

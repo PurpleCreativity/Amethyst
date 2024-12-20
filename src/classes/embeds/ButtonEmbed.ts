@@ -14,7 +14,7 @@ export type Button = {
     label: string;
     style: ButtonStyle;
     disabled?: boolean;
-    allowed_users?: string[];
+    allowedUsers?: string[];
     link?: string;
     emoji?: ComponentEmojiResolvable;
     customId?: string;
@@ -88,9 +88,9 @@ export default class ButtonEmbed extends Embed {
 
                 if (interaction.customId === id) {
                     if (
-                        button.allowed_users &&
-                        button.allowed_users.length > 0 &&
-                        !button.allowed_users.includes(interaction.user.id)
+                        button.allowedUsers &&
+                        button.allowedUsers.length > 0 &&
+                        !button.allowedUsers.includes(interaction.user.id)
                     ) {
                         await interaction.reply({
                             content: "You are not allowed to use this button",
