@@ -28,7 +28,7 @@ export default new Event({
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile) {
+                if (interaction.guild && !guildProfile && !command.user_installable) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
@@ -94,7 +94,7 @@ export default new Event({
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile) {
+                if (interaction.guild && !guildProfile && !command.user_installable) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
@@ -145,7 +145,7 @@ export default new Event({
                         ? await client.Database.getGuildProfile(interaction.guild.id)
                         : undefined;
 
-                if (interaction.guild && !guildProfile) {
+                if (interaction.guild && !guildProfile && !command.user_installable) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
