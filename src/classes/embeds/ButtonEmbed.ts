@@ -8,6 +8,7 @@ import {
     type EmbedBuilder,
 } from "discord.js";
 import client from "../../main.js";
+import Embed, { type EmbedOptions } from "./Embed.js";
 
 export type Button = {
     label: string;
@@ -21,14 +22,16 @@ export type Button = {
     function?: (interaction: ButtonInteraction) => unknown | Promise<unknown>;
 };
 
-export default class ButtonEmbed {
-    embed: EmbedBuilder;
+export default class ButtonEmbed extends Embed {
+    embed: Embed;
     ephemeral: boolean;
     currentRow = 1;
     rows: ButtonBuilder[][] = [];
 
     constructor(embed: EmbedBuilder, buttons?: Button[]) {
-        this.embed = embed;
+        super({});
+
+        this.embed = new Embed(embed.data as EmbedOptions);
         this.rows[0] = [];
         this.ephemeral = false;
 
@@ -139,10 +142,6 @@ export default class ButtonEmbed {
                 }
             }
         }
-    }
-
-    setEmbed(embed: EmbedBuilder) {
-        this.embed = embed;
     }
 
     nextRow() {

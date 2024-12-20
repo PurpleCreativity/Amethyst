@@ -1,6 +1,7 @@
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import ButtonEmbed from "./ButtonEmbed.js";
+import Embed, { type EmbedOptions } from "./Embed.js";
 
 export type PageEmbedOptions = {
     baseEmbed: EmbedBuilder;
@@ -13,7 +14,7 @@ export type PageEmbedOptions = {
 export default class PageEmbed extends ButtonEmbed {
     pageFooter: boolean;
     fieldsPerPage: number;
-    embeds: EmbedBuilder[] = [];
+    embeds: Embed[] = [];
     currentPage = 1;
 
     forwardButton: string;
@@ -37,7 +38,7 @@ export default class PageEmbed extends ButtonEmbed {
                         text: `Page ${this.embeds.length + 1} of ${Math.ceil(opts.fields.length / this.fieldsPerPage)}`,
                     });
                 }
-                this.embeds.push(embed);
+                this.embeds.push(new Embed(embed.data as EmbedOptions));
             }
         }
 
