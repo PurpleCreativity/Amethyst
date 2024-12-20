@@ -209,7 +209,7 @@ export default class Client extends DiscordClient {
             try {
                 if ("init" in moduleObject && typeof moduleObject.init === "function") {
                     // @ts-ignore: Should we really go an extra mile to check if the function is async?
-                    await moduleObject.Init();
+                    await moduleObject.init();
                     this.success(`Executed Init for ${moduleName as string} module`);
                 }
             } catch (error) {
