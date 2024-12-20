@@ -133,7 +133,7 @@ export default class GuildProfile {
             const result = await connection.query(
                 `UPDATE guild_profiles 
                  SET permissions = ?, channels = ?, settings = ?
-                 WHERE id = ? AND _v = ?`,
+                 WHERE id = ? AND __v = ?`,
                 [
                     JSON.stringify(this.permissions),
                     JSON.stringify(this.channels),

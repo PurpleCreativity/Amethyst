@@ -122,7 +122,7 @@ export default class GuildUser {
                     points = ?,
                     notes = ?,
                     ranklock = ?
-                 WHERE id = ? AND _v = ?
+                 WHERE id = ? AND __v = ?
                 `,
                 [
                     this.points,
