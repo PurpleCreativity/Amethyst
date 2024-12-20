@@ -120,7 +120,7 @@ export default new SlashCommand({
                     label: "Add Data",
                     style: ButtonStyle.Primary,
                     emoji: Emojis.add,
-                    allowed_users: [interaction.user.id],
+                    allowedUsers: [interaction.user.id],
 
                     function: async (buttonInteraction) => {
                         const modal = new Modal({
@@ -219,7 +219,7 @@ export default new SlashCommand({
                     label: "Set Note",
                     style: ButtonStyle.Secondary,
                     emoji: Emojis.description,
-                    allowed_users: [interaction.user.id],
+                    allowedUsers: [interaction.user.id],
 
                     function: async (buttonInteraction) => {
                         const modal = new Modal({
@@ -251,7 +251,7 @@ export default new SlashCommand({
                     label: "Full Data",
                     style: ButtonStyle.Secondary,
                     emoji: Emojis.folder_open,
-                    allowed_users: [interaction.user.id],
+                    allowedUsers: [interaction.user.id],
                     disabled: true,
 
                     function: async (buttonInteraction) => {
@@ -286,7 +286,7 @@ export default new SlashCommand({
                     label: "Finish Log",
                     style: ButtonStyle.Success,
                     emoji: Emojis.check,
-                    allowed_users: [interaction.user.id],
+                    allowedUsers: [interaction.user.id],
                     disabled: true,
 
                     function: async (buttonInteraction) => {
@@ -345,7 +345,7 @@ export default new SlashCommand({
                     label: "Cancel",
                     style: ButtonStyle.Danger,
                     emoji: Emojis.delete,
-                    allowed_users: [interaction.user.id],
+                    allowedUsers: [interaction.user.id],
 
                     function: async (_buttonInteraction) => {
                         interaction.editReply({

@@ -67,7 +67,7 @@ export default new SlashCommand({
             label: "Link",
             style: ButtonStyle.Success,
             emoji: Emojis.check,
-            allowed_users: [interaction.user.id],
+            allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
                 await buttonInteraction.deferReply();
@@ -132,7 +132,7 @@ export default new SlashCommand({
             label: "Cancel",
             style: ButtonStyle.Danger,
             emoji: Emojis.delete,
-            allowed_users: [interaction.user.id],
+            allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
                 await buttonInteraction.deferUpdate();
@@ -153,7 +153,7 @@ export default new SlashCommand({
             label: "The code was filtered",
             style: ButtonStyle.Secondary,
             emoji: Emojis.warning,
-            allowed_users: [interaction.user.id],
+            allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
                 await buttonInteraction.deferUpdate();

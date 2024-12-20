@@ -45,7 +45,7 @@ const callback = async (
         label: "View Notes",
         emoji: Emojis.folder_open,
         style: ButtonStyle.Secondary,
-        allowed_users: [interaction.user.id],
+        allowedUsers: [interaction.user.id],
 
         function: async (buttonInteraction) => {
             await buttonInteraction.deferReply({ ephemeral: true });
@@ -76,7 +76,7 @@ const callback = async (
         label: "View Ranklock data",
         emoji: Emojis.description,
         style: ButtonStyle.Secondary,
-        allowed_users: [interaction.user.id],
+        allowedUsers: [interaction.user.id],
         disabled: true, //! To be done at a later date
 
         function: async (buttonInteraction) => {},
