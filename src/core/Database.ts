@@ -82,34 +82,25 @@ export default class Database {
         if (typeof discordUser === "string") discordUser = (await this.client.Functions.fetchUser(discordUser)) as User;
         if (!discordUser || !(discordUser instanceof User)) throw new Error("Unknown user.");
 
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await this.getConnection();
-            await connection.beginTransaction();
+        const profile = new UserProfile({
+            id: discordUser.id,
+            __v: 0,
 
-            const insertQuery = await connection.query(
-                `INSERT INTO user_profiles (
-                    id, roblox_id
-                ) VALUES (?, ?);`,
-                [discordUser.id, null],
-            );
+            robloxId: null,
+            robloxUsername: null,
 
-            await connection.commit();
+            settings: {},
+        });
 
-            return insertQuery;
-        } catch (error) {
-            if (connection) await connection.rollback();
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        await profile.save();
+        return profile;
     };
 
     getUserProfile = async (discordId: string) => {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM user_profiles WHERE id = ?", [discordId]);
+            const existing = await connection.query("SELECT * FROM UserProfiles WHERE id = ?", [discordId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
@@ -117,7 +108,7 @@ export default class Database {
             }
 
             await this.addUserProfile(discordId);
-            const rawdata = (await connection.query("SELECT * FROM user_profiles WHERE id = ?", [discordId]))[0];
+            const rawdata = (await connection.query("SELECT * FROM UserProfiles WHERE id = ?", [discordId]))[0];
 
             return new UserProfile(rawdata);
         } finally {
@@ -129,34 +120,25 @@ export default class Database {
         if (typeof guild === "string") guild = (await this.client.Functions.fetchGuild(guild)) as Guild;
         if (!guild || !(guild instanceof Guild)) throw new Error("Guild not found.");
 
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await this.getConnection();
-            await connection.beginTransaction();
+        const profile = new GuildProfile({
+            id: guild.id,
+            __v: 0,
+            shortname: shortname,
 
-            const insertQuery = await connection.query(
-                `INSERT INTO guild_profiles (
-                    id, shortname
-                ) VALUES (?, ?);`,
-                [guild.id, shortname],
-            );
+            permissions: {},
+            channels: {},
+            settings: {},
+        });
 
-            await connection.commit();
-
-            return insertQuery;
-        } catch (error) {
-            if (connection) await connection.rollback();
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        await profile.save();
+        return profile;
     };
 
     getGuildProfile = async (guildId: string) => {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM guild_profiles WHERE id = ?", [guildId]);
+            const existing = await connection.query("SELECT * FROM GuildProfiles WHERE id = ?", [guildId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
 
@@ -170,44 +152,29 @@ export default class Database {
     };
 
     private addGuildUserProfile = async (guildId: string, robloxId: number) => {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await this.getConnection();
-            await connection.beginTransaction();
+        const profile = new GuildUser({
+            id: robloxId,
+            __v: 0,
+            guildId: guildId,
 
-            const insertQuery = await connection.query(
-                `INSERT INTO guild_users (
-                    guild_id, roblox_id,
-                    notes, ranklock
-                ) VALUES (?, ?, ?, ?);`,
-                [
-                    guildId,
-                    robloxId,
-                    JSON.stringify([]),
-                    {
-                        rank: 0,
-                        reason: null,
-                        shadow: false,
-                    },
-                ],
-            );
+            points: 0,
+            notes: [],
+            ranklock: {
+                rank: 0,
+                reason: null,
+                shadow: false,
+            },
+        });
 
-            await connection.commit();
-
-            return insertQuery;
-        } catch (error) {
-            if (connection) await connection.rollback();
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        await profile.save();
+        return profile;
     };
 
     getGuildUserProfile = async (guildId: string, robloxId: number) => {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [
+            const existing = await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND id = ?", [
                 guildId,
                 robloxId,
             ]);
@@ -219,7 +186,7 @@ export default class Database {
 
             await this.addGuildUserProfile(guildId, robloxId);
             const rawdata = (
-                await connection.query("SELECT * FROM guild_users WHERE guild_id = ? AND roblox_id = ?", [
+                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND robloxId = ?", [
                     guildId,
                     robloxId,
                 ])

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS guild_profiles (
+CREATE TABLE IF NOT EXISTS GuildProfiles (
     id VARCHAR(20) PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,
     
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS guild_profiles (
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildProfiles_BeforeUpdate
-BEFORE UPDATE ON guild_profiles
+BEFORE UPDATE ON GuildProfiles
 FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;

@@ -131,16 +131,18 @@ export default class GuildProfile {
             await connection.beginTransaction();
 
             const result = await connection.query(
-                `UPDATE guild_profiles 
-                 SET permissions = ?, channels = ?, settings = ?
-                 WHERE id = ? AND __v = ?`,
+                `INSERT INTO GuildProfiles (id, shortname, permissions, channels, settings)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    permissions = VALUES(permissions),
+                    channels = VALUES(channels),
+                    settings = VALUES(settings)`,
                 [
+                    this.id,
+                    this.shortname,
                     JSON.stringify(this.permissions),
                     JSON.stringify(this.channels),
                     JSON.stringify(this.settings),
-
-                    this.id,
-                    this.__v,
                 ],
             );
 

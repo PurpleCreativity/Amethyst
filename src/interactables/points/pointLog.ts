@@ -64,15 +64,15 @@ export default new SlashCommand({
                 const pointlog = new PointLog({
                     id: client.Functions.GenerateUUID(),
                     __v: 1,
-                    guild_id: interaction.guild.id,
+                    guildId: interaction.guild.id,
 
                     data: [],
                     note: null,
 
-                    creator_roblox_id: userProfile.roblox.id,
-                    creator_roblox_username: userProfile.roblox.username,
+                    creatorRobloxId: userProfile.roblox.id,
+                    creatorRobloxUsername: userProfile.roblox.username,
 
-                    created_at: new Date(),
+                    createdAt: new Date(),
                 });
 
                 const buttonEmbed = new ButtonEmbed(
@@ -91,14 +91,14 @@ export default new SlashCommand({
                         const foundField = buttonEmbed.embed.getField(`> ${entry.points} points`);
 
                         if (foundField) {
-                            foundField.value += `, \`${entry.user.roblox_username}\``;
+                            foundField.value += `, \`${entry.user.robloxUsername}\``;
                             if (foundField.value.length > 1024)
                                 foundField.value = `${foundField.value.substring(0, 1021)}...`;
                             continue;
                         }
 
                         buttonEmbed.embed.addFields([
-                            { name: `> ${entry.points} points`, value: `\`${entry.user.roblox_username}\`` },
+                            { name: `> ${entry.points} points`, value: `\`${entry.user.robloxUsername}\`` },
                         ]);
 
                         if (buttonEmbed.embed.data.fields?.length && buttonEmbed.embed.data.fields?.length >= 25) {
@@ -176,14 +176,14 @@ export default new SlashCommand({
 
                                 const foundEntry = pointlog.data.find(
                                     (entry) =>
-                                        entry.user.roblox_username.toLowerCase() === actualUser.name.toLowerCase(),
+                                        entry.user.robloxUsername.toLowerCase() === actualUser.name.toLowerCase(),
                                 );
                                 if (foundEntry) {
                                     foundEntry.points = actualPoints;
                                     if (foundEntry.points === 0)
                                         pointlog.data = pointlog.data.filter(
                                             (entry) =>
-                                                entry.user.roblox_username.toLowerCase() !==
+                                                entry.user.robloxUsername.toLowerCase() !==
                                                 actualUser.name.toLowerCase(),
                                         );
                                     continue;
@@ -193,7 +193,7 @@ export default new SlashCommand({
 
                                 pointlog.data.push({
                                     points: actualPoints,
-                                    user: { roblox_id: actualUser.id, roblox_username: actualUser.name },
+                                    user: { robloxId: actualUser.id, robloxUsername: actualUser.name },
                                 });
                             }
                         }
@@ -261,7 +261,7 @@ export default new SlashCommand({
                             if (!pointsMap[user.points]) {
                                 pointsMap[user.points] = [];
                             }
-                            pointsMap[user.points].push(user.user.roblox_username);
+                            pointsMap[user.points].push(user.user.robloxUsername);
                         }
 
                         const userText = Object.entries(pointsMap)
@@ -315,7 +315,7 @@ export default new SlashCommand({
                                 if (!pointsMap[user.points]) {
                                     pointsMap[user.points] = [];
                                 }
-                                pointsMap[user.points].push(user.user.roblox_username);
+                                pointsMap[user.points].push(user.user.robloxUsername);
                             }
 
                             const userText = Object.entries(pointsMap)

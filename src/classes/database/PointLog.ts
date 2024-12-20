@@ -3,8 +3,8 @@ import client from "../../main.js";
 
 export type pointlogDataEntry = {
     user: {
-        roblox_id: number;
-        roblox_username: string;
+        robloxId: number;
+        robloxUsername: string;
     };
     points: number;
 };
@@ -12,45 +12,45 @@ export type pointlogDataEntry = {
 export type rawPointLogData = {
     id: `${string}-${string}-${string}-${string}-${string}`;
     __v: number;
-    guild_id: string;
+    guildId: string;
 
     data: pointlogDataEntry[];
     note: string | null;
 
-    creator_roblox_id: number;
-    creator_roblox_username: string;
-    created_at: Date;
+    creatorRobloxId: number;
+    creatorRobloxUsername: string;
+    createdAt: Date;
 };
 
 export default class PointLog {
     readonly id: string;
     private __v: number;
-    readonly guild_id: string;
+    readonly guildId: string;
 
     data: pointlogDataEntry[];
     note: string | null;
 
     readonly creator: {
-        roblox_id: number;
-        roblox_username: string;
+        robloxId: number;
+        robloxUsername: string;
     };
 
-    createdAt: Date;
+    readonly createdAt: Date;
 
     constructor(rawdata: rawPointLogData) {
         this.id = rawdata.id;
         this.__v = rawdata.__v;
-        this.guild_id = rawdata.guild_id;
+        this.guildId = rawdata.guildId;
 
         this.note = rawdata.note;
         this.data = rawdata.data || [];
 
         this.creator = {
-            roblox_id: rawdata.creator_roblox_id,
-            roblox_username: rawdata.creator_roblox_username,
+            robloxId: rawdata.creatorRobloxId,
+            robloxUsername: rawdata.creatorRobloxUsername,
         };
 
-        this.createdAt = rawdata.created_at ?? new Date();
+        this.createdAt = rawdata.createdAt;
     }
 
     async save(): Promise<void> {
@@ -60,7 +60,7 @@ export default class PointLog {
             await connection.beginTransaction();
 
             const result = await connection.query(
-                `INSERT INTO point_logs (id, note, data, guild_id, creator_roblox_id, creator_roblox_username, created_at)
+                `INSERT INTO PointLogs (id, note, data, guildId, creatorRobloxId, creatorRobloxUsername, createdAt)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     note = VALUES(note),
@@ -69,9 +69,9 @@ export default class PointLog {
                     this.id,
                     this.note,
                     JSON.stringify(this.data),
-                    this.guild_id,
-                    this.creator.roblox_id,
-                    this.creator.roblox_username,
+                    this.guildId,
+                    this.creator.robloxId,
+                    this.creator.robloxUsername,
                     this.createdAt,
                 ],
             );

@@ -7,31 +7,23 @@ export type ranklockData = {
     shadow: boolean;
 };
 
-export type rawNoteData = {
-    creator_discord_id: bigint;
-    content: string;
-    created_at: string; // Date-string
-
-    id: string;
-};
-
 export type noteData = {
     creatorId: string;
     content: string;
     createdAt: Date;
 
-    id: string;
+    id: `${string}-${string}-${string}-${string}-${string}`;
 };
 
 export type rawGuildUserData = {
     id: number;
     __v: number;
 
-    guild_id: string;
+    guildId: string;
 
     points: number;
 
-    notes: rawNoteData[];
+    notes: noteData[];
     ranklock: ranklockData;
 };
 
@@ -39,7 +31,7 @@ export default class GuildUser {
     readonly id: number;
     private __v: number;
 
-    readonly guild_id: string;
+    readonly guildId: string;
 
     points: number;
 
@@ -50,16 +42,11 @@ export default class GuildUser {
         this.id = rawdata.id;
         this.__v = rawdata.__v;
 
-        this.guild_id = rawdata.guild_id;
+        this.guildId = rawdata.guildId;
 
         this.points = rawdata.points;
 
-        this.notes = rawdata.notes.map((note: rawNoteData) => ({
-            creatorId: note.creator_discord_id.toString(),
-            content: note.content,
-            createdAt: new Date(note.created_at),
-            id: note.id,
-        }));
+        this.notes = rawdata.notes;
         this.ranklock = rawdata.ranklock;
     }
 
@@ -99,8 +86,8 @@ export default class GuildUser {
             const result = await connection.query<{ pendingPoints: number }[]>(
                 `
                 SELECT SUM(JSON_EXTRACT(data, '$[*].points')) AS pendingPoints
-                FROM point_logs
-                WHERE JSON_CONTAINS(data, JSON_OBJECT('roblox_id', ?), '$[*]')
+                FROM PointLogs
+                WHERE JSON_CONTAINS(data, JSON_OBJECT('robloxId', ?), '$[*]')
                 `,
                 [this.id],
             );
@@ -118,27 +105,18 @@ export default class GuildUser {
             await connection.beginTransaction();
 
             const result = await connection.query(
-                `UPDATE guild_users SET
-                    points = ?,
-                    notes = ?,
-                    ranklock = ?
-                 WHERE id = ? AND __v = ?
-                `,
+                `INSERT INTO GuildUsers (id, guildId, points, notes, ranklock)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    points = VALUES(points),
+                    notes = VALUES(notes),
+                    ranklock = VALUES(ranklock)`,
                 [
-                    this.points,
-
-                    JSON.stringify(
-                        this.notes.map((note: noteData) => ({
-                            creator_discord_id: note.creatorId,
-                            created_at: note.createdAt.toISOString(),
-                            content: note.content,
-                            id: note.id,
-                        })),
-                    ),
-                    JSON.stringify(this.ranklock),
-
                     this.id,
-                    this.__v,
+                    this.guildId,
+                    this.points,
+                    JSON.stringify(this.notes),
+                    JSON.stringify(this.ranklock),
                 ],
             );
 

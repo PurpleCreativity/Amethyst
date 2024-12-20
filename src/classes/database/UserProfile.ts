@@ -5,8 +5,8 @@ export type rawUserData = {
     id: string;
     __v: number;
 
-    roblox_id: bigint | null;
-    roblox_username: string | null;
+    robloxId: bigint | null;
+    robloxUsername: string | null;
 
     settings: Record<string, unknown>;
 };
@@ -27,8 +27,8 @@ export default class UserProfile {
         this.__v = rawdata.__v;
 
         this.roblox = {
-            id: rawdata.roblox_id ? Number.parseInt(rawdata.roblox_id.toString()) : null,
-            username: rawdata.roblox_username,
+            id: rawdata.robloxId ? Number.parseInt(rawdata.robloxId.toString()) : null,
+            username: rawdata.robloxUsername,
         };
 
         this.settings = rawdata.settings;
@@ -49,20 +49,17 @@ export default class UserProfile {
             await connection.beginTransaction();
 
             const result = await connection.query(
-                `UPDATE user_profiles SET
-                    roblox_id = ?,
-                    roblox_username = ?,
-                    settings = ?
-                 WHERE id = ? AND __v = ?
-                `,
-                [
+                `INSERT INTO UserProfiles (id, robloxId, robloxUsername, settings)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    robloxId = VALUES(robloxId),
+                    robloxUsername = VALUES(robloxUsername),
+                    settings = VALUES(settings)`,
+                [  
+                    this.id,
                     this.roblox.id,
                     this.roblox.username,
-
                     JSON.stringify(this.settings),
-
-                    this.id,
-                    this.__v,
                 ],
             );
 

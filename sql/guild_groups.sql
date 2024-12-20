@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS guild_groups (
+CREATE TABLE IF NOT EXISTS GuildGroups (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,
 
@@ -6,29 +6,29 @@ CREATE TABLE IF NOT EXISTS guild_groups (
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildGroups_BeforeUpdate
-BEFORE UPDATE ON guild_groups
+BEFORE UPDATE ON GuildGroups
 FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;
 END;
 
-CREATE TABLE IF NOT EXISTS guild_group_memberships (
+CREATE TABLE IF NOT EXISTS GuildGroupMemberships (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     __v BIGINT UNSIGNED NOT NULL DEFAULT 1,
 
-    group_id BIGINT UNSIGNED NOT NULL,
-    guild_id VARCHAR(20) NOT NULL,
+    groupId BIGINT UNSIGNED NOT NULL,
+    guildId VARCHAR(20) NOT NULL,
 
     settings JSON NOT NULL DEFAULT '{}',
 
-    FOREIGN KEY (group_id) REFERENCES guild_groups(id),
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
+    FOREIGN KEY (groupId) REFERENCES GuildGroups(id),
+    FOREIGN KEY (guildId) REFERENCES GuildProfiles(id),
 
-    UNIQUE(group_id, guild_id)
+    UNIQUE(groupId, guildId)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildGroupMemberships_BeforeUpdate
-BEFORE UPDATE ON guild_group_memberships
+BEFORE UPDATE ON GuildGroupMemberships
 FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;

@@ -1,28 +1,28 @@
-CREATE TABLE IF NOT EXISTS schedule_events (
+CREATE TABLE IF NOT EXISTS ScheduleEvents (
     id VARCHAR(36) PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,
 
-    guild_id VARCHAR(20) NOT NULL,
+    guildId VARCHAR(20) NOT NULL,
 
     `type` VARCHAR(100) NOT NULL,
     notes VARCHAR(500),
-    place_id BIGINT UNSIGNED,
+    placeId BIGINT UNSIGNED,
 
     `time` TIMESTAMP NOT NULL,
     duration INT NOT NULL,
 
-    host_roblox_name VARCHAR(20) NOT NULL,
-    host_roblox_id BIGINT UNSIGNED NOT NULL,
+    hostRobloxName VARCHAR(20) NOT NULL,
+    hostRobloxId BIGINT UNSIGNED NOT NULL,
 
-    discord_event_id VARCHAR(32) NOT NULL,
-    roblox_event_id VARCHAR(32) NOT NULL,
+    discordEventId VARCHAR(32) NOT NULL,
+    robloxEventId VARCHAR(32) NOT NULL,
 
-    FOREIGN KEY (guild_id) REFERENCES guild_profiles(id),
-    FOREIGN KEY (host_roblox_id) REFERENCES user_profiles(roblox_id)
+    FOREIGN KEY (guildId) REFERENCES GuildProfiles(id),
+    FOREIGN KEY (hostRobloxId) REFERENCES UserProfiles(robloxId)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_ScheduleEvents_BeforeUpdate
-BEFORE UPDATE ON schedule_events
+BEFORE UPDATE ON ScheduleEvents
 FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;

@@ -1,15 +1,15 @@
-CREATE TABLE IF NOT EXISTS user_profiles (
+CREATE TABLE IF NOT EXISTS UserProfiles (
     id VARCHAR(20) PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,
 
-    roblox_id BIGINT UNSIGNED UNIQUE,
-    roblox_username VARCHAR(20) UNIQUE,
+    robloxId BIGINT UNSIGNED UNIQUE,
+    robloxUsername VARCHAR(20) UNIQUE,
 
     settings JSON NOT NULL DEFAULT '{}'
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_UserProfiles_BeforeUpdate
-BEFORE UPDATE ON user_profiles
+BEFORE UPDATE ON UserProfiles
 FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;
