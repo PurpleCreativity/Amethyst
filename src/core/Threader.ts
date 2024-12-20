@@ -27,13 +27,13 @@ export class Thread<V extends (...args: unknown[]) => unknown> {
      * @param args The arguments to pass to the function
      * @returns Promise that resolves when the function is done running
      */
-    Run = (...args: Parameters<V>): Promise<void> => {
+    run(...args: Parameters<V>): Promise<void> {
         this.Active = true;
         return (async () => {
             await this.RawFunction(...args);
-            this.Finished.Fire();
+            this.Finished.fire();
         })();
-    };
+    }
 
     /**
      * Runs the thread in a loop until its halted
@@ -41,7 +41,7 @@ export class Thread<V extends (...args: unknown[]) => unknown> {
      * @param args The arguments to pass to the function
      * @returns self
      */
-    Loop = (interval: number, ...args: Parameters<V>): this => {
+    loop(interval: number, ...args: Parameters<V>): this {
         this.Looped = true;
         this.Active = true;
         this.Running = true;
@@ -49,70 +49,70 @@ export class Thread<V extends (...args: unknown[]) => unknown> {
         (async () => {
             while (this.Active) {
                 if (!this.Running) {
-                    await this.Resumed.Wait();
+                    await this.Resumed.wait();
                 }
                 await this.RawFunction(...args);
-                await this.Finished.Fire();
+                await this.Finished.fire();
                 await new Promise((res) => {
                     setTimeout(res, this.Interval);
                 });
             }
         })();
         return this;
-    };
+    }
 
     /**
      * Halts the thread if its looped
      */
 
-    Halt = (): void => {
+    halt(): void {
         this.Running = false;
-    };
+    }
 
     /**
      * Halts the thread for a certain amount of time
      * @param time How long to halt the thread for
      */
 
-    HaltFor = async (time: number): Promise<void> => {
-        this.Halt();
+    async haltFor(time: number): Promise<void> {
+        this.halt();
         await new Promise((res) => {
             setTimeout(res, time);
         });
-        this.Resume();
-    };
+        this.resume();
+    }
 
     /**
      * Resumes the thread if its halted
      */
 
-    Resume = (): void => {
+    resume(): void {
         this.Running = true;
-        this.Resumed.Fire();
-    };
+        this.Resumed.fire();
+    }
 
-    End = (): void => {
+    end(): void {
         /**
          * Ends the thread if its looped
          */
         this.Active = false;
-    };
+    }
 
-    IsLooped = (): boolean => {
+    IsLooped(): boolean {
         return this.Looped;
-    };
+    }
 
     /**
      * Destroys the thread
      */
-    Destroy = (): void => {
-        this.End();
+    destroy(): void {
+        this.end();
         this.Threader.Threads = this.Threader.Threads.filter((thread) => thread !== this);
         // Destroy this thread
         for (const key in this) {
             delete this[key];
         }
-    };
+    }
 }
 
 export default class Threader {
@@ -125,46 +125,43 @@ export default class Threader {
         this.client = client;
     }
 
-    CreateThread = <V extends (...args: unknown[]) => unknown>(name: string, func: V): Thread<V> => {
+    createThread = <V extends (...args: unknown[]) => unknown>(name: string, func: V): Thread<V> => {
         const thread = new this.Thread(this, name, func);
         this.Threads.push(thread);
         return thread;
     };
 
-    GetThreadByName = (name: string): Thread<(...args: unknown[]) => unknown> | undefined => {
+    getThreadByName = (name: string): Thread<(...args: unknown[]) => unknown> | undefined => {
         return this.Threads.find((thread) => thread.Name === name);
     };
 
-    GetThreadById = (id: string): Thread<(...args: unknown[]) => unknown> | undefined => {
+    getThreadById = (id: string): Thread<(...args: unknown[]) => unknown> | undefined => {
         return this.Threads.find((thread) => thread.Id === id);
     };
 
-    GetThread = (nameOrId: string): Thread<(...args: unknown[]) => unknown> | undefined => {
-        return this.GetThreadById(nameOrId) || this.GetThreadByName(nameOrId);
+    getThread = (nameOrId: string): Thread<(...args: unknown[]) => unknown> | undefined => {
+        return this.getThreadById(nameOrId) || this.getThreadByName(nameOrId);
     };
 
-    EndAll = (): void => {
+    endAll = (): void => {
         for (const thread of this.Threads) {
-            thread.End();
+            thread.end();
         }
     };
 
-    DestroyAll = (): void => {
+    destroyAll = (): void => {
         for (const thread of this.Threads) {
-            thread.Destroy();
+            thread.destroy();
         }
     };
 
-    /**
-     * Halts all threads
-     */
-    HaltAll = (): void => {
+    haltAll = (): void => {
         for (const thread of this.Threads) {
-            thread.Halt();
+            thread.halt();
         }
     };
 
-    CleanUp = (): void => {
-        this.EndAll();
+    cleanUp = (): void => {
+        this.endAll();
     };
 }
