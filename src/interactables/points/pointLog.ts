@@ -137,7 +137,7 @@ export default new SlashCommand({
                             ],
                         });
 
-                        const response = await modal.Prompt(buttonInteraction);
+                        const response = await modal.prompt(buttonInteraction);
                         await response.deferUpdate();
 
                         const data = response.fields.getTextInputValue("data");
@@ -234,7 +234,7 @@ export default new SlashCommand({
                             ],
                         });
 
-                        const response = await modal.Prompt(buttonInteraction);
+                        const response = await modal.prompt(buttonInteraction);
                         await response.deferUpdate();
 
                         pointlog.note = response.fields.getTextInputValue("note");
