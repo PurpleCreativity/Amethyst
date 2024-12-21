@@ -14,9 +14,7 @@ export type ButtonOptions = {
 };
 
 export default class Button extends ButtonBuilder {
-    allowedUsers: string[];
     customId: string;
-    private function?: (interaction: ButtonInteraction) => unknown | Promise<unknown>;
 
     constructor(options: ButtonOptions) {
         super();
@@ -28,14 +26,12 @@ export default class Button extends ButtonBuilder {
         if (options.emoji) this.setEmoji(options.emoji);
         this.customId = options.customId ?? client.Functions.GenerateUUID();
         this.setCustomId(this.customId);
-        this.allowedUsers = options.allowedUsers ?? [];
-        this.function = options.function;
 
-        if (this.function) {
+        if (options.function) {
             client.on("buttonInteraction", async (interaction: ButtonInteraction) => {
-                if (!this.function) return;
+                if (!options.function) return;
                 if (interaction.customId !== this.customId) return;
-                if (this.allowedUsers.length > 0 && !this.allowedUsers.includes(interaction.user.id)) {
+                if (options.allowedUsers && options.allowedUsers.length > 0 && !options.allowedUsers.includes(interaction.user.id)) {
                     await interaction.reply({
                         content: "You are not allowed to use this button",
                         ephemeral: true,
@@ -43,7 +39,7 @@ export default class Button extends ButtonBuilder {
                     return;
                 }
 
-                return await this.function(interaction);
+                return await options.function(interaction);
             });
         }
     }
