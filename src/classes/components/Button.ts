@@ -31,7 +31,11 @@ export default class Button extends ButtonBuilder {
             client.on("buttonInteraction", async (interaction: ButtonInteraction) => {
                 if (!options.function) return;
                 if (interaction.customId !== this.customId) return;
-                if (options.allowedUsers && options.allowedUsers.length > 0 && !options.allowedUsers.includes(interaction.user.id)) {
+                if (
+                    options.allowedUsers &&
+                    options.allowedUsers.length > 0 &&
+                    !options.allowedUsers.includes(interaction.user.id)
+                ) {
                     await interaction.reply({
                         content: "You are not allowed to use this button",
                         ephemeral: true,
