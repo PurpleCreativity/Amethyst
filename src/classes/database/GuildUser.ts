@@ -1,5 +1,6 @@
 import type mariadb from "mariadb";
 import client from "../../main.js";
+import type PointLog from "./PointLog.js";
 
 export type ranklockData = {
     rank: number;
@@ -79,7 +80,7 @@ export default class GuildUser {
         );
     }
 
-    async getPendingPoints(): Promise<number> {
+    async fetchPendingPoints(): Promise<number> {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
@@ -98,6 +99,24 @@ export default class GuildUser {
         }
     }
 
+    async fetchCreatedPointlogs(): Promise<PointLog[]> {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await client.Database.getConnection();
+            const result = await connection.query<PointLog[]>(
+                `
+                SELECT * FROM PointLogs
+                WHERE creatorRobloxId = ?
+                `,
+                [this.id],
+            );
+
+            return result;
+        } finally {
+            if (connection) await connection.end();
+        }
+    }
+
     async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
@@ -105,12 +124,14 @@ export default class GuildUser {
             await connection.beginTransaction();
 
             const result = await connection.query(
-                `INSERT INTO GuildUsers (id, guildId, points, notes, ranklock)
+                `
+                INSERT INTO GuildUsers (id, guildId, points, notes, ranklock)
                 VALUES (?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     points = VALUES(points),
                     notes = VALUES(notes),
-                    ranklock = VALUES(ranklock)`,
+                    ranklock = VALUES(ranklock)
+                `,
                 [this.id, this.guildId, this.points, JSON.stringify(this.notes), JSON.stringify(this.ranklock)],
             );
 

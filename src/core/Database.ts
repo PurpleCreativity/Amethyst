@@ -186,10 +186,7 @@ export default class Database {
 
             await this.addGuildUserProfile(guildId, robloxId);
             const rawdata = (
-                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND id = ?", [
-                    guildId,
-                    robloxId,
-                ])
+                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND id = ?", [guildId, robloxId])
             )[0];
 
             return new GuildUser(rawdata);

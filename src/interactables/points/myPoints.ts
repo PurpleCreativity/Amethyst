@@ -24,7 +24,7 @@ export default new SlashCommand({
 
         const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.roblox.id);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.roblox.id);
-        const pendingPoints = await guildUserProfile.getPendingPoints();
+        const pendingPoints = await guildUserProfile.fetchPendingPoints();
         const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
 
         const embed = client.Functions.makeInfoEmbed({

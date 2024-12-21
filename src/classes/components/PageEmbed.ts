@@ -1,14 +1,15 @@
 import { type APIEmbedField, type ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import Button from "./Button.js";
 import ButtonEmbed from "./ButtonEmbed.js";
 import Embed, { type EmbedOptions } from "./Embed.js";
 
 export type PageEmbedOptions = {
-    baseEmbed: EmbedBuilder;
+    baseEmbed: Embed;
     pageFooter?: boolean;
     fieldsPerPage?: number;
     fields?: APIEmbedField[];
-    allowed_users?: string[];
+    allowedUsers?: string[];
 };
 
 export default class PageEmbed extends ButtonEmbed {
@@ -17,11 +18,11 @@ export default class PageEmbed extends ButtonEmbed {
     embeds: Embed[] = [];
     currentPage = 1;
 
-    forwardButton: string;
-    backButton: string;
+    forwardButton: Button;
+    backButton: Button;
 
-    firstPageButton: string;
-    lastPageButton: string;
+    firstPageButton: Button;
+    lastPageButton: Button;
 
     constructor(opts: PageEmbedOptions) {
         super(opts.baseEmbed);
@@ -44,49 +45,57 @@ export default class PageEmbed extends ButtonEmbed {
 
         this.embed = this.embeds[0];
 
-        this.backButton = this.addButton({
-            label: "Back",
-            emoji: Emojis.back,
-            disabled: true,
-            style: ButtonStyle.Primary,
-            allowedUsers: opts.allowed_users,
-            function: async (interaction) => {
-                await this.toPage(interaction, this.currentPage - 1);
-            },
-        });
+        this.backButton = this.addButton(
+            new Button({
+                label: "Back",
+                emoji: Emojis.back,
+                disabled: true,
+                style: ButtonStyle.Primary,
+                allowedUsers: opts.allowedUsers,
+                function: async (interaction) => {
+                    await this.toPage(interaction, this.currentPage - 1);
+                },
+            }),
+        );
 
-        this.forwardButton = this.addButton({
-            label: "Forward",
-            emoji: Emojis.forward,
-            style: ButtonStyle.Primary,
-            allowedUsers: opts.allowed_users,
-            function: async (interaction) => {
-                await this.toPage(interaction, this.currentPage + 1);
-            },
-        });
+        this.forwardButton = this.addButton(
+            new Button({
+                label: "Forward",
+                emoji: Emojis.forward,
+                style: ButtonStyle.Primary,
+                allowedUsers: opts.allowedUsers,
+                function: async (interaction) => {
+                    await this.toPage(interaction, this.currentPage + 1);
+                },
+            }),
+        );
 
         this.nextRow();
 
-        this.firstPageButton = this.addButton({
-            label: "Start",
-            emoji: Emojis.skip_previous,
-            disabled: true,
-            style: ButtonStyle.Secondary,
-            allowedUsers: opts.allowed_users,
-            function: async (interaction) => {
-                await this.toPage(interaction, 1);
-            },
-        });
+        this.firstPageButton = this.addButton(
+            new Button({
+                label: "Start",
+                emoji: Emojis.skip_previous,
+                disabled: true,
+                style: ButtonStyle.Secondary,
+                allowedUsers: opts.allowedUsers,
+                function: async (interaction) => {
+                    await this.toPage(interaction, 1);
+                },
+            }),
+        );
 
-        this.lastPageButton = this.addButton({
-            label: "End",
-            emoji: Emojis.skip_next,
-            style: ButtonStyle.Secondary,
-            allowedUsers: opts.allowed_users,
-            function: async (interaction) => {
-                await this.toPage(interaction, this.embeds.length);
-            },
-        });
+        this.lastPageButton = this.addButton(
+            new Button({
+                label: "End",
+                emoji: Emojis.skip_next,
+                style: ButtonStyle.Secondary,
+                allowedUsers: opts.allowedUsers,
+                function: async (interaction) => {
+                    await this.toPage(interaction, this.embeds.length);
+                },
+            }),
+        );
 
         if (this.embeds.length < 2) {
             this.disableButton(this.forwardButton);

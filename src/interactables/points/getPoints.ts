@@ -7,11 +7,12 @@ import {
     type UserContextMenuCommandInteraction,
 } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import Button from "../../classes/components/Button.js";
+import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
+import PageEmbed from "../../classes/components/PageEmbed.js";
 import type GuildProfile from "../../classes/database/GuildProfile.js";
 import type { noteData } from "../../classes/database/GuildUser.js";
 import type GuildUser from "../../classes/database/GuildUser.js";
-import ButtonEmbed from "../../classes/embeds/ButtonEmbed.js";
-import PageEmbed from "../../classes/embeds/PageEmbed.js";
 import { UserContextMenuCommand } from "../../classes/interactables/ContextCommand.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
@@ -22,7 +23,7 @@ const callback = async (
     guildUserProfile: GuildUser,
     robloxProfile: UserData,
 ) => {
-    const pendingPoints = await guildUserProfile.getPendingPoints();
+    const pendingPoints = await guildUserProfile.fetchPendingPoints();
     const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
 
     const buttonEmbed = new ButtonEmbed(
@@ -41,46 +42,50 @@ const callback = async (
         inline: false,
     });
 
-    buttonEmbed.addButton({
-        label: "View Notes",
-        emoji: Emojis.folder_open,
-        style: ButtonStyle.Secondary,
-        allowedUsers: [interaction.user.id],
+    buttonEmbed.addButton(
+        new Button({
+            label: "View Notes",
+            emoji: Emojis.folder_open,
+            style: ButtonStyle.Secondary,
+            allowedUsers: [interaction.user.id],
 
-        function: async (buttonInteraction) => {
-            await buttonInteraction.deferReply({ ephemeral: true });
+            function: async (buttonInteraction) => {
+                await buttonInteraction.deferReply({ ephemeral: true });
 
-            let fields: APIEmbedField[] = guildUserProfile.notes.map((note: noteData) => ({
-                name: `\`${note.id}\``,
-                value: `Added by <@${note.creatorId}>, on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\n\`\`\`${note.content.slice(0, 500)}${note.content.length > 500 ? "..." : ""}\`\`\``,
-                inline: false,
-            }));
+                let fields: APIEmbedField[] = guildUserProfile.notes.map((note: noteData) => ({
+                    name: `\`${note.id}\``,
+                    value: `Added by <@${note.creatorId}>, on <t:${Math.floor(note.createdAt.getTime() / 1000)}:f>\n\n\`\`\`${note.content.slice(0, 500)}${note.content.length > 500 ? "..." : ""}\`\`\``,
+                    inline: false,
+                }));
 
-            if (fields.length === 0)
-                fields = [{ name: "No data", value: "This user doesn't have any notes.", inline: false }];
+                if (fields.length === 0)
+                    fields = [{ name: "No data", value: "This user doesn't have any notes.", inline: false }];
 
-            const pageEmbed = new PageEmbed({
-                baseEmbed: client.Functions.makeInfoEmbed({
-                    title: `${robloxProfile.name}'s notes`,
-                }),
+                const pageEmbed = new PageEmbed({
+                    baseEmbed: client.Functions.makeInfoEmbed({
+                        title: `${robloxProfile.name}'s notes`,
+                    }),
 
-                fieldsPerPage: 5,
-                fields: fields,
-            });
+                    fieldsPerPage: 5,
+                    fields: fields,
+                });
 
-            return await buttonInteraction.editReply(pageEmbed.getMessageData());
-        },
-    });
+                return await buttonInteraction.editReply(pageEmbed.getMessageData());
+            },
+        }),
+    );
 
-    buttonEmbed.addButton({
-        label: "View Ranklock data",
-        emoji: Emojis.description,
-        style: ButtonStyle.Secondary,
-        allowedUsers: [interaction.user.id],
-        disabled: true, //! To be done at a later date
+    buttonEmbed.addButton(
+        new Button({
+            label: "View Ranklock data",
+            emoji: Emojis.description,
+            style: ButtonStyle.Secondary,
+            allowedUsers: [interaction.user.id],
+            disabled: true, //! To be done at a later date
 
-        function: async (buttonInteraction) => {},
-    });
+            function: async (buttonInteraction) => {},
+        }),
+    );
 
     return await interaction.editReply(buttonEmbed.getMessageData());
 };

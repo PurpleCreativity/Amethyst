@@ -63,7 +63,7 @@ export default class PointLog {
                 `UPDATE PointLogs
                  SET 
                      note = ?,
-                     data = ?,
+                     data = ?
                  WHERE id = ? AND __v = ?`,
                 [
                     this.note,
@@ -88,7 +88,7 @@ export default class PointLog {
                         this.createdAt,
                     ],
                 );
-    
+
                 if (insertResult.affectedRows === 0) throw new Error("Failed to save changes.");
             }
 

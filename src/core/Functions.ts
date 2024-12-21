@@ -5,7 +5,8 @@ import type { UserData } from "bloxwrap";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import Embed, { type EmbedOptions } from "../classes/embeds/Embed.js";
+import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
+import type PointLog from "../classes/database/PointLog.js";
 
 export default class Functions {
     client: Client;
@@ -246,6 +247,10 @@ export default class Functions {
 
     isDev = (userId: string) => {
         return this.client.config.devList.includes(userId);
+    };
+
+    makePointlogEmbed = (pointlog: PointLog) => {
+        return this.makeInfoEmbed({});
     };
 
     makeInfoEmbed = (options: EmbedOptions) => {
