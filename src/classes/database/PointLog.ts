@@ -59,24 +59,38 @@ export default class PointLog {
             connection = await client.Database.getConnection();
             await connection.beginTransaction();
 
-            const result = await connection.query(
-                `INSERT INTO PointLogs (id, note, data, guildId, creatorRobloxId, creatorRobloxUsername, createdAt)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE
-                    note = VALUES(note),
-                    data = VALUES(data)`,
+            const updateResult = await connection.query(
+                `UPDATE PointLogs
+                 SET 
+                     note = ?,
+                     data = ?,
+                 WHERE id = ? AND __v = ?`,
                 [
-                    this.id,
                     this.note,
                     JSON.stringify(this.data),
-                    this.guildId,
-                    this.creator.robloxId,
-                    this.creator.robloxUsername,
-                    this.createdAt,
+
+                    this.id,
+                    this.__v,
                 ],
             );
 
-            if (result.affectedRows < 0) throw new Error("Failed to save changes.");
+            if (updateResult.affectedRows === 0) {
+                const insertResult = await connection.query(
+                    `INSERT INTO PointLogs (id, note, data, guildId, creatorRobloxId, creatorRobloxUsername, createdAt)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        this.id,
+                        this.note,
+                        JSON.stringify(this.data),
+                        this.guildId,
+                        this.creator.robloxId,
+                        this.creator.robloxUsername,
+                        this.createdAt,
+                    ],
+                );
+    
+                if (insertResult.affectedRows === 0) throw new Error("Failed to save changes.");
+            }
 
             await connection.commit();
             this.__v += 1;
