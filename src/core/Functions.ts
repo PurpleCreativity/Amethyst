@@ -4,6 +4,7 @@ import process from "node:process";
 import type { UserData } from "bloxwrap";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Icons from "../../public/Icons.json" with { type: "json" };
+import Emojis from "../../public/Emojis.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
 import type PointLog from "../classes/database/PointLog.js";
@@ -250,7 +251,33 @@ export default class Functions {
     };
 
     makePointlogEmbed = (pointlog: PointLog) => {
-        return this.makeInfoEmbed({});
+        const embed = this.makeInfoEmbed({
+            title: `\`${pointlog.id}\``,
+            footer: { text: pointlog.id },
+            fields: [{ name: "Notes", value: `${pointlog.note || "`No note`"}`, inline: false }],
+        });
+
+        const baseDescription = `Created by [${pointlog.creator.robloxUsername}](https://www.roblox.com/users/${pointlog.creator.robloxId}/profile) on <t:${Math.round(pointlog.createdAt.getTime() / 1000)}:F>`;
+
+        for (const data of pointlog.data) {
+            const foundField = embed.getField(`> ${data.points} points`);
+            if (foundField) {
+                foundField.value += `, \`${data.user.robloxUsername}\``;
+                if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
+                continue;
+            }
+
+            embed.addFields({ name: `> ${data.points} points`, value: `\`${data.user.robloxUsername}\`` });
+
+            if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
+                embed.setDescription(`## ${Emojis.warning} Unable to show full log!\n${baseDescription}`);
+                break;
+            }
+
+            embed.setDescription(baseDescription);
+        }
+
+        return embed;
     };
 
     makeInfoEmbed = (options: EmbedOptions) => {
