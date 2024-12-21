@@ -2,7 +2,6 @@ import { ButtonStyle, SlashCommandSubcommandBuilder, TextInputBuilder, TextInput
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import PointLog from "../../classes/database/PointLog.js";
 import ButtonEmbed from "../../classes/embeds/ButtonEmbed.js";
-import PageEmbed from "../../classes/embeds/PageEmbed.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import Modal from "../../classes/prompts/Modal.js";
 import client from "../../main.js";
