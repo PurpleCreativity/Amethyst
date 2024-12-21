@@ -298,7 +298,7 @@ export default new SlashCommand({
                     new Button({
                         label: "Mode: Increment",
                         style: ButtonStyle.Secondary,
-
+                        emoji: Emojis.on,
                         allowedUsers: [interaction.user.id],
 
                         function: async (buttonInteraction) => {
@@ -307,9 +307,11 @@ export default new SlashCommand({
                             if (currentMode === addDataMode.Increment) {
                                 currentMode = addDataMode.Set;
                                 toggleMode.setLabel("Mode: Set");
+                                toggleMode.setEmoji(Emojis.off);
                             } else {
                                 currentMode = addDataMode.Increment;
                                 toggleMode.setLabel("Mode: Increment");
+                                toggleMode.setEmoji(Emojis.on);
                             }
 
                             interaction.editReply(buttonEmbed.getMessageData());
