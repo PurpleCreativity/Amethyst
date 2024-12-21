@@ -83,7 +83,7 @@ export default new SlashCommand({
 
                 const buttonEmbed = new ButtonEmbed(
                     client.Functions.makeInfoEmbed({
-                        title: "Point Log Creator",
+                        title: "Pointlog Creator",
                         description: "Use the buttons below to add or remove points from this log, or to add a note.",
                         footer: { text: pointlog.id },
                     }),
@@ -160,12 +160,13 @@ export default new SlashCommand({
                             await interaction.editReply({
                                 embeds: [
                                     client.Functions.makeInfoEmbed({
-                                        title: "Point Log",
+                                        title: "Pointlog Creator",
                                         description: `${Emojis.thinking} Processing data, please wait`,
                                     }),
                                 ],
                             });
 
+                            const userPointsMap = new Map();
                             for (const line of lines) {
                                 const [points, users] = line.split(" - ");
                                 if (!points || !users) continue;
@@ -173,38 +174,79 @@ export default new SlashCommand({
                                 const actualPoints = Number.parseInt(points);
                                 if (Number.isNaN(actualPoints)) continue;
 
-                                const actualUsers = users.split(",");
+                                const actualUsers = users
+                                    .split(",")
+                                    .map((user) =>
+                                        Number.isNaN(Number.parseInt(user))
+                                            ? user.trim().toLowerCase()
+                                            : Number.parseInt(user),
+                                    );
 
-                                for (let user of actualUsers) {
-                                    user = user.trim().toLowerCase();
+                                for (const user of actualUsers) {
+                                    if (!userPointsMap.has(user)) {
+                                        userPointsMap.set(user, 0);
+                                    }
+                                    userPointsMap.set(user, userPointsMap.get(user) + actualPoints);
+                                }
+                            }
 
-                                    const actualUser = await client.Functions.fetchRobloxUser(user);
+                            const numericIds = [...userPointsMap.keys()].filter((key) => typeof key === "number");
+                            const usernames = [...userPointsMap.keys()].filter((key) => typeof key === "string");
+                            try {
+                                const fetchedUsersByIds = await client.BloxWrap.fetchUsersByIds(numericIds, false);
+                                const fetchedUsersByUsernames = await client.BloxWrap.fetchUsersByUsernames(
+                                    usernames,
+                                    false,
+                                );
+
+                                const userLookup = new Map(
+                                    [...fetchedUsersByIds, ...fetchedUsersByUsernames].map((user) => [
+                                        user.name,
+                                        { id: user.id, username: user.name },
+                                    ]),
+                                );
+
+                                for (const [userKey, points] of userPointsMap.entries()) {
+                                    const actualUser = userLookup.get(userKey);
                                     if (!actualUser) continue;
 
                                     const foundEntry = pointlog.data.find(
-                                        (entry) =>
-                                            entry.user.robloxUsername.toLowerCase() === actualUser.name.toLowerCase(),
+                                        (entry) => entry.user.robloxId === actualUser.id,
                                     );
                                     if (foundEntry) {
-                                        if (currentMode === addDataMode.Increment) foundEntry.points += actualPoints;
-                                        else foundEntry.points = actualPoints;
+                                        if (currentMode === addDataMode.Increment) foundEntry.points += points;
+                                        else foundEntry.points = points;
 
-                                        if (foundEntry.points === 0)
+                                        if (foundEntry.points === 0) {
                                             pointlog.data = pointlog.data.filter(
-                                                (entry) =>
-                                                    entry.user.robloxUsername.toLowerCase() !==
-                                                    actualUser.name.toLowerCase(),
+                                                (entry) => entry.user.robloxId !== actualUser.id,
                                             );
-                                        continue;
+                                            continue;
+                                        }
                                     }
 
-                                    if (actualPoints === 0) continue;
+                                    if (points === 0) continue;
 
                                     pointlog.data.push({
-                                        points: actualPoints,
-                                        user: { robloxId: actualUser.id, robloxUsername: actualUser.name },
+                                        points: points,
+                                        user: { robloxId: actualUser.id, robloxUsername: actualUser.username },
                                     });
                                 }
+                            } catch (error) {
+                                const message: string =
+                                    error && typeof error === "object" && "message" in error
+                                        ? (error as { message: string }).message
+                                        : "Unknown error";
+                                if (error && typeof error === "object" && "stack" in error) client.error(error.stack);
+
+                                await interaction.followUp({
+                                    embeds: [
+                                        client.Functions.makeErrorEmbed({
+                                            title: "An error occured",
+                                            description: `\`\`\`${message}\`\`\``,
+                                        }),
+                                    ],
+                                });
                             }
 
                             buttonEmbed.enableButton(addData);
