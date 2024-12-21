@@ -11,17 +11,17 @@ export default class Database {
     client: Client;
     private pool: mariadb.Pool;
     readonly loadingOrder = [
-        "user_profiles",
-        "guild_profiles",
+        "UserProfiles",
+        "GuildProfiles",
 
-        "guild_users",
-        "guild_groups",
-        "roblox_places",
-        "api_keys",
-        "point_logs",
+        "GuildUsers",
+        "GuildGroups",
+        "RobloxPlaces",
+        "APIKeys",
+        "PointLogs",
 
-        "schedule_types",
-        "schedule_events",
+        "ScheduleTypes",
+        "ScheduleEvents",
     ];
 
     constructor(client: Client) {
