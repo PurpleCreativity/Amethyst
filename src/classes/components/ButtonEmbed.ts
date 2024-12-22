@@ -2,15 +2,13 @@ import { type APIButtonComponentWithCustomId, type ButtonBuilder, ButtonStyle, C
 import type Button from "./Button.js";
 import Embed, { type EmbedOptions } from "./Embed.js";
 
-export default class ButtonEmbed extends Embed {
+export default class ButtonEmbed {
     embed: Embed;
     ephemeral: boolean;
     currentRow = 1;
     rows: ButtonBuilder[][] = [];
 
     constructor(embed: Embed) {
-        super({});
-
         this.embed = new Embed(embed.data as EmbedOptions);
         this.rows[0] = [];
         this.ephemeral = false;
