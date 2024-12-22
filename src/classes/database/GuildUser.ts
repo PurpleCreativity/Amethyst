@@ -1,6 +1,6 @@
 import type mariadb from "mariadb";
 import client from "../../main.js";
-import type PointLog from "./PointLog.js";
+import PointLog, { type rawPointLogData } from "./PointLog.js";
 
 export type ranklockData = {
     rank: number;
@@ -103,7 +103,7 @@ export default class GuildUser {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
-            const result = await connection.query<PointLog[]>(
+            const rawdata = await connection.query<rawPointLogData[]>(
                 `
                 SELECT * FROM PointLogs
                 WHERE creatorRobloxId = ?
@@ -111,7 +111,12 @@ export default class GuildUser {
                 [this.id],
             );
 
-            return result;
+            const pointlogs = [] as PointLog[];
+            for (const data of rawdata) {
+                pointlogs.push(new PointLog(data));
+            }
+
+            return pointlogs;
         } finally {
             if (connection) await connection.end();
         }
