@@ -8,7 +8,7 @@ import {
     type PermissionResolvable,
     type UserContextMenuCommandInteraction,
 } from "discord.js";
-import Icons from "../../../public/Icons.json" with { type: "json" };
+import Images from "../../../public/Images.json" with { type: "json" };
 import client from "../../main.js";
 import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
 import type { ValidPermissions } from "../../types/shared.js";
@@ -205,7 +205,7 @@ class MessageContextMenuCommand extends BaseContextMenuCommand {
                     client.Functions.makeErrorEmbed({
                         title: `Error while executing command: \`${error}\``,
                         description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
-                        thumbnail: Icons.moderation,
+                        thumbnail: Images.moderation,
                     }),
                 ],
             });
@@ -246,7 +246,7 @@ class UserContextMenuCommand extends BaseContextMenuCommand {
                     client.Functions.makeErrorEmbed({
                         title: `Error while executing command: \`${error}\``,
                         description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
-                        thumbnail: Icons.moderation,
+                        thumbnail: Images.moderation,
                     }),
                 ],
             });

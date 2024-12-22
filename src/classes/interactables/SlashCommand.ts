@@ -19,7 +19,7 @@ import {
     type SlashCommandSubcommandGroupBuilder,
     type SlashCommandUserOption,
 } from "discord.js";
-import Icons from "../../../public/Icons.json" with { type: "json" };
+import Images from "../../../public/Images.json" with { type: "json" };
 import client from "../../main.js";
 import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
 import type { ValidPermissions } from "../../types/shared.js";
@@ -346,7 +346,7 @@ export default class SlashCommand extends SlashCommandBuilder {
                     client.Functions.makeErrorEmbed({
                         title: `Error while executing command: \`${error}\``,
                         description: `\`\`\`${CommandErrorDescription[error]}\`\`\``,
-                        thumbnail: Icons.moderation,
+                        thumbnail: Images.moderation,
                     }),
                 ],
             });

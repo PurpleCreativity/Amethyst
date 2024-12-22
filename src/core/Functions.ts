@@ -4,7 +4,7 @@ import process from "node:process";
 import type { UserData } from "bloxwrap";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Emojis from "../../public/Emojis.json" with { type: "json" };
-import Icons from "../../public/Icons.json" with { type: "json" };
+import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
 import type PointLog from "../classes/database/PointLog.js";
@@ -285,7 +285,7 @@ export default class Functions {
 
         if (!options.color) embed.setColor(0x4287f5);
         if (!options.author) {
-            embed.setAuthor({ name: "Info", iconURL: Icons.info });
+            embed.setAuthor({ name: "Info", iconURL: Images.info });
         }
 
         return embed;
@@ -296,7 +296,7 @@ export default class Functions {
 
         if (!options.color) embed.setColor(0xffcc00);
         if (!options.author) {
-            embed.setAuthor({ name: "Warning", iconURL: Icons.warn });
+            embed.setAuthor({ name: "Warning", iconURL: Images.warn });
         }
 
         return embed;
@@ -307,7 +307,7 @@ export default class Functions {
 
         if (!options.color) embed.setColor(0x00ff00);
         if (!options.author) {
-            embed.setAuthor({ name: "Success", iconURL: Icons.check });
+            embed.setAuthor({ name: "Success", iconURL: Images.check });
         }
 
         return embed;
@@ -318,7 +318,7 @@ export default class Functions {
 
         if (!options.color) embed.setColor(0xff0000);
         if (!options.author) {
-            embed.setAuthor({ name: "Error", iconURL: Icons.close });
+            embed.setAuthor({ name: "Error", iconURL: Images.close });
         }
 
         return embed;
