@@ -57,10 +57,6 @@ export default class PointLog {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await client.Database.getConnection();
-            
-
-
-            
         } catch (error) {
             if (connection) await connection.rollback();
 
