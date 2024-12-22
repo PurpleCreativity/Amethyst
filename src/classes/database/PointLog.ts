@@ -53,6 +53,45 @@ export default class PointLog {
         this.createdAt = rawdata.createdAt;
     }
 
+    async import(): Promise<void> {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await client.Database.getConnection();
+            
+
+
+            
+        } catch (error) {
+            if (connection) await connection.rollback();
+
+            throw error;
+        } finally {
+            if (connection) await connection.end();
+        }
+    }
+
+    async delete(): Promise<void> {
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await client.Database.getConnection();
+            const result = await connection.query(
+                `DELETE FROM PointLogs 
+                 WHERE id = ? AND __v = ?`,
+                [this.id, this.__v],
+            );
+
+            if (result.affectedRows === 0) {
+                throw new Error(`Failed to delete PointLog with Id "${this.id}" or version mismatch.`);
+            }
+        } catch (error) {
+            if (connection) await connection.rollback();
+
+            throw error;
+        } finally {
+            if (connection) await connection.end();
+        }
+    }
+
     async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {

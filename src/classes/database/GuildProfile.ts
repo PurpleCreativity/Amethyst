@@ -96,6 +96,7 @@ export default class GuildProfile {
     checkPermissions(guildMember: GuildMember, requiredPermissions: ValidPermissions[]): boolean {
         if (requiredPermissions.length === 0) return true;
         if (guildMember.permissions.has("Administrator")) return true;
+        if (client.Functions.isDev(guildMember.user.id)) return true;
 
         const roles = new Set(guildMember.roles.cache.map((role) => role.id));
 

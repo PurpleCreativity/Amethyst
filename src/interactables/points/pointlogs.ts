@@ -1,5 +1,13 @@
-import { ButtonStyle, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import {
+    ButtonStyle,
+    type GuildMember,
+    SlashCommandSubcommandBuilder,
+    TextChannel,
+    TextInputBuilder,
+    TextInputStyle,
+} from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import Images from "../../../public/Images.json" with { type: "json" };
 import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
 import PointLog from "../../classes/database/PointLog.js";
@@ -455,8 +463,8 @@ export default new SlashCommand({
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeErrorEmbed({
-                                title: "Your Points",
-                                description: "You are not linked to a Roblox account",
+                                title: "Your Pointlogs",
+                                description: "You are not linked to a Roblox account.",
                             }),
                         ],
                     });
@@ -466,6 +474,141 @@ export default new SlashCommand({
                     interaction.guild.id,
                     userProfile.roblox.id,
                 );
+
+                const pointlogs = await guildUserProfile.fetchCreatedPointlogs();
+                if (pointlogs.length === 0) {
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeInfoEmbed({
+                                title: "Your Pointlogs",
+                                description: "You don't have any pointlogs in the database.",
+                            }),
+                        ],
+                    });
+                }
+
+                const embeds = [] as ButtonEmbed[];
+                for (const pointlog of pointlogs) {
+                    const pointlogEmbed = client.Functions.makePointlogEmbed(pointlog);
+                    const buttonEmbed = new ButtonEmbed(pointlogEmbed);
+
+                    buttonEmbed.addButton(
+                        new Button({
+                            label: "Download",
+                            style: ButtonStyle.Secondary,
+                            emoji: Emojis.import,
+                            allowedUsers: [interaction.user.id],
+
+                            function: async (buttonInteraction) => {
+                                const pointsMap: { [key: number]: string[] } = {};
+
+                                for (const user of pointlog.data) {
+                                    if (!pointsMap[user.points]) {
+                                        pointsMap[user.points] = [];
+                                    }
+                                    pointsMap[user.points].push(user.user.robloxUsername);
+                                }
+
+                                const userText = Object.entries(pointsMap)
+                                    .map(
+                                        ([points, usernames]) =>
+                                            `${points} - ${usernames.map((username) => `${username}`).join(", ")}`,
+                                    )
+                                    .join("\n");
+
+                                const userBuffer = Buffer.from(userText, "utf-8");
+
+                                await buttonInteraction.reply({
+                                    files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
+                                    ephemeral: true,
+                                });
+                            },
+                        }),
+                    );
+
+                    buttonEmbed.nextRow();
+
+                    buttonEmbed.addButton(
+                        new Button({
+                            label: "Import",
+                            style: ButtonStyle.Success,
+                            emoji: Emojis.import,
+                            allowedUsers: [interaction.user.id],
+                            disabled: guildProfile.checkPermissions(interaction.member as GuildMember, [
+                                "PointsManager",
+                            ]),
+                        }),
+                    );
+
+                    buttonEmbed.addButton(
+                        new Button({
+                            label: "Delete",
+                            style: ButtonStyle.Danger,
+                            emoji: Emojis.delete,
+                            allowedUsers: [interaction.user.id],
+
+                            function: async (buttonInteraction) => {
+                                try {
+                                    await pointlog.delete();
+
+                                    const embed = client.Functions.makePointlogEmbed(pointlog);
+                                    embed.setColor(0xff0000);
+                                    embed.setAuthor({ name: "Deleted", iconURL: Images.close });
+                                    embed.setTimestamp();
+
+                                    await buttonInteraction.deferUpdate();
+                                    await buttonInteraction.message.edit({ embeds: [embed], components: [] });
+                                } catch (error) {
+                                    const message: string =
+                                        error && typeof error === "object" && "message" in error
+                                            ? (error as { message: string }).message
+                                            : "Unknown error";
+                                    if (error && typeof error === "object" && "stack" in error)
+                                        client.error(error.stack);
+
+                                    await buttonInteraction.message.edit({
+                                        embeds: [
+                                            client.Functions.makeErrorEmbed({
+                                                title: "Failed to delete pointlog",
+                                                description: `\`\`\`${message}\`\`\``,
+                                            }),
+                                        ],
+                                    });
+                                }
+                            },
+                        }),
+                    );
+
+                    embeds.push(buttonEmbed);
+                }
+
+                await interaction.editReply({
+                    embeds: [
+                        client.Functions.makeInfoEmbed({
+                            title: "Your Pointlogs",
+                            description: `You have \`${pointlogs.length}\` pending pointlogs.`,
+                        }),
+                    ],
+                });
+
+                if (!(interaction.channel instanceof TextChannel)) return;
+                for (const embed of embeds) {
+                    try {
+                        await interaction.channel.send(embed.getMessageData());
+                    } catch (error) {
+                        if (!(error instanceof Error)) return;
+                        await interaction.followUp({
+                            embeds: [
+                                client.Functions.makeErrorEmbed({
+                                    title: error.name,
+                                    description: `Failed to send point log \`${embed.embed.data.title}\`\n\n\`\`\`${error.message}\`\`\``,
+                                    footer: { text: "If this error persists, please contact the bot developer" },
+                                }),
+                            ],
+                            ephemeral: true,
+                        });
+                    }
+                }
             }
         }
     },
