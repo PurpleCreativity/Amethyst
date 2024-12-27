@@ -59,7 +59,7 @@ export default class GuildUser {
         this.notes = this.notes.filter((data) => data.id !== noteId);
     }
 
-    addNote(creatorId: string, content: string): string {
+    addNote(creatorId: string, content: string): `${string}-${string}-${string}-${string}-${string}` {
         const id = client.Functions.GenerateUUID();
 
         this.notes.push({
