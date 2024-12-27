@@ -1,8 +1,8 @@
 import {
     type APIEmbedField,
-    type ButtonInteraction,
     ButtonStyle,
     EmbedBuilder,
+    type Message,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
@@ -63,7 +63,8 @@ export default class PageEmbed extends ButtonEmbed {
                 style: ButtonStyle.Primary,
                 allowedUsers: opts.allowedUsers,
                 function: async (interaction) => {
-                    await this.toPage(interaction, this.currentPage - 1);
+                    await this.toPage(interaction.message, this.currentPage - 1);
+                    await interaction.deferUpdate();
                 },
             }),
         );
@@ -75,7 +76,8 @@ export default class PageEmbed extends ButtonEmbed {
                 style: ButtonStyle.Primary,
                 allowedUsers: opts.allowedUsers,
                 function: async (interaction) => {
-                    await this.toPage(interaction, this.currentPage + 1);
+                    await this.toPage(interaction.message, this.currentPage + 1);
+                    await interaction.deferUpdate();
                 },
             }),
         );
@@ -90,7 +92,8 @@ export default class PageEmbed extends ButtonEmbed {
                 style: ButtonStyle.Secondary,
                 allowedUsers: opts.allowedUsers,
                 function: async (interaction) => {
-                    await this.toPage(interaction, 1);
+                    await this.toPage(interaction.message, 1);
+                    await interaction.deferUpdate();
                 },
             }),
         );
@@ -163,7 +166,7 @@ export default class PageEmbed extends ButtonEmbed {
                                         style: ButtonStyle.Primary,
                                         allowedUsers: opts.allowedUsers,
                                         function: async (buttonInteraction) => {
-                                            await this.toPage(buttonInteraction, i + 1);
+                                            await this.toPage(interaction.message, i + 1);
                                             await response.deleteReply();
                                         },
                                     }),
@@ -212,7 +215,8 @@ export default class PageEmbed extends ButtonEmbed {
                 style: ButtonStyle.Secondary,
                 allowedUsers: opts.allowedUsers,
                 function: async (interaction) => {
-                    await this.toPage(interaction, this.embeds.length);
+                    await this.toPage(interaction.message, this.embeds.length);
+                    await interaction.deferUpdate();
                 },
             }),
         );
@@ -223,7 +227,7 @@ export default class PageEmbed extends ButtonEmbed {
         }
     }
 
-    async toPage(interaction: ButtonInteraction, pageNumber: number) {
+    async toPage(message: Message, pageNumber: number) {
         this.currentPage = pageNumber;
         this.embed = this.embeds[this.currentPage - 1];
 
@@ -243,6 +247,6 @@ export default class PageEmbed extends ButtonEmbed {
             this.enableButton(this.lastPageButton);
         }
 
-        await interaction.update(this.getMessageData());
+        await message.edit(this.getMessageData());
     }
 }
