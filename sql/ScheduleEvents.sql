@@ -1,3 +1,5 @@
+-- This is here internally, currently unused.
+
 CREATE TABLE IF NOT EXISTS ScheduleEvents (
     id VARCHAR(36) PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,

@@ -1,3 +1,5 @@
+-- This is here internally, currently unused.
+
 CREATE TABLE IF NOT EXISTS RobloxPlaces (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,

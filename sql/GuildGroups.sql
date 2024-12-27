@@ -1,3 +1,5 @@
+-- This is here internally, currently unused.
+
 CREATE TABLE IF NOT EXISTS GuildGroups (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     __v INT UNSIGNED NOT NULL DEFAULT 1,
@@ -11,6 +13,8 @@ FOR EACH ROW
 BEGIN
     SET NEW.__v = OLD.__v + 1;
 END;
+
+-- This is here internally, currently unused.
 
 CREATE TABLE IF NOT EXISTS GuildGroupMemberships (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
