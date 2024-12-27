@@ -6,6 +6,14 @@
     "description": "A discord bot written in Typescript, inspired by PB Kronos.",
     "main": "./build/main.js",
     "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PurpleCreativity/Amethyst.git"
+    },
+    "bugs": {
+        "url": "https://github.com/PurpleCreativity/Amethyst/issues"
+    },
+    "keywords": ["discord", "bot", "typescript"],
     "exports": {
         ".": "./build/main.js"
     },
@@ -13,12 +21,16 @@
         "build": "tsc",
         "dev": "npm run build && node . --dev",
         "start": "npm run build && node .",
+
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
+
         "format": "biome format .",
         "format:fix": "biome format --write .",
+
         "organized-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true .",
         "organized-imports:fix": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
+
         "check": "biome check .",
         "check:fix": "biome check --write ."
     },
