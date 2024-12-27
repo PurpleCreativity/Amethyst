@@ -163,12 +163,12 @@ export default class Database {
             connection = await this.getConnection();
 
             await connection.query(
-                `INSERT INTO GuildUsers (guildId, robloxId, points, notes, ranklock)
+                `INSERT INTO GuildUsers (guildId, robloxId, notes, ranklock)
                 VALUES (?, ?, ?, ?, ?)`,
                 [
                     guildId,
                     robloxId,
-                    0,
+                    
                     JSON.stringify([]),
                     JSON.stringify({
                         rank: 0,
