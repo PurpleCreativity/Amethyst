@@ -1,5 +1,5 @@
 import type express from "express";
-import type { ValidPermissions } from "../types/shared.js";
+import type { ValidPermissions } from "../types/core/Interactables.js";
 import type GuildProfile from "./database/GuildProfile.js";
 
 export type RouteMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";

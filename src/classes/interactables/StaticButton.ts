@@ -1,5 +1,5 @@
 import type { ButtonInteraction, PermissionResolvable } from "discord.js";
-import type { ValidPermissions } from "../../types/shared.js";
+import type { ValidPermissions } from "../../types/core/Interactables.js";
 import type GuildProfile from "../database/GuildProfile.js";
 
 export type StaticButtonOptions = {

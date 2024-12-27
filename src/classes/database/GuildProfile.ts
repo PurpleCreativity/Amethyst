@@ -1,7 +1,7 @@
 import type { GuildMember } from "discord.js";
 import type mariadb from "mariadb";
 import client from "../../main.js";
-import type { ValidPermissions } from "../../types/shared.js";
+import type { ValidPermissions } from "../../types/core/Interactables.js";
 
 export type PermissionEntry = {
     users: Array<string>;

@@ -11,7 +11,7 @@ import {
 import Images from "../../../public/Images.json" with { type: "json" };
 import client from "../../main.js";
 import { CommandErrorDescription, CommandErrorName, type CommandModule } from "../../types/Enums.js";
-import type { ValidPermissions } from "../../types/shared.js";
+import type { ValidPermissions } from "../../types/core/Interactables.js";
 import type GuildProfile from "../database/GuildProfile.js";
 
 /**
