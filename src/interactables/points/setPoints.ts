@@ -15,7 +15,7 @@ export default new SlashCommand({
     function: async (interaction, guildProfile) => {
         if (!guildProfile || !interaction.guild) throw new Error("Unknown error");
         const user = interaction.options.getString("user", true);
-        const newAmount = interaction.options.getNumber("amount", true);
+        const newAmount = Math.floor(interaction.options.getNumber("amount", true));
 
         const robloxProfile = await client.Functions.fetchRobloxUser(user);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, robloxProfile.id);
