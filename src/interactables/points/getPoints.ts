@@ -70,6 +70,26 @@ const callback = async (
                     fields: fields,
                 });
 
+                pageEmbed.nextRow();
+
+                pageEmbed.addButton(
+                    new Button({
+                        label: "Add Entry",
+                        emoji: Emojis.add,
+                        style: ButtonStyle.Success,
+                        allowedUsers: [interaction.user.id],
+                    })
+                );
+
+                pageEmbed.addButton(
+                    new Button({
+                        label: "Remove Current Entry",
+                        emoji: Emojis.delete,
+                        style: ButtonStyle.Danger,
+                        allowedUsers: [interaction.user.id],
+                    })
+                )
+
                 return await buttonInteraction.editReply(pageEmbed.getMessageData());
             },
         }),
