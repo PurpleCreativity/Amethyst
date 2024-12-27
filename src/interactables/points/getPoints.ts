@@ -78,7 +78,7 @@ const callback = async (
                         emoji: Emojis.add,
                         style: ButtonStyle.Success,
                         allowedUsers: [interaction.user.id],
-                    })
+                    }),
                 );
 
                 pageEmbed.addButton(
@@ -87,8 +87,8 @@ const callback = async (
                         emoji: Emojis.delete,
                         style: ButtonStyle.Danger,
                         allowedUsers: [interaction.user.id],
-                    })
-                )
+                    }),
+                );
 
                 return await buttonInteraction.editReply(pageEmbed.getMessageData());
             },
