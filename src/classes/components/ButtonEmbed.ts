@@ -1,4 +1,4 @@
-import { type APIButtonComponentWithCustomId, type ButtonBuilder, ButtonStyle, ComponentType } from "discord.js";
+import { type APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from "discord.js";
 import type Button from "./Button.js";
 import Embed, { type EmbedOptions } from "./Embed.js";
 
@@ -6,7 +6,7 @@ export default class ButtonEmbed {
     embed: Embed;
     ephemeral: boolean;
     currentRow = 1;
-    rows: ButtonBuilder[][] = [];
+    rows: Button[][] = [];
 
     constructor(embed: Embed) {
         this.embed = new Embed(embed.data as EmbedOptions);
