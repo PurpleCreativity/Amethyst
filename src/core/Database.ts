@@ -164,11 +164,11 @@ export default class Database {
 
             await connection.query(
                 `INSERT INTO GuildUsers (guildId, robloxId, notes, ranklock)
-                VALUES (?, ?, ?, ?, ?)`,
+                VALUES (?, ?, ?, ?)`,
                 [
                     guildId,
                     robloxId,
-                    
+
                     JSON.stringify([]),
                     JSON.stringify({
                         rank: 0,
@@ -204,6 +204,7 @@ export default class Database {
                 robloxId,
             ]);
             if (existing.length > 0) {
+                console.log("EXISTS", existing[0].id);
                 const rawdata = existing[0];
 
                 return new GuildUser(rawdata);

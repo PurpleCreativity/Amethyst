@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS GuildUsers (
     notes JSON NOT NULL,
     ranklock JSON NOT NULL,
 
-    FOREIGN KEY (guildId) REFERENCES GuildProfiles(id)
+    FOREIGN KEY (guildId) REFERENCES GuildProfiles(id),
+    UNIQUE KEY unique_GuildUser (guildId, robloxId)
 );
 
 CREATE TRIGGER IF NOT EXISTS trigger_GuildUsers_BeforeUpdate
