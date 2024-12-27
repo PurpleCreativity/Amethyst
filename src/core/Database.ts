@@ -111,6 +111,9 @@ export default class Database {
             const rawdata = (await connection.query("SELECT * FROM UserProfiles WHERE id = ?", [discordId]))[0];
 
             return new UserProfile(rawdata);
+        } catch (error) {
+            if (connection) await connection.rollback();
+            throw error;
         } finally {
             if (connection) await connection.end();
         }
@@ -146,35 +149,57 @@ export default class Database {
             }
 
             return undefined;
+        } catch (error) {
+            if (connection) await connection.rollback();
+            throw error;
         } finally {
             if (connection) await connection.end();
         }
     };
 
     private addGuildUserProfile = async (guildId: string, robloxId: number) => {
-        const profile = new GuildUser({
-            id: robloxId,
-            __v: 0,
-            guildId: guildId,
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await this.getConnection();
 
-            points: 0,
-            notes: [],
-            ranklock: {
-                rank: 0,
-                reason: null,
-                shadow: false,
-            },
-        });
+            await connection.query(
+                `INSERT INTO GuildUsers (guildId, robloxId, points, notes, ranklock)
+                VALUES (?, ?, ?, ?, ?)`,
+                [
+                    guildId,
+                    robloxId,
+                    0,
+                    JSON.stringify([]),
+                    JSON.stringify({
+                        rank: 0,
+                        reason: null,
+                        shadow: false,
+                    }),
+                ],
+            );
 
-        await profile.save();
-        return profile;
+            const rawdata = (
+                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND robloxId = ?", [
+                    guildId,
+                    robloxId,
+                ])
+            )[0];
+
+            const profile = new GuildUser(rawdata);
+            return profile;
+        } catch (error) {
+            if (connection) await connection.rollback();
+            throw error;
+        } finally {
+            if (connection) await connection.end();
+        }
     };
 
     getGuildUserProfile = async (guildId: string, robloxId: number) => {
         let connection: mariadb.Connection | undefined;
         try {
             connection = await this.getConnection();
-            const existing = await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND id = ?", [
+            const existing = await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND robloxId = ?", [
                 guildId,
                 robloxId,
             ]);
@@ -186,10 +211,16 @@ export default class Database {
 
             await this.addGuildUserProfile(guildId, robloxId);
             const rawdata = (
-                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND id = ?", [guildId, robloxId])
+                await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND robloxId = ?", [
+                    guildId,
+                    robloxId,
+                ])
             )[0];
 
             return new GuildUser(rawdata);
+        } catch (error) {
+            if (connection) await connection.rollback();
+            throw error;
         } finally {
             if (connection) await connection.end();
         }

@@ -21,6 +21,7 @@ export type rawGuildUserData = {
     __v: number;
 
     guildId: string;
+    robloxId: number;
 
     points: number;
 
@@ -33,6 +34,7 @@ export default class GuildUser {
     private __v: number;
 
     readonly guildId: string;
+    robloxId: number;
 
     points: number;
 
@@ -44,6 +46,7 @@ export default class GuildUser {
         this.__v = rawdata.__v;
 
         this.guildId = rawdata.guildId;
+        this.robloxId = rawdata.robloxId;
 
         this.points = rawdata.points;
 
@@ -90,7 +93,7 @@ export default class GuildUser {
                 FROM PointLogs
                 WHERE JSON_CONTAINS(data, JSON_OBJECT('robloxId', ?), '$[*]')
                 `,
-                [this.id],
+                [this.robloxId],
             );
 
             return result[0]?.pendingPoints || 0;
@@ -130,14 +133,20 @@ export default class GuildUser {
 
             const result = await connection.query(
                 `
-                INSERT INTO GuildUsers (id, guildId, points, notes, ranklock)
+                INSERT INTO GuildUsers (guildId, robloxId, points, notes, ranklock)
                 VALUES (?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     points = VALUES(points),
                     notes = VALUES(notes),
                     ranklock = VALUES(ranklock)
                 `,
-                [this.id, this.guildId, Math.floor(this.points), JSON.stringify(this.notes), JSON.stringify(this.ranklock)],
+                [
+                    this.guildId,
+                    this.robloxId,
+                    Math.floor(this.points),
+                    JSON.stringify(this.notes),
+                    JSON.stringify(this.ranklock),
+                ],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
