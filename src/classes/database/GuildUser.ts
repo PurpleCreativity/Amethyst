@@ -137,7 +137,7 @@ export default class GuildUser {
                     notes = VALUES(notes),
                     ranklock = VALUES(ranklock)
                 `,
-                [this.id, this.guildId, this.points, JSON.stringify(this.notes), JSON.stringify(this.ranklock)],
+                [this.id, this.guildId, Math.floor(this.points), JSON.stringify(this.notes), JSON.stringify(this.ranklock)],
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
