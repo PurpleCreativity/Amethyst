@@ -535,7 +535,7 @@ export default new SlashCommand({
                             style: ButtonStyle.Success,
                             emoji: Emojis.import,
                             allowedUsers: [interaction.user.id],
-                            disabled: guildProfile.checkPermissions(interaction.member as GuildMember, [
+                            disabled: !guildProfile.checkPermissions(interaction.member as GuildMember, [
                                 "PointsManager",
                             ]),
                         }),
