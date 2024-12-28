@@ -1,7 +1,7 @@
 import { Buffer } from "node:buffer";
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import process from "node:process";
-import type { UserData } from "bloxwrap";
+import { UserAvatarHeadshotImageFormat, type UserAvatarHeadshotImageSize, type UserData } from "bloxwrap";
 import { Colors, type Guild, GuildMember, type User } from "discord.js";
 import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
@@ -18,7 +18,7 @@ export default class Functions {
 
     fetchRobloxUser = async (searcher: string | number, useCache = true): Promise<UserData> => {
         if (typeof searcher === "string" && Number.isNaN(Number.parseInt(searcher))) {
-            searcher = (await this.client.BloxWrap.fetchUsersByUsernames(searcher, false))[0].id;
+            searcher = (await this.client.BloxWrap.fetchUsersByUsernames(searcher, false, { useCache: false }))[0].id;
 
             if (Number.isNaN(searcher)) throw new Error(`Username "${searcher}" not found or invalid.`);
         }
@@ -26,9 +26,9 @@ export default class Functions {
         return await this.client.BloxWrap.fetchUserById(searcher as number, { useCache: useCache });
     };
 
-    fetchRobloxUserAvatarHeadshot = async (userId: number): Promise<string | undefined> => {
+    fetchRobloxUserAvatarHeadshot = async (userId: number, size: UserAvatarHeadshotImageSize, isCircular: boolean): Promise<string | undefined> => {
         try {
-            return (await this.client.BloxWrap.fetchUserAvatarHeadshot(userId))[0].imageUrl;
+            return (await this.client.BloxWrap.fetchUserAvatarHeadshot(userId, size, UserAvatarHeadshotImageFormat.Png, isCircular, { useCache: false }))[0].imageUrl;
         } catch (error) {
             return undefined;
         }

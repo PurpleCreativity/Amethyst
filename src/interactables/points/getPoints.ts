@@ -1,4 +1,4 @@
-import type { UserData } from "bloxwrap";
+import { UserAvatarHeadshotImageSize, type UserData } from "bloxwrap";
 import {
     type APIEmbedField,
     ButtonStyle,
@@ -24,7 +24,7 @@ const callback = async (
     robloxProfile: UserData,
 ) => {
     const pendingPoints = await guildUserProfile.fetchPendingPoints();
-    const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
+    const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id, UserAvatarHeadshotImageSize["48x48"], true);
 
     const buttonEmbed = new ButtonEmbed(
         client.Functions.makeInfoEmbed({

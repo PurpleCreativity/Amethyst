@@ -1,3 +1,4 @@
+import { UserAvatarHeadshotImageSize } from "bloxwrap";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
 
@@ -25,7 +26,7 @@ export default new SlashCommand({
         const robloxProfile = await client.Functions.fetchRobloxUser(userProfile.roblox.id);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, userProfile.roblox.id);
         const pendingPoints = await guildUserProfile.fetchPendingPoints();
-        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id);
+        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id, UserAvatarHeadshotImageSize["48x48"], true);
 
         const embed = client.Functions.makeInfoEmbed({
             title: "Your points",
