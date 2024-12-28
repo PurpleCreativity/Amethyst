@@ -42,7 +42,7 @@ export default new SlashCommand({
 
         embed.addField(
             guildProfile.shortname,
-            `${guildUserProfile.points} points${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
+            `${guildUserProfile.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
             false,
         );
 

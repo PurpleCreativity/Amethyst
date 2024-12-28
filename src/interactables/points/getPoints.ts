@@ -42,7 +42,7 @@ const callback = async (
 
     buttonEmbed.embed.addFields({
         name: guildProfile.shortname,
-        value: `${guildUserProfile.points} points${pendingPoints !== 0 ? `(${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
+        value: `${guildUserProfile.points} points${pendingPoints !== 0 ? ` (${pendingPoints} pending)` : ""}${guildUserProfile.ranklock.rank !== 0 ? "**Ranklocked**" : ""}`,
         inline: false,
     });
 
