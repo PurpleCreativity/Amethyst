@@ -204,7 +204,6 @@ export default class Database {
                 robloxId,
             ]);
             if (existing.length > 0) {
-                console.log("EXISTS", existing[0].id);
                 const rawdata = existing[0];
 
                 return new GuildUser(rawdata);
