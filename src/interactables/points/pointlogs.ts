@@ -207,14 +207,14 @@ export default new SlashCommand({
                                     false,
                                 );
 
-                                const userLookup = new Map(
-                                    [...fetchedUsersByIds, ...fetchedUsersByUsernames].map((user) => [
-                                        user.name,
-                                        { id: user.id, username: user.name },
-                                    ]),
-                                );
+                                const userLookup = new Map<string | number, { id: number; username: string }>();
+                                for (const user of [...fetchedUsersByIds, ...fetchedUsersByUsernames]) {
+                                    userLookup.set(user.id, { id: user.id, username: user.name });
+                                    userLookup.set(user.name.toLowerCase(), { id: user.id, username: user.name });
+                                }
 
                                 for (const [userKey, points] of userPointsMap.entries()) {
+
                                     const actualUser = userLookup.get(userKey);
                                     if (!actualUser) continue;
 
@@ -222,6 +222,7 @@ export default new SlashCommand({
                                         (entry) => entry.user.robloxId === actualUser.id,
                                     );
                                     if (foundEntry) {
+                                        console.log(foundEntry)
                                         if (currentMode === addDataMode.Increment) foundEntry.points += points;
                                         else foundEntry.points = points;
 

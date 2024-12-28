@@ -111,7 +111,7 @@ export default class GuildUser {
                 SELECT * FROM PointLogs
                 WHERE creatorRobloxId = ?
                 `,
-                [this.id],
+                [this.robloxId],
             );
 
             const pointlogs = [] as PointLog[];
