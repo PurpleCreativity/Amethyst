@@ -26,9 +26,21 @@ export default class Functions {
         return await this.client.BloxWrap.fetchUserById(searcher as number, { useCache: useCache });
     };
 
-    fetchRobloxUserAvatarHeadshot = async (userId: number, size: UserAvatarHeadshotImageSize, isCircular: boolean): Promise<string | undefined> => {
+    fetchRobloxUserAvatarHeadshot = async (
+        userId: number,
+        size: UserAvatarHeadshotImageSize,
+        isCircular: boolean,
+    ): Promise<string | undefined> => {
         try {
-            return (await this.client.BloxWrap.fetchUserAvatarHeadshot(userId, size, UserAvatarHeadshotImageFormat.Png, isCircular, { useCache: false }))[0].imageUrl;
+            return (
+                await this.client.BloxWrap.fetchUserAvatarHeadshot(
+                    userId,
+                    size,
+                    UserAvatarHeadshotImageFormat.Png,
+                    isCircular,
+                    { useCache: false },
+                )
+            )[0].imageUrl;
         } catch (error) {
             return undefined;
         }

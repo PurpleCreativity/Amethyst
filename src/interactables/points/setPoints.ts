@@ -1,7 +1,7 @@
+import { UserAvatarHeadshotImageSize } from "bloxwrap";
 import { SlashCommandNumberOption, SlashCommandStringOption } from "discord.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
 import client from "../../main.js";
-import { UserAvatarHeadshotImageSize } from "bloxwrap";
 
 export default new SlashCommand({
     name: "setpoints",
@@ -21,7 +21,11 @@ export default new SlashCommand({
         const robloxProfile = await client.Functions.fetchRobloxUser(user);
         const guildUserProfile = await client.Database.getGuildUserProfile(interaction.guild.id, robloxProfile.id);
         const oldAmount = guildUserProfile.points;
-        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(robloxProfile.id, UserAvatarHeadshotImageSize["48x48"], true);
+        const avatarHeadshot = await client.Functions.fetchRobloxUserAvatarHeadshot(
+            robloxProfile.id,
+            UserAvatarHeadshotImageSize["48x48"],
+            true,
+        );
 
         guildUserProfile.points = newAmount;
         await guildUserProfile.save();
