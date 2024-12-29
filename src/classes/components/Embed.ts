@@ -54,7 +54,7 @@ export default class Embed extends EmbedBuilder {
         this.data.fields?.splice(this.data.fields.indexOf(field), 1);
     }
 
-    updateField(name: string, value: string, inline = false): void {
+    setField(name: string, value: string, inline = false): void {
         const field = this.getField(name);
 
         if (field) {
