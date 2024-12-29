@@ -10,9 +10,9 @@ import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import Images from "../../../public/Images.json" with { type: "json" };
 import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
+import Modal from "../../classes/components/Modal.js";
 import PointLog from "../../classes/database/PointLog.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
-import Modal from "../../classes/components/Modal.js";
 import client from "../../main.js";
 
 enum addDataMode {
