@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import client from "../../main.js";
-import Modal from "../prompts/Modal.js";
+import Modal from "./Modal.js";
 import Button from "./Button.js";
 import ButtonEmbed from "./ButtonEmbed.js";
 import Embed, { type EmbedOptions } from "./Embed.js";

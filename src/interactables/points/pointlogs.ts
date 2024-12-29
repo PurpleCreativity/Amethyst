@@ -12,7 +12,7 @@ import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
 import PointLog from "../../classes/database/PointLog.js";
 import SlashCommand from "../../classes/interactables/SlashCommand.js";
-import Modal from "../../classes/prompts/Modal.js";
+import Modal from "../../classes/components/Modal.js";
 import client from "../../main.js";
 
 enum addDataMode {
