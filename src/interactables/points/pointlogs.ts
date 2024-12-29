@@ -537,6 +537,36 @@ export default new SlashCommand({
                             disabled: !guildProfile.checkPermissions(interaction.member as GuildMember, [
                                 "PointsManager",
                             ]),
+
+                            function: async (buttonInteraction) => {
+                                try {
+                                    await pointlog.import();
+
+                                    const embed = client.Functions.makePointlogEmbed(pointlog);
+                                    embed.setColor(0x00ff00);
+                                    embed.setAuthor({ name: "Imported", iconURL: Images.check });
+                                    embed.setTimestamp();
+
+                                    await buttonInteraction.deferUpdate();
+                                    await buttonInteraction.message.edit({ embeds: [embed], components: [] });
+                                } catch (error) {
+                                    const message: string =
+                                        error && typeof error === "object" && "message" in error
+                                            ? (error as { message: string }).message
+                                            : "Unknown error";
+                                    if (error && typeof error === "object" && "stack" in error)
+                                        client.error(error.stack);
+
+                                    await buttonInteraction.message.edit({
+                                        embeds: [
+                                            client.Functions.makeErrorEmbed({
+                                                title: "Failed to import pointlog",
+                                                description: `\`\`\`${message}\`\`\``,
+                                            }),
+                                        ],
+                                    });
+                                }
+                            },
                         }),
                     );
 

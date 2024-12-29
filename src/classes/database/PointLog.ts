@@ -56,7 +56,38 @@ export default class PointLog {
     async import(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
+            await this.delete();
+
             connection = await client.Database.getConnection();
+            await connection.beginTransaction();
+
+            for (const entry of this.data) {
+                const result = await connection.query(
+                    `
+                    INSERT INTO GuildUsers (guildId, robloxId, points, notes, ranklock)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        points = points + VALUES(points)
+                    `,
+                    [
+                        this.guildId,
+                        entry.user.robloxId,
+                        entry.points,
+                        JSON.stringify([]),
+                        JSON.stringify({
+                            rank: 0,
+                            reason: null,
+                            shadow: false,
+                        }),
+                    ],
+                );
+
+                if (result.affectedRows === 0) {
+                    throw new Error(`Failed to update points for user with Roblox Id: ${entry.user.robloxId}`);
+                }
+            }
+
+            await connection.commit();
         } catch (error) {
             if (connection) await connection.rollback();
 
