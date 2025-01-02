@@ -13,11 +13,7 @@
     "bugs": {
         "url": "https://github.com/PurpleCreativity/Amethyst/issues"
     },
-    "keywords": [
-        "discord",
-        "bot",
-        "typescript"
-    ],
+    "keywords": ["discord", "bot", "typescript"],
     "exports": {
         ".": "./build/main.js"
     },
