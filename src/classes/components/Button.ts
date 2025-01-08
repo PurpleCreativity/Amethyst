@@ -1,4 +1,10 @@
-import { ButtonBuilder, type ButtonInteraction, ButtonStyle, type ComponentEmojiResolvable } from "discord.js";
+import {
+    ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
+    type ComponentEmojiResolvable,
+    MessageFlags,
+} from "discord.js";
 import client from "../../main.js";
 
 export type ButtonOptions = {
@@ -38,7 +44,7 @@ export default class Button extends ButtonBuilder {
                 ) {
                     await interaction.reply({
                         content: "You are not allowed to use this button",
-                        ephemeral: true,
+                        flags: MessageFlags.Ephemeral,
                     });
                     return;
                 }

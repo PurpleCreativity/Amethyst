@@ -3,6 +3,7 @@ import {
     ButtonStyle,
     EmbedBuilder,
     type Message,
+    MessageFlags,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
@@ -185,7 +186,7 @@ export default class PageEmbed extends ButtonEmbed {
                                                         description: field.value,
                                                     }),
                                                 ],
-                                                ephemeral: true,
+                                                flags: MessageFlags.Ephemeral,
                                             });
                                         },
                                     }),

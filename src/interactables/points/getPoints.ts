@@ -3,6 +3,7 @@ import {
     type APIEmbedField,
     ButtonStyle,
     type ChatInputCommandInteraction,
+    MessageFlags,
     SlashCommandStringOption,
     type UserContextMenuCommandInteraction,
 } from "discord.js";
@@ -54,7 +55,7 @@ const callback = async (
             allowedUsers: [interaction.user.id],
 
             function: async (buttonInteraction) => {
-                await buttonInteraction.deferReply({ ephemeral: true });
+                await buttonInteraction.deferReply({ flags: MessageFlags.Ephemeral });
 
                 let fields: APIEmbedField[] = guildUserProfile.notes.map((note: noteData) => ({
                     name: `\`${note.id}\``,

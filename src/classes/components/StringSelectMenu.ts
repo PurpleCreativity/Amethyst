@@ -9,6 +9,7 @@ import {
     ButtonStyle,
     type ChatInputCommandInteraction,
     ComponentType,
+    MessageFlags,
     StringSelectMenuBuilder,
     StringSelectMenuComponent,
     type StringSelectMenuOptionBuilder,
@@ -100,7 +101,10 @@ export default class StringSelectMenu {
             if (!newInteraction.isStringSelectMenu()) return;
             if (newInteraction.customId !== this.selector.data.custom_id) return;
             if (this.allowedUsers.length > 0 && !this.allowedUsers.includes(newInteraction.user.id)) {
-                await newInteraction.reply({ content: "You are not allowed to use this menu", ephemeral: true });
+                await newInteraction.reply({
+                    content: "You are not allowed to use this menu",
+                    flags: MessageFlags.Ephemeral,
+                });
                 return;
             }
 
@@ -122,7 +126,10 @@ export default class StringSelectMenu {
                 )
                     return;
                 if (this.allowedUsers.length > 0 && !this.allowedUsers.includes(newInteraction.user.id)) {
-                    await newInteraction.reply({ content: "You are not allowed to use this button", ephemeral: true });
+                    await newInteraction.reply({
+                        content: "You are not allowed to use this button",
+                        flags: MessageFlags.Ephemeral,
+                    });
                     return;
                 }
 

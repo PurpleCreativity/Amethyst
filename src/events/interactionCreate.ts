@@ -1,4 +1,4 @@
-import { BaseInteraction } from "discord.js";
+import { BaseInteraction, MessageFlags } from "discord.js";
 import Event from "../classes/Event.js";
 import client from "../main.js";
 
@@ -21,7 +21,9 @@ export default new Event({
             }
 
             try {
-                await interaction.deferReply({ ephemeral: command.ephemeral });
+                await interaction.deferReply({
+                    flags: command.ephemeral ? MessageFlags.Ephemeral : undefined,
+                });
 
                 const guildProfile =
                     interaction.guild && !command.userApp
@@ -87,7 +89,9 @@ export default new Event({
             }
 
             try {
-                await interaction.deferReply({ ephemeral: command.ephemeral });
+                await interaction.deferReply({
+                    flags: command.ephemeral ? MessageFlags.Ephemeral : undefined,
+                });
 
                 const guildProfile =
                     interaction.guild && !command.userApp
@@ -138,7 +142,9 @@ export default new Event({
             }
 
             try {
-                await interaction.deferReply({ ephemeral: command.ephemeral });
+                await interaction.deferReply({
+                    flags: command.ephemeral ? MessageFlags.Ephemeral : undefined,
+                });
 
                 const guildProfile =
                     interaction.guild && !command.userApp

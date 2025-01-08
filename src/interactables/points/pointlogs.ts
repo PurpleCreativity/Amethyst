@@ -1,6 +1,7 @@
 import {
     ButtonStyle,
     type GuildMember,
+    MessageFlags,
     SlashCommandSubcommandBuilder,
     TextChannel,
     TextInputBuilder,
@@ -338,7 +339,7 @@ export default new SlashCommand({
 
                             await buttonInteraction.reply({
                                 files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
-                                ephemeral: true,
+                                flags: MessageFlags.Ephemeral,
                             });
                         },
                     }),
@@ -520,7 +521,7 @@ export default new SlashCommand({
 
                                 await buttonInteraction.reply({
                                     files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
-                                    ephemeral: true,
+                                    flags: MessageFlags.Ephemeral,
                                 });
                             },
                         }),
