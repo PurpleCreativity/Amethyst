@@ -56,12 +56,11 @@ export default new SlashCommand({
         }
 
         let code = generateCode();
-        const description = `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your [roblox profile](https://www.roblox.com/users/${robloxUser.id}/profile) description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`;
 
         const buttonEmbed = new ButtonEmbed(
             client.Functions.makeInfoEmbed({
                 title: "Link Roblox",
-                description: description,
+                description: `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your [roblox profile](https://www.roblox.com/users/${robloxUser.id}/profile) description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`,
             }),
         );
 
@@ -166,12 +165,30 @@ export default new SlashCommand({
                     await buttonInteraction.deferUpdate();
 
                     code = generateCode();
-                    buttonEmbed.embed.setDescription(description);
+                    buttonEmbed.embed.setDescription(
+                        `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your [roblox profile](https://www.roblox.com/users/${robloxUser.id}/profile) description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`
+                    );
 
                     await buttonInteraction.editReply(buttonEmbed.getMessageData());
                 },
             }),
         );
+
+        const userProfile = await client.Database.getUserProfile(interaction.user.id);
+        if (userProfile.roblox.id) {
+            const buttonEmbed2 = new ButtonEmbed(
+                client.Functions.makeWarnEmbed({
+                    title: "Already linked",
+                    description: `You already have a linked roblox account: [roblox profile](https://www.roblox.com/users/${userProfile.id}/profile)`,
+                }),
+            );
+
+            /*
+            buttonEmbed2.addButton(new Button({
+                label: "Continue"
+            }))
+                */
+        }
 
         return await interaction.editReply(buttonEmbed.getMessageData());
     },
