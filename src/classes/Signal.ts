@@ -125,4 +125,8 @@ export default class Signal<Params extends unknown[]> {
             });
         });
     }
+
+    get connectionCount(): number {
+        return this.connections.length;
+    }
 }

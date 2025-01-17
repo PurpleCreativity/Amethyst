@@ -166,7 +166,7 @@ export default new SlashCommand({
 
                     code = generateCode();
                     buttonEmbed.embed.setDescription(
-                        `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your [roblox profile](https://www.roblox.com/users/${robloxUser.id}/profile) description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`
+                        `Hi, ${interaction.user.username}! To make sure you're the owner of the account, please set your [roblox profile](https://www.roblox.com/users/${robloxUser.id}/profile) description to the following:\n\n\`\`\`${code}\`\`\`\n\nOnce you have done this, click the button below to link your account.`,
                     );
 
                     await buttonInteraction.editReply(buttonEmbed.getMessageData());

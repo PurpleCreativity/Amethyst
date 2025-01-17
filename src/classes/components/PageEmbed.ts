@@ -132,7 +132,7 @@ export default class PageEmbed extends ButtonEmbed {
                     const lookValue = response.fields.getTextInputValue("field_value");
 
                     if (lookName.length === 0 && lookValue.length === 0) {
-                        return await response.editReply({
+                        await response.editReply({
                             embeds: [
                                 client.Functions.makeErrorEmbed({
                                     title: "An error occured while searching",
@@ -140,6 +140,7 @@ export default class PageEmbed extends ButtonEmbed {
                                 }),
                             ],
                         });
+                        return;
                     }
 
                     // forEach is the devil
@@ -192,7 +193,8 @@ export default class PageEmbed extends ButtonEmbed {
                                     }),
                                 );
 
-                                return await response.editReply(buttonEmbed.getMessageData());
+                                await response.editReply(buttonEmbed.getMessageData());
+                                return;
                             }
                         }
                     }

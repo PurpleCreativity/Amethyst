@@ -1,6 +1,7 @@
 import { UserAvatarHeadshotImageSize, type UserData } from "bloxwrap";
 import {
     type APIEmbedField,
+    type ButtonInteraction,
     ButtonStyle,
     type ChatInputCommandInteraction,
     MessageFlags,
@@ -47,7 +48,7 @@ const callback = async (
         inline: false,
     });
 
-    buttonEmbed.addButton(
+    const testbutton = buttonEmbed.addButton(
         new Button({
             label: "View Notes",
             emoji: Emojis.folder_open,
@@ -95,10 +96,24 @@ const callback = async (
                     }),
                 );
 
-                return await buttonInteraction.editReply(pageEmbed.getMessageData());
+                await buttonInteraction.editReply(pageEmbed.getMessageData());
+                return;
             },
         }),
     );
+
+    testbutton.onPressed((buttonInteraction: ButtonInteraction) => {
+        console.log("Still connected.");
+    });
+
+    setTimeout(() => {
+        testbutton.destroy();
+        console.log("destroyed");
+
+        console.log("total connections", client.listenerCount("buttonInteraction"));
+        console.log("buttonInteractionListener", new Date().toISOString().replace("T", " ").replace("Z", ""));
+        console.log("listeners", client.listeners("buttonInteraction"));
+    }, 60000);
 
     buttonEmbed.addButton(
         new Button({

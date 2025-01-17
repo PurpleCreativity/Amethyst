@@ -384,7 +384,7 @@ export default new SlashCommand({
                             try {
                                 await pointlog.save();
 
-                                return await interaction.editReply({
+                                await interaction.editReply({
                                     embeds: [
                                         client.Functions.makeSuccessEmbed({
                                             title: "Pointlog created",
@@ -393,6 +393,7 @@ export default new SlashCommand({
                                     ],
                                     components: [],
                                 });
+                                return;
                             } catch (error) {
                                 const message: string =
                                     error && typeof error === "object" && "message" in error
@@ -418,7 +419,7 @@ export default new SlashCommand({
 
                                 const userBuffer = Buffer.from(userText, "utf-8");
 
-                                return await interaction.editReply({
+                                await interaction.editReply({
                                     embeds: [
                                         client.Functions.makeErrorEmbed({
                                             title: "Pointlog creation failure",
@@ -428,6 +429,7 @@ export default new SlashCommand({
                                     files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
                                     components: [],
                                 });
+                                return;
                             }
                         },
                     }),

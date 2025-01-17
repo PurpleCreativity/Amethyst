@@ -16,6 +16,7 @@ import {
 } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import client from "../../main.js";
+import Signal from "../Signal.js";
 import Button from "./Button.js";
 import ButtonEmbed from "./ButtonEmbed.js";
 import type Embed from "./Embed.js";
@@ -39,6 +40,9 @@ export default class StringSelectMenu {
     options: StringSelectMenuOptionBuilder[];
     allowedUsers: string[];
 
+    private selectMenuSignal: Signal<[AnySelectMenuInteraction]>;
+    private buttonSignal: Signal<[ButtonInteraction]>;
+
     constructor(options: StringSelectMenuOptions) {
         this.selector = new StringSelectMenuBuilder()
             .setPlaceholder(options.placeholder)
@@ -49,6 +53,9 @@ export default class StringSelectMenu {
 
         this.allowedUsers = options.allowedUsers || [];
         this.options = options.options;
+
+        this.selectMenuSignal = new Signal();
+        this.buttonSignal = new Signal();
     }
 
     getSelector() {
@@ -57,7 +64,7 @@ export default class StringSelectMenu {
         return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(this.selector);
     }
 
-    async prompt(
+    async Prompt(
         interaction: ChatInputCommandInteraction | ButtonInteraction | AnySelectMenuInteraction,
         embed: Embed,
     ) {
@@ -97,11 +104,11 @@ export default class StringSelectMenu {
         // @ts-ignore
         for (const row of buttonEmbed.rows) components.push({ type: ComponentType.ActionRow, components: row });
 
-        client.on("selectMenu", async (newInteraction: AnySelectMenuInteraction) => {
+        this.selectMenuSignal.connect(async (newInteraction: AnySelectMenuInteraction) => {
             if (!newInteraction.isStringSelectMenu()) return;
             if (newInteraction.customId !== this.selector.data.custom_id) return;
             if (this.allowedUsers.length > 0 && !this.allowedUsers.includes(newInteraction.user.id)) {
-                await newInteraction.reply({
+                newInteraction.reply({
                     content: "You are not allowed to use this menu",
                     flags: MessageFlags.Ephemeral,
                 });
@@ -119,7 +126,7 @@ export default class StringSelectMenu {
         });
 
         return new Promise((resolve, reject) => {
-            client.on("buttonPress", async (newInteraction: ButtonInteraction) => {
+            this.buttonSignal.connect(async (newInteraction: ButtonInteraction) => {
                 if (
                     newInteraction.customId !== submitButton.customId &&
                     newInteraction.customId !== cancelButton.customId
