@@ -112,8 +112,10 @@ export default class Button extends ButtonBuilder {
      * @param key A unique key to identify the filter.
      * @param filter The filter function to add.
      */
-    addFilter(key: string, filter: FilterFunction): void {
+    addFilter(key: string, filter: FilterFunction): this {
         this.filters.set(key, filter);
+
+        return this;
     }
 
     /**
@@ -128,24 +130,30 @@ export default class Button extends ButtonBuilder {
     /**
      * Clears all filters associated with the button.
      */
-    clearFilters(): void {
+    clearFilters(): this {
         this.filters.clear();
+
+        return this;
     }
 
     /**
      * Registers a listener for the `pressed` signal.
      * @param listener The function to execute when the button is pressed.
      */
-    onPressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): void {
+    onPressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
         this.pressed.on(listener);
+
+        return this;
     }
 
     /**
      * Registers a one-time listener for the `pressed` signal.
      * @param listener The function to execute when the button is pressed once.
      */
-    oncePressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): void {
+    oncePressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
         this.pressed.once(listener);
+
+        return this;
     }
 
     /**
