@@ -1,14 +1,14 @@
 import { Buffer } from "node:buffer";
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import process from "node:process";
+import { AxiosError } from "axios";
 import { UserAvatarHeadshotImageFormat, type UserAvatarHeadshotImageSize, type UserData } from "bloxwrap";
 import { type Guild, GuildMember, type User } from "discord.js";
+import { SqlError } from "mariadb";
 import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import type PointLog from "../classes/database/PointLog.js";
-import { SqlError } from "mariadb";
-import { AxiosError } from "axios";
 
 export default class Functions {
     client: Client;
@@ -168,19 +168,19 @@ export default class Functions {
         }
 
         if (error instanceof SqlError) {
-            message = `[${error.code}]: ${error.sqlMessage}`
+            message = `[${error.code}]: ${error.sqlMessage}`;
         }
 
         if (error instanceof AxiosError) {
-            message = `[${error.code}]: ${JSON.stringify(error.response?.data.errors)}`
+            message = `[${error.code}]: ${JSON.stringify(error.response?.data.errors)}`;
         }
 
         if (useDiscordformatting) {
             message = `\`\`\`\n${message}\n\`\`\``;
         }
-    
+
         return message;
-    }
+    };
 
     wait = async (ms: number) => {
         return new Promise((resolve) => setTimeout(resolve, ms));
