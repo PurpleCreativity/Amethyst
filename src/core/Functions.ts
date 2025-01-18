@@ -9,6 +9,7 @@ import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import type PointLog from "../classes/database/PointLog.js";
+import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
 
 export default class Functions {
     client: Client;
@@ -225,5 +226,79 @@ export default class Functions {
 
     isDev = (userId: string) => {
         return this.client.config.devList.includes(userId);
+    };
+
+    makePointlogEmbed = (pointlog: PointLog) => {
+        const embed = this.makeInfoEmbed({
+            title: `\`${pointlog.id}\``,
+            footer: { text: pointlog.id },
+            fields: [{ name: "Notes", value: `${pointlog.note || "`No note`"}`, inline: false }],
+        });
+
+        const baseDescription = `Created by [${pointlog.creator.robloxUsername}](https://www.roblox.com/users/${pointlog.creator.robloxId}/profile) on <t:${Math.round(pointlog.createdAt.getTime() / 1000)}:F>`;
+
+        for (const data of pointlog.data) {
+            const foundField = embed.getField(`> ${data.points} points`);
+            if (foundField) {
+                foundField.value += `, \`${data.user.robloxUsername}\``;
+                if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
+                continue;
+            }
+
+            embed.addFields({ name: `> ${data.points} points`, value: `\`${data.user.robloxUsername}\`` });
+
+            if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
+                embed.setDescription(`## ${Emojis.warning} Unable to show full log!\n${baseDescription}`);
+                break;
+            }
+
+            embed.setDescription(baseDescription);
+        }
+
+        return embed;
+    };
+
+    makeInfoEmbed = (options: EmbedOptions) => {
+        const embed = new Embed(options);
+
+        if (!options.color) embed.setColor(0x4287f5);
+        if (!options.author) {
+            embed.setAuthor({ name: "Info", iconURL: Images.info });
+        }
+
+        return embed;
+    };
+
+    makeWarnEmbed = (options: EmbedOptions) => {
+        const embed = new Embed(options);
+
+        if (!options.color) embed.setColor(0xffcc00);
+        if (!options.author) {
+            embed.setAuthor({ name: "Warning", iconURL: Images.warn });
+        }
+
+        return embed;
+    };
+
+    makeSuccessEmbed = (options: EmbedOptions) => {
+        const embed = new Embed(options);
+
+        if (!options.color) embed.setColor(0x00ff00);
+        if (!options.author) {
+            embed.setAuthor({ name: "Success", iconURL: Images.check });
+        }
+
+        return embed;
+    };
+
+    makeErrorEmbed = (options: EmbedOptions) => {
+        const embed = new Embed(options);
+
+        if (!options.color) embed.setColor(0xff0000);
+        if (!options.author) {
+            embed.setAuthor({ name: "Error", iconURL: Images.close });
+        }
+
+        return embed;
     };
 }
