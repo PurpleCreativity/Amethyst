@@ -1,16 +1,15 @@
 export enum CommandPermission {
-    Developer = 1,
-    Administrator = 2,
+    Administrator = 1,
 
-    RobloxModerator = 3,
-    RobloxCommunityManager = 4,
+    RobloxModerator = 2,
+    RobloxCommunityManager = 3,
 
-    PointsManager = 5,
-    PointsViewer = 6,
-    PointlogCreator = 7,
+    PointsManager = 4,
+    PointsViewer = 5,
+    PointlogCreator = 6,
 
-    EventScheduler = 8,
-    ScheduleManager = 9,
+    EventScheduler = 7,
+    ScheduleManager = 8,
 }
 
 export enum CommandModule {
