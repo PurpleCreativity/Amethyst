@@ -112,7 +112,7 @@ export default class Button extends ButtonBuilder {
      * @param key A unique key to identify the filter.
      * @param filter The filter function to add.
      */
-    addFilter(key: string, filter: FilterFunction): this {
+    public addFilter(key: string, filter: FilterFunction): this {
         this.filters.set(key, filter);
 
         return this;
@@ -123,14 +123,14 @@ export default class Button extends ButtonBuilder {
      * @param key The key of the filter to remove.
      * @returns `true` if the filter was removed; otherwise `false`.
      */
-    removeFilter(key: string): boolean {
+    public removeFilter(key: string): boolean {
         return this.filters.delete(key);
     }
 
     /**
      * Clears all filters associated with the button.
      */
-    clearFilters(): this {
+    public clearFilters(): this {
         this.filters.clear();
 
         return this;
@@ -140,7 +140,7 @@ export default class Button extends ButtonBuilder {
      * Registers a listener for the `pressed` signal.
      * @param listener The function to execute when the button is pressed.
      */
-    onPressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
+    public onPressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
         this.pressed.on(listener);
 
         return this;
@@ -150,7 +150,7 @@ export default class Button extends ButtonBuilder {
      * Registers a one-time listener for the `pressed` signal.
      * @param listener The function to execute when the button is pressed once.
      */
-    oncePressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
+    public oncePressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): this {
         this.pressed.once(listener);
 
         return this;
@@ -159,7 +159,7 @@ export default class Button extends ButtonBuilder {
     /**
      * Disconnects the button from interaction handling and clears filters and listeners.
      */
-    disconnect(): void {
+    public disconnect(): void {
         this.pressed.disconnectAll();
         this.clearFilters();
         client.off("buttonInteraction", this.listener);

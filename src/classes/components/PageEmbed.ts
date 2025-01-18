@@ -23,17 +23,17 @@ export type PageEmbedOptions = {
 };
 
 export default class PageEmbed extends ButtonEmbed {
-    pageFooter: boolean;
-    fieldsPerPage: number;
-    embeds: Embed[] = [];
-    currentPage = 1;
+    readonly pageFooter: boolean;
+    readonly fieldsPerPage: number;
+    private embeds: Embed[] = [];
+    private currentPage = 1;
 
-    forwardButton: Button;
-    backButton: Button;
+    private forwardButton: Button;
+    private backButton: Button;
 
-    firstPageButton: Button;
-    searchPageButton: Button;
-    lastPageButton: Button;
+    private firstPageButton: Button;
+    private searchPageButton: Button;
+    private lastPageButton: Button;
 
     constructor(options: PageEmbedOptions) {
         super(options.baseEmbed);
@@ -219,7 +219,7 @@ const modal = new Modal({
         );
     }
 
-    async toPage(message: Message, pageNumber: number) {
+    private async toPage(message: Message, pageNumber: number) {
         this.currentPage = pageNumber;
         this.embed = this.embeds[this.currentPage - 1];
 

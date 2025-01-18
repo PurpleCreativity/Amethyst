@@ -3,15 +3,15 @@ import type Button from "./Button.js";
 import type Embed from "./Embed.js";
 
 export default class ButtonEmbed {
-    embed: Embed;
-    rows: Button[][] = [];
-    currentRow = 1;
+    public embed: Embed;
+    private rows: Button[][] = [];
+    private currentRow = 1;
 
     constructor(baseEmbed: Embed) {
         this.embed = baseEmbed;
     }
 
-    getMessageData() {
+    public getMessageData() {
         if (this.rows.length === 0 || this.rows.every((row) => row.length === 0)) {
             return {
                 embeds: [this.embed],
@@ -34,13 +34,13 @@ export default class ButtonEmbed {
         };
     }
 
-    addButton(button: Button) {
+    public addButton(button: Button) {
         this.rows[this.currentRow - 1].push(button);
 
         return button;
     }
 
-    setButtons(buttons: Button[]) {
+    public setButtons(buttons: Button[]) {
         if (buttons.length === 0) {
             this.rows = [[]];
             return;
@@ -54,7 +54,7 @@ export default class ButtonEmbed {
         }
     }
 
-    nextRow() {
+    public nextRow() {
         this.currentRow++;
         this.rows[this.currentRow - 1] = [];
     }

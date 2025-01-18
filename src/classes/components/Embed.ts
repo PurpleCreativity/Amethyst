@@ -85,7 +85,7 @@ export default class Embed extends EmbedBuilder {
      * @param {string} name - The name of the field to retrieve.
      * @returns {APIEmbedField | null} The matching field or `null` if not found.
      */
-    getField(name: string): APIEmbedField | null {
+    public getField(name: string): APIEmbedField | null {
         return this.data.fields?.find((field: APIEmbedField) => field.name === name) || null;
     }
 
@@ -96,7 +96,7 @@ export default class Embed extends EmbedBuilder {
      * @param {string} value - The value of the field.
      * @param {boolean} inline - Whether the field should be inline.
      */
-    addField(name: string, value: string, inline: boolean): void {
+    public addField(name: string, value: string, inline: boolean): void {
         this.addFields({ name, value, inline });
     }
 
@@ -105,7 +105,7 @@ export default class Embed extends EmbedBuilder {
      *
      * @param {string} name - The name of the field to remove.
      */
-    removeField(name: string): void {
+    public removeField(name: string): void {
         const field = this.getField(name);
         if (!field) return;
 
@@ -119,7 +119,7 @@ export default class Embed extends EmbedBuilder {
      * @param {string} value - The **new** value of the field.
      * @param {boolean} inline - Whether the field should **now** be inline.
      */
-    setField(name: string, value: string, inline: boolean): void {
+    public setField(name: string, value: string, inline: boolean): void {
         const field = this.getField(name);
 
         if (field) {
@@ -136,7 +136,7 @@ export default class Embed extends EmbedBuilder {
      * @param {string | APIEmbed} json - The JSON string or object to populate the embed.
      * @returns {this} The updated Embed instance.
      */
-    fromJSON(json: string | APIEmbed): this {
+    public fromJSON(json: string | APIEmbed): this {
         const data: APIEmbed = typeof json === "string" ? JSON.parse(json) : json;
 
         this.setTitle(data.title || null);
