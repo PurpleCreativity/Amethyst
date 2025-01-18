@@ -6,7 +6,7 @@ import type Client from "../classes/Client.ts";
 import GuildProfile, { type PermissionEntry } from "../classes/database/GuildProfile.js";
 import GuildUser from "../classes/database/GuildUser.js";
 import UserProfile from "../classes/database/UserProfile.js";
-import type { CommandPermission } from "../types/core/Interactables.js";
+import { CommandPermission } from "../types/core/Interactables.js";
 
 export default class Database {
     client: Client;
@@ -129,7 +129,16 @@ export default class Database {
             __v: 0,
             shortname: shortname,
 
-            permissions: {} as Record<CommandPermission, PermissionEntry>,
+            permissions: {
+                [CommandPermission.Administrator]: { users: [], roles: [] },
+                [CommandPermission.RobloxModerator]: { users: [], roles: [] },
+                [CommandPermission.RobloxCommunityManager]: { users: [], roles: [] },
+                [CommandPermission.PointsManager]: { users: [], roles: [] },
+                [CommandPermission.PointsViewer]: { users: [], roles: [] },
+                [CommandPermission.PointlogCreator]: { users: [], roles: [] },
+                [CommandPermission.EventScheduler]: { users: [], roles: [] },
+                [CommandPermission.ScheduleManager]: { users: [], roles: [] },
+            } as Record<CommandPermission, PermissionEntry>,
             channels: {},
             settings: {},
         });
