@@ -4,17 +4,7 @@ CREATE TABLE IF NOT EXISTS GuildProfiles (
     
     shortname VARCHAR(10) NOT NULL UNIQUE,
 
-    permissions JSON NOT NULL DEFAULT '{
-        "Administrator":{"users":[],"roles":[]},
-        "Moderator":{"users":[],"roles":[]},
-        "RobloxModerator":{"users":[],"roles":[]},
-        "RobloxGroupManager":{"users":[],"roles":[]},
-        "PointsManager":{"users":[],"roles":[]},
-        "PointsViewer":{"users":[],"roles":[]},
-        "PointLogCreator":{"users":[],"roles":[]},
-        "EventScheduler":{"users":[],"roles":[]},
-        "ScheduleManager":{"users":[],"roles":[]}
-    }',
+    permissions JSON NOT NULL,
     channels JSON NOT NULL DEFAULT '{}',
 
     settings JSON NOT NULL DEFAULT '{}'
