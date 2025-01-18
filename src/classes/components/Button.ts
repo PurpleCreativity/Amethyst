@@ -8,27 +8,62 @@ import {
 import client from "../../main.js";
 import Signal from "../Signal.js";
 
+/**
+ * Options for configuring a Button.
+ */
 export type ButtonOptions = {
+    /** The label text displayed on the button. */
     label: string;
+
+    /** The style of the button. */
     style: ButtonStyle;
+
+    /** Whether the button is disabled. Defaults to `false`. */
     disabled?: boolean;
+
+    /** The URL to open when the button is clicked. Only applicable for link-style buttons. */
     url?: string;
+
+    /** The emoji displayed on the button. */
     emoji?: ComponentEmojiResolvable;
+
+    /** A custom identifier for the button. Defaults to a generated UUID. */
     customId?: string;
+
+    /** An array of user IDs allowed to interact with the button. */
     allowedUsers?: string[];
 };
 
+/**
+ * A function that filters button interactions.
+ * @param interaction The button interaction to evaluate.
+ * @returns `true` if the interaction passes the filter; otherwise `false`.
+ */
 type FilterFunction = (interaction: ButtonInteraction) => boolean;
 
+/**
+ * Represents a configurable button with interaction handling and filters.
+ */
 export default class Button extends ButtonBuilder {
+    /** The unique identifier for the button. */
     readonly customId: string;
+
+    /** An array of user IDs allowed to interact with the button. */
     readonly allowedUsers: string[];
 
+    /** Signal to emit events when the button is pressed. */
     private pressed: Signal<[ButtonInteraction]>;
+
+    /** Listener function for button interactions. */
     private listener: (interaction: ButtonInteraction) => Promise<void>;
 
+    /** A map of filter functions associated with unique keys. */
     private filters: Map<string, FilterFunction>;
 
+    /**
+     * Creates a new Button instance.
+     * @param options The configuration options for the button.
+     */
     constructor(options: ButtonOptions) {
         super();
 
@@ -72,26 +107,50 @@ export default class Button extends ButtonBuilder {
         client.on("buttonInteraction", this.listener);
     }
 
+    /**
+     * Adds a filter function to the button.
+     * @param key A unique key to identify the filter.
+     * @param filter The filter function to add.
+     */
     addFilter(key: string, filter: FilterFunction): void {
         this.filters.set(key, filter);
     }
 
+    /**
+     * Removes a filter function by its key.
+     * @param key The key of the filter to remove.
+     * @returns `true` if the filter was removed; otherwise `false`.
+     */
     removeFilter(key: string): boolean {
         return this.filters.delete(key);
     }
 
+    /**
+     * Clears all filters associated with the button.
+     */
     clearFilters(): void {
         this.filters.clear();
     }
 
+    /**
+     * Registers a listener for the `pressed` signal.
+     * @param listener The function to execute when the button is pressed.
+     */
     onPressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): void {
         this.pressed.on(listener);
     }
 
+    /**
+     * Registers a one-time listener for the `pressed` signal.
+     * @param listener The function to execute when the button is pressed once.
+     */
     oncePressed(listener: (interaction: ButtonInteraction) => void | Promise<void>): void {
         this.pressed.once(listener);
     }
 
+    /**
+     * Disconnects the button from interaction handling and clears filters and listeners.
+     */
     disconnect(): void {
         this.pressed.disconnectAll();
         this.clearFilters();
