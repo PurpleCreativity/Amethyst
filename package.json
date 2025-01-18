@@ -19,8 +19,8 @@
     },
     "scripts": {
         "clean": "rmdir /s /q build",
-        "build": "npm run clean && tsc",
-        "dev": "npm run build && node . --dev",
+        "build": "tsc",
+        "dev": "npm run clean && npm run build && node . --dev",
         "start": "npm run build && node .",
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
