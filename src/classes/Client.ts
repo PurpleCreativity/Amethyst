@@ -4,7 +4,7 @@ import BloxWrap from "bloxwrap";
 import { type ClientOptions, Client as DiscordClient, TextChannel } from "discord.js";
 import dotenv from "dotenv";
 import config from "../config.js";
-import type { configType } from "../types/config.d.js";
+import type { configType } from "../types/config.js";
 dotenv.config();
 
 import API from "../core/API.js";
@@ -12,8 +12,6 @@ import Database from "../core/Database.js";
 import Events from "../core/Events.js";
 import Functions from "../core/Functions.js";
 import Interactables from "../core/Interactables.js";
-import Logs from "../core/Logs.js";
-import Plugins from "../core/Plugins.js";
 import Process from "../core/Process.js";
 import Threader from "../core/Threader.js";
 
@@ -33,13 +31,10 @@ export default class Client extends DiscordClient {
         "Threader",
         "Events",
         "Process",
-        "Logs",
 
         "Database",
         "API",
         "Interactables",
-
-        "Plugins",
     ];
 
     //? Core Modules
@@ -47,11 +42,9 @@ export default class Client extends DiscordClient {
     Threader: Threader;
     Events: Events;
     Process: Process;
-    Logs: Logs;
     Database: Database;
     API: API;
     Interactables: Interactables;
-    Plugins: Plugins;
 
     //? Dependencies
     Axios: Axios = axios.create();
@@ -64,11 +57,9 @@ export default class Client extends DiscordClient {
         this.Threader = new Threader(this);
         this.Events = new Events(this);
         this.Process = new Process(this);
-        this.Logs = new Logs(this);
         this.Database = new Database(this);
         this.API = new API(this);
         this.Interactables = new Interactables(this);
-        this.Plugins = new Plugins(this);
     }
 
     private _log = (

@@ -1,35 +1,14 @@
-export enum CommandErrorName {
-    DEVELOPER_ONLY = "DEVELOPER_ONLY",
-    DISABLED_GLOBAL = "DISABLED_GLOBAL",
+export enum RoutePermission {
+    Administrator = 1,
 
-    MISSING_DISCORD_PERMISSIONS = "MISSING_DISCORD_PERMISSIONS",
-    MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
+    PointsManager = 2,
+    PointsViewer = 3,
+    PointlogCreator = 4,
 
-    DATABASE_ERROR = "DATABASE_ERROR",
-
-    UNKNOWN = "UNKNOWN",
+    EventScheduler = 5,
+    ScheduleViewer = 6,
 }
 
-export enum CommandErrorDescription {
-    DEVELOPER_ONLY = "This command is for Amethyst developers only",
-    DISABLED_GLOBAL = "This command is currently disabled",
-
-    MISSING_DISCORD_PERMISSIONS = "You are missing the required Discord permissions to run this command",
-    MISSING_PERMISSIONS = "You are missing the required Amethyst permissions to run this command",
-
-    DATABASE_ERROR = "An error occurred while trying to access the database",
-
-    UNKNOWN = "An unknown error occurred",
-}
-
-export enum CommandModule {
-    Points = "Points",
-    Schedule = "Schedule",
-    Roblox = "Roblox",
-    Developer = "Developer",
-}
-
-// dont tell anyone that this isnt an enum
 export const HttpStatusCodes: { [key: number]: string } = {
     100: "CONTINUE",
     101: "SWITCHING_PROTOCOLS",

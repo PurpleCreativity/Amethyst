@@ -3,7 +3,7 @@ import client from "../main.js";
 
 export default new Event({
     type: "process",
-    callback: (error) => {
+    listener: (error) => {
         if (!(error instanceof Error)) return;
 
         client.error(error.stack);

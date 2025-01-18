@@ -1,12 +1,11 @@
 import { Buffer } from "node:buffer";
-import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv } from "node:crypto";
 import process from "node:process";
 import { UserAvatarHeadshotImageFormat, type UserAvatarHeadshotImageSize, type UserData } from "bloxwrap";
-import { Colors, type Guild, GuildMember, type User } from "discord.js";
+import { type Guild, GuildMember, type User } from "discord.js";
 import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
 import type PointLog from "../classes/database/PointLog.js";
 
 export default class Functions {
@@ -62,7 +61,6 @@ export default class Functions {
 
     fetchUser = async (searcher: string, guild?: Guild, self?: User) => {
         if (searcher.toLowerCase() === "self" || (searcher.toLowerCase() === "me" && self)) return self;
-        // See if it matches <@id>;
         if (searcher.startsWith("<@") && searcher.endsWith(">")) searcher = searcher.slice(2, -1);
 
         try {
@@ -101,10 +99,8 @@ export default class Functions {
     };
 
     fetchChannel = async (searcher: string, guild?: Guild, limitToGuild = false) => {
-        // See if it matches <#id>;
         if (searcher.startsWith("<#") && searcher.endsWith(">")) searcher = searcher.slice(2, -1);
         if (searcher.startsWith("#")) searcher = searcher.slice(1);
-        // Replace all spaces with dashes
         searcher = searcher.replace(/ /g, "-");
 
         try {
@@ -141,7 +137,6 @@ export default class Functions {
     };
 
     fetchRole = async (searcher: string, guild: Guild) => {
-        // See if it matches <@&id>;
         if (searcher.startsWith("<@&") && searcher.endsWith(">")) searcher = searcher.slice(3, -1);
 
         try {
@@ -179,63 +174,9 @@ export default class Functions {
         return crypto.randomUUID();
     };
 
-    GenerateIV = () => {
-        return randomBytes(16);
-    };
-
     MemoryUsage = () => {
         const used = process.memoryUsage().heapUsed / 1024 / 1024;
         return Math.round(used);
-    };
-
-    createAcronym = (string: string) => {
-        // Removes all non-uppercase letters
-        return string.replace(/[^A-Z]/g, "");
-    };
-
-    TrueStrings = ["true", "yes", "1", "on"];
-    FalseStrings = ["false", "no", "0", "off"];
-    stringToBoolean = (string: string) => {
-        if (this.TrueStrings.includes(string.toLowerCase())) return true;
-        if (this.FalseStrings.includes(string.toLowerCase())) return false;
-        return false;
-    };
-
-    stringRGBToColorHex = (string: string) => {
-        const rgb = string.split(",");
-        if (rgb.length !== 3) {
-            throw new Error(
-                "Invalid RGB input. RGB input should have exactly 3 values between 0 and 255 separated by commas.",
-            );
-        }
-        const hex = rgb.map((value) => {
-            const intValue = Number.parseInt(value.trim(), 10);
-            if (Number.isNaN(intValue) || intValue < 0 || intValue > 255) {
-                throw new Error("Invalid RGB input. Each value should be an integer between 0 and 255.");
-            }
-            const hexValue = intValue.toString(16).padStart(2, "0");
-            return hexValue;
-        });
-        const hexColor = `#${hex.join("")}`;
-        return hexColor;
-    };
-
-    getColor = (string: string) => {
-        if (string.startsWith("#") || string.startsWith("0x")) return string;
-
-        const isRGB = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/.test(string);
-        if (isRGB) {
-            return this.stringRGBToColorHex(string);
-        }
-
-        for (const color of Object.keys(Colors)) {
-            if (color.toLowerCase() === string.toLowerCase()) {
-                const colorValue = (Colors as Record<string, number>)[color];
-                return `#${colorValue.toString(16).padStart(6, "0")}`;
-            }
-        }
-
-        return undefined;
     };
 
     encypt = (text: string, iv: string) => {
@@ -260,79 +201,5 @@ export default class Functions {
 
     isDev = (userId: string) => {
         return this.client.config.devList.includes(userId);
-    };
-
-    makePointlogEmbed = (pointlog: PointLog) => {
-        const embed = this.makeInfoEmbed({
-            title: `\`${pointlog.id}\``,
-            footer: { text: pointlog.id },
-            fields: [{ name: "Notes", value: `${pointlog.note || "`No note`"}`, inline: false }],
-        });
-
-        const baseDescription = `Created by [${pointlog.creator.robloxUsername}](https://www.roblox.com/users/${pointlog.creator.robloxId}/profile) on <t:${Math.round(pointlog.createdAt.getTime() / 1000)}:F>`;
-
-        for (const data of pointlog.data) {
-            const foundField = embed.getField(`> ${data.points} points`);
-            if (foundField) {
-                foundField.value += `, \`${data.user.robloxUsername}\``;
-                if (foundField.value.length > 1024) foundField.value = `${foundField.value.substring(0, 1021)}...`;
-                continue;
-            }
-
-            embed.addFields({ name: `> ${data.points} points`, value: `\`${data.user.robloxUsername}\`` });
-
-            if (embed.data.fields?.length && embed.data.fields?.length >= 25) {
-                embed.setDescription(`## ${Emojis.warning} Unable to show full log!\n${baseDescription}`);
-                break;
-            }
-
-            embed.setDescription(baseDescription);
-        }
-
-        return embed;
-    };
-
-    makeInfoEmbed = (options: EmbedOptions) => {
-        const embed = new Embed(options);
-
-        if (!options.color) embed.setColor(0x4287f5);
-        if (!options.author) {
-            embed.setAuthor({ name: "Info", iconURL: Images.info });
-        }
-
-        return embed;
-    };
-
-    makeWarnEmbed = (options: EmbedOptions) => {
-        const embed = new Embed(options);
-
-        if (!options.color) embed.setColor(0xffcc00);
-        if (!options.author) {
-            embed.setAuthor({ name: "Warning", iconURL: Images.warn });
-        }
-
-        return embed;
-    };
-
-    makeSuccessEmbed = (options: EmbedOptions) => {
-        const embed = new Embed(options);
-
-        if (!options.color) embed.setColor(0x00ff00);
-        if (!options.author) {
-            embed.setAuthor({ name: "Success", iconURL: Images.check });
-        }
-
-        return embed;
-    };
-
-    makeErrorEmbed = (options: EmbedOptions) => {
-        const embed = new Embed(options);
-
-        if (!options.color) embed.setColor(0xff0000);
-        if (!options.author) {
-            embed.setAuthor({ name: "Error", iconURL: Images.close });
-        }
-
-        return embed;
     };
 }

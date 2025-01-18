@@ -18,7 +18,8 @@
         ".": "./build/main.js"
     },
     "scripts": {
-        "build": "tsc",
+        "clean": "rmdir /s /q build",
+        "build": "npm run clean && tsc",
         "dev": "npm run build && node . --dev",
         "start": "npm run build && node .",
         "lint": "biome lint .",
@@ -33,7 +34,7 @@
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/express": "^5.0.0",
-        "@types/node": "^22.10.5",
+        "@types/node": "^22.10.7",
         "@types/ws": "^8.5.13",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3"

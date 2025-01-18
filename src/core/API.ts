@@ -4,7 +4,7 @@ import express from "express";
 import ratelimit from "express-rate-limit";
 import type Client from "../classes/Client.ts";
 import Route from "../classes/Route.js";
-import { HttpStatusCodes } from "../types/Enums.js";
+import { HttpStatusCodes } from "../types/core/API.js";
 
 export default class API {
     client: Client;

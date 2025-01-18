@@ -1,7 +1,7 @@
 import process from "node:process";
 import chalk from "chalk";
 import dotenv from "dotenv";
-import type { configType } from "./types/config.d.ts";
+import type { configType } from "./types/config.js";
 dotenv.config();
 
 const config = {} as configType;
@@ -46,10 +46,6 @@ config.credentials = {
 config.channels = {
     errors: "1276657958100668437",
     logs: "1276658150291804160",
-};
-
-config.logs = {
-    max_file_size: 7,
 };
 
 config.logConfig = {

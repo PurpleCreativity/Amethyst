@@ -3,9 +3,10 @@ import path from "node:path";
 import { Guild, type Snowflake, User } from "discord.js";
 import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
-import GuildProfile from "../classes/database/GuildProfile.js";
+import GuildProfile, { type PermissionEntry } from "../classes/database/GuildProfile.js";
 import GuildUser from "../classes/database/GuildUser.js";
 import UserProfile from "../classes/database/UserProfile.js";
+import type { CommandPermission } from "../types/core/Interactables.js";
 
 export default class Database {
     client: Client;
@@ -128,7 +129,7 @@ export default class Database {
             __v: 0,
             shortname: shortname,
 
-            permissions: {},
+            permissions: {} as Record<CommandPermission, PermissionEntry>,
             channels: {},
             settings: {},
         });

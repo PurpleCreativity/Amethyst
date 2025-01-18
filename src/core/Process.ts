@@ -30,7 +30,7 @@ export default class Process {
                     return;
                 }
 
-                this.client.Events.addEvent(event.type, eventFile.slice(0, -3), event.callback);
+                this.client.Events.addEvent(event.type, eventFile.slice(0, -3), event.listener);
             }
         };
 

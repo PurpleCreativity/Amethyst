@@ -1,5 +1,5 @@
 import type express from "express";
-import type { ValidPermissions } from "../types/core/Interactables.js";
+import type { RoutePermission } from "../types/core/API.js";
 import type GuildProfile from "./database/GuildProfile.js";
 
 export type RouteMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
@@ -42,9 +42,9 @@ export type RouteOptions = {
     /**
      * A list of permissions required to access the route.
      * This property is only relevant when `public` is set to `false`.
-     * Each permission corresponds to a specific allowed action in the system.
+     * Each permission corresponds to a specific allowed actions in the system.
      */
-    permissions?: ValidPermissions[];
+    permissions?: RoutePermission[];
 
     /**
      * Marks the route as deprecated.
@@ -71,7 +71,7 @@ export default class Route {
     readonly middlewares: express.RequestHandler[];
 
     readonly public: boolean;
-    readonly permissions: ValidPermissions[];
+    readonly permissions: RoutePermission[];
     readonly deprecated: boolean;
 
     private function: (req: express.Request, res: express.Response, guildProfile?: GuildProfile) => Promise<unknown>;
