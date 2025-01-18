@@ -26,7 +26,7 @@ export type EmbedOptions = {
     image?: string;
 
     /** The author information for the embed. */
-    author?: { 
+    author?: {
         /** The name of the author. */
         name: string;
 
@@ -38,7 +38,7 @@ export type EmbedOptions = {
     };
 
     /** The footer information for the embed. */
-    footer?: { 
+    footer?: {
         /** The text of the footer. */
         text: string;
 
@@ -54,10 +54,9 @@ export type EmbedOptions = {
  * A utility wrapper for creating and managing Discord embeds.
  */
 export default class Embed extends EmbedBuilder {
-
     /**
      * Creates a new Embed instance.
-     * 
+     *
      * @param {EmbedOptions} options - The options to initialize the embed.
      */
     constructor(options: EmbedOptions) {
@@ -82,7 +81,7 @@ export default class Embed extends EmbedBuilder {
 
     /**
      * Retrieves a field by its name.
-     * 
+     *
      * @param {string} name - The name of the field to retrieve.
      * @returns {APIEmbedField | null} The matching field or `null` if not found.
      */
@@ -92,7 +91,7 @@ export default class Embed extends EmbedBuilder {
 
     /**
      * Adds a new field to the embed.
-     * 
+     *
      * @param {string} name - The name of the field.
      * @param {string} value - The value of the field.
      * @param {boolean} inline - Whether the field should be inline.
@@ -103,7 +102,7 @@ export default class Embed extends EmbedBuilder {
 
     /**
      * Removes a field by its name.
-     * 
+     *
      * @param {string} name - The name of the field to remove.
      */
     removeField(name: string): void {
@@ -115,7 +114,7 @@ export default class Embed extends EmbedBuilder {
 
     /**
      * Updates or adds a field to the embed.
-     * 
+     *
      * @param {string} name - The name of the field.
      * @param {string} value - The **new** value of the field.
      * @param {boolean} inline - Whether the field should **now** be inline.
@@ -133,7 +132,7 @@ export default class Embed extends EmbedBuilder {
 
     /**
      * Populates the embed's properties from a JSON object or string.
-     * 
+     *
      * @param {string | APIEmbed} json - The JSON string or object to populate the embed.
      * @returns {this} The updated Embed instance.
      */
