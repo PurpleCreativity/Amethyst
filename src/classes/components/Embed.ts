@@ -1,24 +1,65 @@
 import { type APIEmbed, type APIEmbedField, type ColorResolvable, EmbedBuilder } from "discord.js";
 
+/**
+ * Options for configuring an Embed.
+ */
 export type EmbedOptions = {
+    /** The title of the embed. */
     title?: string;
+
+    /** The URL that the title links to. */
     url?: string;
 
+    /** The description of the embed. */
     description?: string;
 
+    /** The color of the embed. */
     color?: ColorResolvable;
+
+    /** A timestamp to include in the embed. */
     timestamp?: Date | number;
 
+    /** The URL of the thumbnail image. */
     thumbnail?: string;
+
+    /** The URL of the main image. */
     image?: string;
 
-    author?: { name: string; iconURL?: string; url?: string };
-    footer?: { text: string; iconURL?: string };
+    /** The author information for the embed. */
+    author?: { 
+        /** The name of the author. */
+        name: string;
 
+        /** The URL of the author's icon. */
+        iconURL?: string;
+
+        /** A URL associated with the author. */
+        url?: string;
+    };
+
+    /** The footer information for the embed. */
+    footer?: { 
+        /** The text of the footer. */
+        text: string;
+
+        /** The URL of the footer icon. */
+        iconURL?: string;
+    };
+
+    /** An array of fields to include in the embed. */
     fields?: APIEmbedField[];
 };
 
+/**
+ * A utility wrapper for creating and managing Discord embeds.
+ */
 export default class Embed extends EmbedBuilder {
+
+    /**
+     * Creates a new Embed instance.
+     * 
+     * @param {EmbedOptions} options - The options to initialize the embed.
+     */
     constructor(options: EmbedOptions) {
         super();
 
@@ -39,14 +80,32 @@ export default class Embed extends EmbedBuilder {
         this.setFields(options.fields || []);
     }
 
+    /**
+     * Retrieves a field by its name.
+     * 
+     * @param {string} name - The name of the field to retrieve.
+     * @returns {APIEmbedField | null} The matching field or `null` if not found.
+     */
     getField(name: string): APIEmbedField | null {
         return this.data.fields?.find((field: APIEmbedField) => field.name === name) || null;
     }
 
-    addField(name: string, value: string, inline = false): void {
+    /**
+     * Adds a new field to the embed.
+     * 
+     * @param {string} name - The name of the field.
+     * @param {string} value - The value of the field.
+     * @param {boolean} inline - Whether the field should be inline.
+     */
+    addField(name: string, value: string, inline: boolean): void {
         this.addFields({ name, value, inline });
     }
 
+    /**
+     * Removes a field by its name.
+     * 
+     * @param {string} name - The name of the field to remove.
+     */
     removeField(name: string): void {
         const field = this.getField(name);
         if (!field) return;
@@ -54,7 +113,14 @@ export default class Embed extends EmbedBuilder {
         this.data.fields?.splice(this.data.fields.indexOf(field), 1);
     }
 
-    setField(name: string, value: string, inline = false): void {
+    /**
+     * Updates or adds a field to the embed.
+     * 
+     * @param {string} name - The name of the field.
+     * @param {string} value - The **new** value of the field.
+     * @param {boolean} inline - Whether the field should **now** be inline.
+     */
+    setField(name: string, value: string, inline: boolean): void {
         const field = this.getField(name);
 
         if (field) {
@@ -65,6 +131,12 @@ export default class Embed extends EmbedBuilder {
         }
     }
 
+    /**
+     * Populates the embed's properties from a JSON object or string.
+     * 
+     * @param {string | APIEmbed} json - The JSON string or object to populate the embed.
+     * @returns {this} The updated Embed instance.
+     */
     fromJSON(json: string | APIEmbed): this {
         const data: APIEmbed = typeof json === "string" ? JSON.parse(json) : json;
 
