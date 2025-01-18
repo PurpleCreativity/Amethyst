@@ -19,9 +19,9 @@ import {
     type SlashCommandSubcommandGroupBuilder,
     type SlashCommandUserOption,
 } from "discord.js";
+import client from "../../main.js";
 import type { CommandModule, CommandPermission } from "../../types/core/Interactables.js";
 import type GuildProfile from "../database/GuildProfile.js";
-import client from "../../main.js";
 
 type ValidSlashCommandOption =
     | SlashCommandStringOption
@@ -186,8 +186,8 @@ export default class SlashCommand extends SlashCommandBuilder {
         this.devOnly = options.devOnly ?? false;
         this.disabled = false;
 
-        this.function = options.function
-        this.autocomplete = options.autocomplete
+        this.function = options.function;
+        this.autocomplete = options.autocomplete;
 
         if (options.options?.length) {
             for (const option of options.options) this.options.push(option);
@@ -216,7 +216,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         }
     }
 
-    private async check(interaction: ChatInputCommandInteraction, guildProfile?: GuildProfile): Promise<string | undefined> {
+    private async check(
+        interaction: ChatInputCommandInteraction,
+        guildProfile?: GuildProfile,
+    ): Promise<string | undefined> {
         if (client.Functions.isDev(interaction.user.id)) return undefined;
 
         if (this.disabled) return "This command has been globally disabled.";
@@ -225,8 +228,10 @@ export default class SlashCommand extends SlashCommandBuilder {
         if (interaction.guild) {
             if (!interaction.member || !(interaction.member instanceof GuildMember)) return "You're not real. (lmfao)";
 
-            if (!guildProfile && this.permissions.length > 0) return "GuildProfile doesn't exist, and there are necessary permissions to check.\n\nPlease try again later.";
-            if (!guildProfile?.checkPermissions(interaction.member, this.permissions)) return "You don't have permissions to use this.";
+            if (!guildProfile && this.permissions.length > 0)
+                return "GuildProfile doesn't exist, and there are necessary permissions to check.\n\nPlease try again later.";
+            if (!guildProfile?.checkPermissions(interaction.member, this.permissions))
+                return "You don't have permissions to use this.";
 
             return undefined;
         }
@@ -246,6 +251,6 @@ export default class SlashCommand extends SlashCommandBuilder {
             return;
         }
 
-        await this.function(interaction, guildProfile)
+        await this.function(interaction, guildProfile);
     }
 }

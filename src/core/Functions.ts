@@ -8,8 +8,8 @@ import { SqlError } from "mariadb";
 import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
-import type PointLog from "../classes/database/PointLog.js";
 import Embed, { type EmbedOptions } from "../classes/components/Embed.js";
+import type PointLog from "../classes/database/PointLog.js";
 
 export default class Functions {
     client: Client;
