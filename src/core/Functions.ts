@@ -7,6 +7,8 @@ import Emojis from "../../public/Emojis.json" with { type: "json" };
 import Images from "../../public/Images.json" with { type: "json" };
 import type Client from "../classes/Client.ts";
 import type PointLog from "../classes/database/PointLog.js";
+import { SqlError } from "mariadb";
+import { AxiosError } from "axios";
 
 export default class Functions {
     client: Client;
@@ -157,6 +159,28 @@ export default class Functions {
             }
         }
     };
+
+    formatErrorMessage = (error: unknown, useDiscordformatting = true): string => {
+        let message = "Unknown error";
+
+        if (error instanceof Error) {
+            message = `[${error.name}]: ${error.message}`;
+        }
+
+        if (error instanceof SqlError) {
+            message = `[${error.code}]: ${error.sqlMessage}`
+        }
+
+        if (error instanceof AxiosError) {
+            message = `[${error.code}]: ${JSON.stringify(error.response?.data.errors)}`
+        }
+
+        if (useDiscordformatting) {
+            message = `\`\`\`\n${message}\n\`\`\``;
+        }
+    
+        return message;
+    }
 
     wait = async (ms: number) => {
         return new Promise((resolve) => setTimeout(resolve, ms));
