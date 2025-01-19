@@ -221,7 +221,6 @@ export default new SlashCommand({
 
                                 const foundEntry = pointlog.data.find((entry) => entry.user.robloxId === actualUser.id);
                                 if (foundEntry) {
-                                    console.log(foundEntry);
                                     if (currentMode === addDataMode.Increment) foundEntry.points += points;
                                     else foundEntry.points = points;
 
@@ -229,16 +228,15 @@ export default new SlashCommand({
                                         pointlog.data = pointlog.data.filter(
                                             (entry) => entry.user.robloxId !== actualUser.id,
                                         );
-                                        continue;
                                     }
+                                } else {
+                                    if (points === 0) continue;
+
+                                    pointlog.data.push({
+                                        points: points,
+                                        user: { robloxId: actualUser.id, robloxUsername: actualUser.username },
+                                    });
                                 }
-
-                                if (points === 0) continue;
-
-                                pointlog.data.push({
-                                    points: points,
-                                    user: { robloxId: actualUser.id, robloxUsername: actualUser.username },
-                                });
                             }
                         } catch (error) {
                             const message = client.Functions.formatErrorMessage(error);
