@@ -22,7 +22,7 @@ export default class Client extends DiscordClient {
 
     readonly args: string[] = process.argv.slice(2);
     readonly devMode: boolean = this.args.includes("--dev");
-    readonly redeployCommands: boolean = this.args.includes("--redeployCommands") || this.args.includes("--rc");
+    readonly redeployInteractables: boolean = this.args.includes("--ri");
 
     readonly botChannels: { [key: string]: TextChannel } = {};
 

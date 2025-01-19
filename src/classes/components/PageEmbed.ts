@@ -11,6 +11,7 @@ import client from "../../main.js";
 import Button from "./Button.js";
 import ButtonEmbed from "./ButtonEmbed.js";
 import Embed, { type EmbedOptions } from "./Embed.js";
+import Modal from "./Modal.js";
 
 export type PageEmbedOptions = {
     baseEmbed: Embed;
@@ -72,6 +73,8 @@ export default class PageEmbed extends ButtonEmbed {
                 emoji: Emojis.forward,
                 style: ButtonStyle.Primary,
                 allowedUsers: options.allowedUsers,
+
+                timeout: 60_000,
             }).onPressed(async (interaction) => {
                 await this.toPage(interaction.message, this.currentPage + 1);
                 await interaction.deferUpdate();
@@ -99,9 +102,8 @@ export default class PageEmbed extends ButtonEmbed {
                 emoji: Emojis.search,
                 style: ButtonStyle.Secondary,
                 allowedUsers: options.allowedUsers,
-            }).onPressed(async () => {
-                /*
-const modal = new Modal({
+            }).onPressed(async (interaction) => {
+                const modal = new Modal({
                     title: "Search",
                     inputs: [
                         new TextInputBuilder()
@@ -161,30 +163,31 @@ const modal = new Modal({
                                 new Button({
                                     label: "Jump to page",
                                     style: ButtonStyle.Primary,
-                                    allowedUsers: opts.allowedUsers,
-                                    function: async (buttonInteraction) => {
-                                        await this.toPage(interaction.message, i + 1);
-                                        await response.deleteReply();
-                                    },
+                                    allowedUsers: options.allowedUsers,
+                                }).oncePressed(async (buttonInteraction) => {
+                                    await this.toPage(interaction.message, i + 1);
+                                    await response.deleteReply();
                                 }),
                             );
 
-                            buttonEmbed.addButton(
+                            const viewFieldButton = buttonEmbed.addButton(
                                 new Button({
                                     label: "View field",
                                     style: ButtonStyle.Secondary,
-                                    allowedUsers: opts.allowedUsers,
-                                    function: async (buttonInteraction) => {
-                                        await buttonInteraction.reply({
-                                            embeds: [
-                                                client.Functions.makeInfoEmbed({
-                                                    title: field.name,
-                                                    description: field.value,
-                                                }),
-                                            ],
-                                            flags: MessageFlags.Ephemeral,
-                                        });
-                                    },
+                                    allowedUsers: options.allowedUsers,
+                                }).oncePressed(async (buttonInteraction) => {
+                                    viewFieldButton.setDisabled(true);
+                                    await response.editReply(buttonEmbed.getMessageData());
+
+                                    await buttonInteraction.reply({
+                                        embeds: [
+                                            client.Functions.makeInfoEmbed({
+                                                title: field.name,
+                                                description: field.value,
+                                            }),
+                                        ],
+                                        flags: MessageFlags.Ephemeral,
+                                    });
                                 }),
                             );
 
@@ -202,7 +205,6 @@ const modal = new Modal({
                         }),
                     ],
                 });
-                */
             }),
         );
 
@@ -220,6 +222,8 @@ const modal = new Modal({
     }
 
     private async toPage(message: Message, pageNumber: number) {
+        if (!message.channel) throw new Error("PageEmbed is only avaible in channels.")
+
         this.currentPage = pageNumber;
         this.embed = this.embeds[this.currentPage - 1];
 

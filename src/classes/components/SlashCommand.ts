@@ -177,17 +177,17 @@ export default class SlashCommand extends SlashCommandBuilder {
 
         this.setNSFW(options.nsfw ?? false);
 
-        this.module = options.module;
-        this.ephemeral = options.ephemeral ?? false;
-        this.userApp = options.userApp ?? false;
+        this.setContexts(
+            InteractionContextType.Guild,
+            InteractionContextType.BotDM,
+            InteractionContextType.PrivateChannel,
+        );
 
-        this.permissions = options.permissions ?? [];
-        this.selectedGuilds = options.selectedGuilds ?? [];
-        this.devOnly = options.devOnly ?? false;
-        this.disabled = false;
-
-        this.function = options.function;
-        this.autocomplete = options.autocomplete;
+        if (options.userApp && !options.selectedGuilds) {
+            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
+        } else {
+            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
+        }
 
         if (options.options?.length) {
             for (const option of options.options) this.options.push(option);
@@ -203,17 +203,17 @@ export default class SlashCommand extends SlashCommandBuilder {
             }
         }
 
-        this.setContexts(
-            InteractionContextType.Guild,
-            InteractionContextType.BotDM,
-            InteractionContextType.PrivateChannel,
-        );
+        this.module = options.module;
+        this.ephemeral = options.ephemeral ?? false;
+        this.userApp = options.userApp ?? false;
 
-        if (options.userApp && !options.selectedGuilds) {
-            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall);
-        } else {
-            this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall);
-        }
+        this.permissions = options.permissions ?? [];
+        this.selectedGuilds = options.selectedGuilds ?? [];
+        this.devOnly = options.devOnly ?? false;
+        this.disabled = false;
+
+        this.function = options.function;
+        this.autocomplete = options.autocomplete;
     }
 
     private async check(

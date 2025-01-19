@@ -161,11 +161,12 @@ export default class Functions {
         }
     };
 
-    formatErrorMessage = (error: unknown, useDiscordformatting = true): string => {
+    formatErrorMessage = (error: unknown): string => {
         let message = "Unknown error";
 
         if (error instanceof Error) {
             message = `[${error.name}]: ${error.message}`;
+            this.client.error(error.stack);
         }
 
         if (error instanceof SqlError) {
@@ -174,10 +175,6 @@ export default class Functions {
 
         if (error instanceof AxiosError) {
             message = `[${error.code}]: ${JSON.stringify(error.response?.data.errors)}`;
-        }
-
-        if (useDiscordformatting) {
-            message = `\`\`\`\n${message}\n\`\`\``;
         }
 
         return message;

@@ -32,6 +32,9 @@ export type ButtonOptions = {
 
     /** An array of user IDs allowed to interact with the button. */
     allowedUsers?: string[];
+
+    /**  */
+    timeout?: number;
 };
 
 /**
@@ -46,10 +49,10 @@ type FilterFunction = (interaction: ButtonInteraction) => boolean;
  */
 export default class Button extends ButtonBuilder {
     /** The unique identifier for the button. */
-    readonly customId: string;
+    public readonly customId: string;
 
     /** An array of user IDs allowed to interact with the button. */
-    readonly allowedUsers: string[];
+    public readonly allowedUsers: string[];
 
     /** Signal to emit events when the button is pressed. */
     private pressed: Signal<[ButtonInteraction]>;
@@ -59,6 +62,13 @@ export default class Button extends ButtonBuilder {
 
     /** A map of filter functions associated with unique keys. */
     private filters: Map<string, FilterFunction>;
+
+    /** Reference to the timeout to allow clearing and resetting. */
+    private timeoutId?: NodeJS.Timeout;
+    //! ^ Discord.js has a default limit of 100, so this might be unnecessary.
+
+    /** Number in miliseconds how long to wait before automatically disconnecting the button. */
+    public readonly timeout: number;
 
     /**
      * Creates a new Button instance.
@@ -77,8 +87,9 @@ export default class Button extends ButtonBuilder {
         this.setCustomId(this.customId);
 
         this.allowedUsers = options.allowedUsers ?? [];
-        this.pressed = new Signal();
+        this.timeout = options.timeout ?? 15_000_000;
 
+        this.pressed = new Signal();
         this.filters = new Map();
         this.listener = async (interaction: ButtonInteraction) => {
             if (interaction.customId !== this.customId) return;
@@ -101,10 +112,20 @@ export default class Button extends ButtonBuilder {
                 }
             }
 
+            if (this.timeoutId) clearTimeout(this.timeoutId);
+            this.timeoutId = setTimeout(() => {
+                this.disconnect();
+            }, this.timeout);
+
             this.pressed.fire(interaction);
+            if (this.pressed.connectionCount === 0) this.disconnect();
         };
 
         client.on("buttonInteraction", this.listener);
+
+        this.timeoutId = setTimeout(() => {
+            this.disconnect();
+        }, this.timeout);
     }
 
     /**
@@ -163,5 +184,7 @@ export default class Button extends ButtonBuilder {
         this.pressed.disconnectAll();
         this.clearFilters();
         client.off("buttonInteraction", this.listener);
+
+        this.setDisabled(true);
     }
 }

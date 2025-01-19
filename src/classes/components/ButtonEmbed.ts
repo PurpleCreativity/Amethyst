@@ -9,6 +9,7 @@ export default class ButtonEmbed {
 
     constructor(baseEmbed: Embed) {
         this.embed = baseEmbed;
+        this.rows[0] = [];
     }
 
     public getMessageData() {
