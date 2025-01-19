@@ -222,7 +222,7 @@ export default class PageEmbed extends ButtonEmbed {
     }
 
     private async toPage(message: Message, pageNumber: number) {
-        if (!message.channel) throw new Error("PageEmbed is only avaible in channels.")
+        if (!message.channel) throw new Error("PageEmbed is only avaible in channels.");
 
         this.currentPage = pageNumber;
         this.embed = this.embeds[this.currentPage - 1];
