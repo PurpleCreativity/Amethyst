@@ -16,6 +16,7 @@ import SlashCommand from "../../classes/components/SlashCommand.js";
 import PointLog from "../../classes/database/PointLog.js";
 import client from "../../main.js";
 import { CommandModule, CommandPermission } from "../../types/core/Interactables.js";
+import type Embed from "../../classes/components/Embed.js";
 
 enum addDataMode {
     Increment = 0,
@@ -26,6 +27,8 @@ export default new SlashCommand({
     name: "pointlogs",
     description: "Pointlog commands",
     module: CommandModule.Points,
+
+    ephemeral: true,
 
     permissions: [CommandPermission.PointlogCreator],
 
@@ -468,139 +471,35 @@ export default new SlashCommand({
                     });
                 }
 
-                const embeds = [] as ButtonEmbed[];
-                for (const pointlog of pointlogs) {
-                    const pointlogEmbed = client.Functions.makePointlogEmbed(pointlog);
-                    const buttonEmbed = new ButtonEmbed(pointlogEmbed);
-
-                    buttonEmbed.addButton(
-                        new Button({
-                            label: "Download",
-                            style: ButtonStyle.Secondary,
-                            emoji: Emojis.import,
-                            allowedUsers: [interaction.user.id],
-                        }).onPressed(async (buttonInteraction) => {
-                            const pointsMap: { [key: number]: string[] } = {};
-
-                            for (const user of pointlog.data) {
-                                if (!pointsMap[user.points]) {
-                                    pointsMap[user.points] = [];
-                                }
-                                pointsMap[user.points].push(user.user.robloxUsername);
-                            }
-
-                            const userText = Object.entries(pointsMap)
-                                .map(
-                                    ([points, usernames]) =>
-                                        `${points} - ${usernames.map((username) => `${username}`).join(", ")}`,
-                                )
-                                .join("\n");
-
-                            const userBuffer = Buffer.from(userText, "utf-8");
-
-                            await buttonInteraction.reply({
-                                files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
-                                flags: MessageFlags.Ephemeral,
-                            });
-                        }),
-                    );
-
-                    buttonEmbed.nextRow();
-
-                    buttonEmbed.addButton(
-                        new Button({
-                            label: "Import",
-                            style: ButtonStyle.Success,
-                            emoji: Emojis.import,
-                            allowedUsers: [interaction.user.id],
-                            disabled: !guildProfile.checkPermissions(interaction.member as GuildMember, [
-                                CommandPermission.PointsManager,
-                            ]),
-                        }).onPressed(async (buttonInteraction) => {
-                            try {
-                                await pointlog.import();
-
-                                const embed = client.Functions.makePointlogEmbed(pointlog);
-                                embed.setColor(0x00ff00);
-                                embed.setAuthor({ name: "Imported", iconURL: Images.check });
-                                embed.setTimestamp();
-
-                                await buttonInteraction.deferUpdate();
-                                await buttonInteraction.message.edit({ embeds: [embed], components: [] });
-                            } catch (error) {
-                                const message = client.Functions.formatErrorMessage(error);
-
-                                await buttonInteraction.message.edit({
-                                    embeds: [
-                                        client.Functions.makeErrorEmbed({
-                                            title: "Failed to import pointlog",
-                                            description: `\`\`\`${message}\`\`\``,
-                                        }),
-                                    ],
-                                });
-                            }
-                        }),
-                    );
-
-                    buttonEmbed.addButton(
-                        new Button({
-                            label: "Delete",
-                            style: ButtonStyle.Danger,
-                            emoji: Emojis.delete,
-                            allowedUsers: [interaction.user.id],
-                        }).onPressed(async (buttonInteraction) => {
-                            try {
-                                await pointlog.delete();
-
-                                const embed = client.Functions.makePointlogEmbed(pointlog);
-                                embed.setColor(0xff0000);
-                                embed.setAuthor({ name: "Deleted", iconURL: Images.close });
-                                embed.setTimestamp();
-
-                                await buttonInteraction.deferUpdate();
-                                await buttonInteraction.message.edit({ embeds: [embed], components: [] });
-                            } catch (error) {
-                                const message = client.Functions.formatErrorMessage(error);
-
-                                await buttonInteraction.message.edit({
-                                    embeds: [
-                                        client.Functions.makeErrorEmbed({
-                                            title: "Failed to delete pointlog",
-                                            description: `\`\`\`${message}\`\`\``,
-                                        }),
-                                    ],
-                                });
-                            }
-                        }),
-                    );
-
-                    embeds.push(buttonEmbed);
+                const embeds = [] as Embed[];
+                for (const pointlog of pointlogs) {                    
+                    embeds.push(client.Functions.makePointlogEmbed(pointlog));
+                    if (embeds.length >= 100) break;
                 }
 
                 await interaction.editReply({
                     embeds: [
                         client.Functions.makeInfoEmbed({
                             title: "Your Pointlogs",
-                            description: `You have \`${pointlogs.length}\` pending pointlogs.`,
+                            description: `You have \`${pointlogs.length}\` pending pointlog(s), only showing up to 100 logs!`,
                         }),
                     ],
                 });
 
-                if (!(interaction.channel instanceof TextChannel)) return;
-                for (const embed of embeds) {
+                for (let i = 0; i < embeds.length; i += 10) {
+                    const batch = embeds.slice(i, i + 10);
                     try {
-                        await interaction.channel.send(embed.getMessageData());
+                        await interaction.followUp({ flags: MessageFlags.Ephemeral, embeds: batch })
                     } catch (error) {
-                        if (!(error instanceof Error)) return;
                         await interaction.followUp({
+                            flags: MessageFlags.Ephemeral,
                             embeds: [
                                 client.Functions.makeErrorEmbed({
-                                    title: error.name,
-                                    description: `Failed to send point log \`${embed.embed.data.title}\`\n\n\`\`\`${error.message}\`\`\``,
+                                    title: "An error occured",
+                                    description: "Some pointlogs failed to send.",
                                     footer: { text: "If this error persists, please contact the bot developer" },
                                 }),
                             ],
-                            ephemeral: true,
                         });
                     }
                 }
