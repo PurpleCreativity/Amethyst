@@ -229,7 +229,7 @@ export default class Functions {
         const embed = this.makeInfoEmbed({
             title: `\`${pointlog.id}\``,
             footer: { text: pointlog.id },
-            fields: [{ name: "Notes", value: `${pointlog.note || "`No note`"}`, inline: false }],
+            fields: [{ name: "Notes", value: `${pointlog.note || "`(No notes)`"}`, inline: false }],
         });
 
         const baseDescription = `Created by [${pointlog.creator.robloxUsername}](https://www.roblox.com/users/${pointlog.creator.robloxId}/profile) on <t:${Math.round(pointlog.createdAt.getTime() / 1000)}:F>`;
