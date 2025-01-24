@@ -11,12 +11,12 @@ import Emojis from "../../../public/Emojis.json" with { type: "json" };
 import Images from "../../../public/Images.json" with { type: "json" };
 import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
+import type Embed from "../../classes/components/Embed.js";
 import Modal from "../../classes/components/Modal.js";
 import SlashCommand from "../../classes/components/SlashCommand.js";
 import PointLog from "../../classes/database/PointLog.js";
 import client from "../../main.js";
 import { CommandModule, CommandPermission } from "../../types/core/Interactables.js";
-import type Embed from "../../classes/components/Embed.js";
 
 enum addDataMode {
     Increment = 0,
@@ -472,7 +472,7 @@ export default new SlashCommand({
                 }
 
                 const embeds = [] as Embed[];
-                for (const pointlog of pointlogs) {                    
+                for (const pointlog of pointlogs) {
                     embeds.push(client.Functions.makePointlogEmbed(pointlog));
                     if (embeds.length >= 100) break;
                 }
@@ -489,7 +489,7 @@ export default new SlashCommand({
                 for (let i = 0; i < embeds.length; i += 10) {
                     const batch = embeds.slice(i, i + 10);
                     try {
-                        await interaction.followUp({ flags: MessageFlags.Ephemeral, embeds: batch })
+                        await interaction.followUp({ flags: MessageFlags.Ephemeral, embeds: batch });
                     } catch (error) {
                         await interaction.followUp({
                             flags: MessageFlags.Ephemeral,
