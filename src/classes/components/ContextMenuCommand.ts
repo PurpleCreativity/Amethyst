@@ -129,6 +129,7 @@ class BaseContextMenuCommand extends ContextMenuCommandBuilder {
         if (this.disabled) return "This command has been globally disabled.";
         if (this.devOnly) return "This command is only avaible to developers.";
 
+        if (this.userApp) return undefined;
         if (interaction.guild) {
             if (!interaction.member || !(interaction.member instanceof GuildMember)) return "You're not real. (lmfao)";
 
