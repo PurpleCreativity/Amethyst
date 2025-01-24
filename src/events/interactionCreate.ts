@@ -22,6 +22,18 @@ export default new Event({
             return;
         }
 
+        if (interaction.isAutocomplete()) {
+            const command = client.Interactables.stored.SlashCommands.get(interaction.commandName);
+            if (!command || !command.autocomplete) return;
+
+            const choices = (await command.autocomplete(interaction)) || [];
+            if (choices.length > 25) {
+                choices.splice(25);
+            }
+            await interaction.respond(choices);
+            return;
+        }
+
         if (interaction.isChatInputCommand()) {
             const command = client.Interactables.stored.SlashCommands.get(interaction.commandName);
             if (!command) {

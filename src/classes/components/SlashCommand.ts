@@ -34,7 +34,7 @@ type ValidSlashCommandOption =
     | SlashCommandMentionableOption
     | SlashCommandAttachmentOption;
 
-type AutocompleteEntry = {
+export type AutocompleteEntry = {
     /**
      * The display name shown to the user during autocomplete.
      */

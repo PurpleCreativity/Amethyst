@@ -12,7 +12,7 @@ import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
 import type Embed from "../../classes/components/Embed.js";
 import Modal from "../../classes/components/Modal.js";
-import SlashCommand from "../../classes/components/SlashCommand.js";
+import SlashCommand, { type AutocompleteEntry } from "../../classes/components/SlashCommand.js";
 import PointLog from "../../classes/database/PointLog.js";
 import client from "../../main.js";
 import { CommandModule, CommandPermission } from "../../types/core/Interactables.js";
@@ -136,7 +136,9 @@ export default new SlashCommand({
         new SlashCommandSubcommandBuilder()
             .setName("get")
             .setDescription("Get a pointlog by it's id.")
-            .addStringOption((option) => option.setName("id").setDescription("The pointlog id.").setRequired(true)),
+            .addStringOption((option) =>
+                option.setName("id").setDescription("The pointlog id.").setAutocomplete(true).setRequired(true),
+            ),
     ],
 
     function: async (interaction, guildProfile) => {
@@ -751,5 +753,21 @@ export default new SlashCommand({
                 await interaction.editReply(buttonEmbed.getMessageData());
             }
         }
+    },
+
+    autocomplete: async (interaction, guildProfile) => {
+        if (!interaction.guild) return [];
+        if (interaction.options.getSubcommand(true) !== "get") return [];
+
+        const pointlogs = await client.Database.getPointlogs({ guildId: interaction.guild.id });
+        const options: AutocompleteEntry[] = [];
+        for (const log of pointlogs) {
+            options.push({
+                name: `${log.id} | ${log.data.length} entrie(s) | Created at ${log.createdAt.toLocaleString("en-US")}`,
+                value: log.id,
+            });
+        }
+
+        return options;
     },
 });
