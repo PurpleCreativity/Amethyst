@@ -5,7 +5,9 @@ import mariadb, { SqlError } from "mariadb";
 import type Client from "../classes/Client.ts";
 import GuildProfile, { type PermissionEntry } from "../classes/database/GuildProfile.js";
 import GuildUser from "../classes/database/GuildUser.js";
+import PointLog from "../classes/database/PointLog.js";
 import UserProfile from "../classes/database/UserProfile.js";
+import type { PointLogQueryOptions } from "../types/core/Database.js";
 import { CommandPermission } from "../types/core/Interactables.js";
 
 export default class Database {
@@ -234,6 +236,81 @@ export default class Database {
         } finally {
             if (connection) await connection.end();
         }
+    };
+
+    getPointlogs = async (options: PointLogQueryOptions) => {
+        let connection: mariadb.Connection | undefined;
+        const pointlogs: PointLog[] = [];
+
+        try {
+            connection = await this.getConnection();
+
+            const conditions: string[] = [];
+            const values: unknown[] = [];
+
+            if (options.guildId) {
+                conditions.push("PointLogs.guildId = ?");
+                values.push(options.guildId);
+            }
+
+            if (options.creatorRobloxId) {
+                conditions.push("PointLogs.creatorRobloxId = ?");
+                values.push(options.creatorRobloxId);
+            }
+
+            if (options.createdAfter) {
+                conditions.push("PointLogs.createdAt >= ?");
+                values.push(options.createdAfter);
+            }
+
+            if (options.createdBefore) {
+                conditions.push("PointLogs.createdAt <= ?");
+                values.push(options.createdBefore);
+            }
+
+            if (options.includedUserSearcher) {
+                if (typeof options.includedUserSearcher === "number") {
+                    // Filter by robloxId
+                    conditions.push("jt.robloxId = ?");
+                    values.push(options.includedUserSearcher);
+                } else {
+                    // Filter by robloxUsername
+                    conditions.push("jt.robloxUsername = ?");
+                    values.push(options.includedUserSearcher);
+                }
+            }
+
+            const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+            const limitOffsetClause = "LIMIT ? OFFSET ?";
+
+            values.push(options.limit || 10);
+            values.push(options.offset || 0);
+
+            const query = `
+                SELECT DISTINCT PointLogs.*
+                FROM PointLogs
+                JOIN JSON_TABLE(
+                    PointLogs.data, '$[*]'
+                    COLUMNS (
+                        points INT PATH '$.points',
+                        robloxId BIGINT PATH '$.user.robloxId',
+                        robloxUsername VARCHAR(255) PATH '$.user.robloxUsername'
+                    )
+                ) AS jt
+                ${whereClause}
+                ${limitOffsetClause}
+            `;
+
+            const rows = await connection.query(query, values);
+
+            for (const row of rows) {
+                pointlogs.push(new PointLog(row));
+            }
+        } finally {
+            if (connection) connection.end();
+        }
+
+        return pointlogs;
     };
 
     init = async () => {

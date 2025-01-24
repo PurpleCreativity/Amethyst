@@ -37,6 +37,7 @@ export default new SlashCommand({
     module: CommandModule.Global,
 
     userApp: true,
+    ephemeral: true,
 
     options: [
         new SlashCommandStringOption().setName("user").setDescription("Your Roblox Username or Id.").setRequired(true),
@@ -47,7 +48,7 @@ export default new SlashCommand({
         const robloxUser = await client.Functions.fetchRobloxUser(user);
 
         if (!robloxUser) {
-            return await interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     client.Functions.makeErrorEmbed({
                         title: "Link Roblox",
@@ -55,6 +56,7 @@ export default new SlashCommand({
                     }),
                 ],
             });
+            return;
         }
 
         let code = generateCode();

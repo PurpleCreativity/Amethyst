@@ -8,7 +8,6 @@ import {
     TextInputStyle,
 } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
-import Images from "../../../public/Images.json" with { type: "json" };
 import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
 import type Embed from "../../classes/components/Embed.js";
@@ -30,35 +29,91 @@ export default new SlashCommand({
 
     ephemeral: true,
 
-    permissions: [CommandPermission.PointlogCreator],
+    permissions: [],
 
     subcommands: [
         new SlashCommandSubcommandBuilder().setName("new").setDescription("Create a new pointlog."),
 
-        new SlashCommandSubcommandBuilder().setName("list").setDescription("Shows a list of your pending point logs."),
-
         new SlashCommandSubcommandBuilder()
-            .setName("get")
-            .setDescription("Returns a pointlog (if found) with the provided query options.")
-            .addStringOption((option) =>
-                option
-                    .setName("id")
-                    .setRequired(false)
-                    .setDescription(
-                        "The pointlog id you're looking for, if specified all other query options are ignored.",
-                    ),
-            )
-            .addStringOption((option) =>
-                option
-                    .setName("creator")
-                    .setRequired(false)
-                    .setDescription("The roblox creator's username or id to filter logs by."),
+            .setName("mylist")
+            .setDescription(
+                "Shows a list of your pending pointlogs (if any are found) with the provided query options.",
             )
             .addStringOption((option) =>
                 option
                     .setName("included-user")
+                    .setDescription("The roblox username or id of a user included in the log data to filter logs by.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("created-after")
+                    .setDescription("Filter pointlogs created after this UNIX timestamp.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("created-before")
+                    .setDescription("Filter pointlogs created before this UNIX timestamp.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("limit")
+                    .setDescription("The maximum number of pointlogs to return (default is 10).")
                     .setRequired(false)
-                    .setDescription("The included user's username or id to filter logs by."),
+                    .setMinValue(10)
+                    .setMaxValue(100),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("offset")
+                    .setDescription("The number of pointlogs to skip before starting to return results.")
+                    .setRequired(false)
+                    .setMinValue(1),
+            ),
+
+        new SlashCommandSubcommandBuilder()
+            .setName("list")
+            .setDescription("Returns a list of pointlogs (if any are found) with the provided query options.")
+            .addStringOption((option) =>
+                option
+                    .setName("creator")
+                    .setDescription("The pointlog creator's roblox username or id to filter logs by.")
+                    .setRequired(false),
+            )
+            .addStringOption((option) =>
+                option
+                    .setName("included-user")
+                    .setDescription("The roblox username or id of a user included in the log data to filter logs by.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("created-after")
+                    .setDescription("Filter pointlogs created after this UNIX timestamp.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("created-before")
+                    .setDescription("Filter pointlogs created before this UNIX timestamp.")
+                    .setRequired(false),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("limit")
+                    .setDescription("The maximum number of pointlogs to return (default is 10).")
+                    .setRequired(false)
+                    .setMinValue(10)
+                    .setMaxValue(100),
+            )
+            .addNumberOption((option) =>
+                option
+                    .setName("offset")
+                    .setDescription("The number of pointlogs to skip before starting to return results.")
+                    .setRequired(false)
+                    .setMinValue(1),
             ),
     ],
 
@@ -187,13 +242,10 @@ export default new SlashCommand({
                             const actualPoints = Number.parseInt(points);
                             if (Number.isNaN(actualPoints)) continue;
 
-                            const actualUsers = users
-                                .split(",")
-                                .map((user) =>
-                                    Number.isNaN(Number.parseInt(user))
-                                        ? user.trim().toLowerCase()
-                                        : Number.parseInt(user),
-                                );
+                            const actualUsers = users.split(",").map((user) => {
+                                const isNumeric = /^\d+$/.test(user.trim());
+                                return isNumeric ? Number.parseInt(user.trim()) : user.trim().toLowerCase();
+                            });
 
                             for (const user of actualUsers) {
                                 if (!userPointsMap.has(user)) {
@@ -205,6 +257,7 @@ export default new SlashCommand({
 
                         const numericIds = [...userPointsMap.keys()].filter((key) => typeof key === "number");
                         const usernames = [...userPointsMap.keys()].filter((key) => typeof key === "string");
+
                         try {
                             const fetchedUsersByIds = await client.BloxWrap.fetchUsersByIds(numericIds, false);
                             const fetchedUsersByUsernames = await client.BloxWrap.fetchUsersByUsernames(
@@ -247,7 +300,7 @@ export default new SlashCommand({
                             await interaction.followUp({
                                 embeds: [
                                     client.Functions.makeErrorEmbed({
-                                        title: "An error occured",
+                                        title: "An error occurred",
                                         description: `\`\`\`${message}\`\`\``,
                                     }),
                                 ],
@@ -441,31 +494,35 @@ export default new SlashCommand({
                 break;
             }
 
-            case "list": {
-                const userProfile = await client.Database.getUserProfile(interaction.user.id);
-                if (!userProfile.roblox.id) {
-                    return await interaction.editReply({
-                        embeds: [
-                            client.Functions.makeErrorEmbed({
-                                title: "Your Pointlogs",
-                                description: "You are not linked to a Roblox account.",
-                            }),
-                        ],
-                    });
-                }
+            case "mylist": {
+                const includedUserQuery = interaction.options.getString("included-user", false);
+                const includedUserQueryNumber = includedUserQuery ? Number.parseInt(includedUserQuery) : undefined;
 
-                const guildUserProfile = await client.Database.getGuildUserProfile(
-                    interaction.guild.id,
-                    userProfile.roblox.id,
-                );
+                const createdAfterQuery = interaction.options.getNumber("created-after", false);
+                const createdBeforeQuery = interaction.options.getNumber("created-before", false);
+                const limitQuery = interaction.options.getNumber("limit", false) ?? 100;
+                const offsetQuery = interaction.options.getNumber("offset", false) ?? 0;
 
-                const pointlogs = await guildUserProfile.fetchCreatedPointlogs();
+                const pointlogs = await client.Database.getPointlogs({
+                    guildId: interaction.guild.id,
+                    creatorRobloxId: userProfile.roblox.id,
+                    includedUserSearcher: includedUserQuery
+                        ? !Number.isNaN(includedUserQueryNumber)
+                            ? includedUserQueryNumber
+                            : includedUserQuery
+                        : undefined,
+                    createdAfter: createdAfterQuery ? new Date(createdAfterQuery) : undefined,
+                    createdBefore: createdBeforeQuery ? new Date(createdBeforeQuery) : undefined,
+                    limit: limitQuery,
+                    offset: offsetQuery,
+                });
                 if (pointlogs.length === 0) {
                     return await interaction.editReply({
                         embeds: [
                             client.Functions.makeInfoEmbed({
                                 title: "Your Pointlogs",
-                                description: "You don't have any pointlogs in the database.",
+                                description:
+                                    "You don't have any pointlogs in the database, or the query options didn't return any results.",
                             }),
                         ],
                     });
@@ -481,7 +538,7 @@ export default new SlashCommand({
                     embeds: [
                         client.Functions.makeInfoEmbed({
                             title: "Your Pointlogs",
-                            description: `You have \`${pointlogs.length}\` pending pointlog(s), only showing up to 100 logs!`,
+                            description: `You have \`${pointlogs.length}\` pending pointlog(s) with the given query filters, only showing up to \`${limitQuery}\` logs!`,
                         }),
                     ],
                 });
@@ -503,6 +560,79 @@ export default new SlashCommand({
                         });
                     }
                 }
+                break;
+            }
+
+            case "list": {
+                const creatorQuery = interaction.options.getString("creator", false);
+                const creatorProfile = creatorQuery ? await client.Functions.fetchRobloxUser(creatorQuery) : undefined;
+
+                const includedUserQuery = interaction.options.getString("included-user", false);
+                const includedUserQueryNumber = includedUserQuery ? Number.parseInt(includedUserQuery) : undefined;
+
+                const createdAfterQuery = interaction.options.getNumber("created-after", false);
+                const createdBeforeQuery = interaction.options.getNumber("created-before", false);
+                const limitQuery = interaction.options.getNumber("limit", false) ?? 100;
+                const offsetQuery = interaction.options.getNumber("offset", false) ?? 0;
+
+                const pointlogs = await client.Database.getPointlogs({
+                    guildId: interaction.guild.id,
+                    creatorRobloxId: creatorProfile ? creatorProfile.id : undefined,
+                    includedUserSearcher: includedUserQuery
+                        ? !Number.isNaN(includedUserQueryNumber)
+                            ? includedUserQueryNumber
+                            : includedUserQuery
+                        : undefined,
+                    createdAfter: createdAfterQuery ? new Date(createdAfterQuery) : undefined,
+                    createdBefore: createdBeforeQuery ? new Date(createdBeforeQuery) : undefined,
+                    limit: limitQuery,
+                    offset: offsetQuery,
+                });
+                if (pointlogs.length === 0) {
+                    return await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeInfoEmbed({
+                                title: "Pointlog List",
+                                description:
+                                    "There are no pointlogs in the database, or the query options didn't return any results.",
+                            }),
+                        ],
+                    });
+                }
+
+                const embeds = [] as Embed[];
+                for (const pointlog of pointlogs) {
+                    embeds.push(client.Functions.makePointlogEmbed(pointlog));
+                    if (embeds.length >= 100) break;
+                }
+
+                await interaction.editReply({
+                    embeds: [
+                        client.Functions.makeInfoEmbed({
+                            title: "Pointlogs List",
+                            description: `There are \`${pointlogs.length}\` pending pointlog(s) with the given query filters, only showing up to \`${limitQuery}\` logs!`,
+                        }),
+                    ],
+                });
+
+                for (let i = 0; i < embeds.length; i += 10) {
+                    const batch = embeds.slice(i, i + 10);
+                    try {
+                        await interaction.followUp({ flags: MessageFlags.Ephemeral, embeds: batch });
+                    } catch (error) {
+                        await interaction.followUp({
+                            flags: MessageFlags.Ephemeral,
+                            embeds: [
+                                client.Functions.makeErrorEmbed({
+                                    title: "An error occured",
+                                    description: "Some pointlogs failed to send.",
+                                    footer: { text: "If this error persists, please contact the bot developer" },
+                                }),
+                            ],
+                        });
+                    }
+                }
+                break;
             }
         }
     },

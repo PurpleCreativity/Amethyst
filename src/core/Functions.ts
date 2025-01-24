@@ -19,13 +19,15 @@ export default class Functions {
     }
 
     fetchRobloxUser = async (searcher: string | number, useCache = true): Promise<UserData> => {
-        if (typeof searcher === "string" && Number.isNaN(Number.parseInt(searcher))) {
-            searcher = (await this.client.BloxWrap.fetchUsersByUsernames(searcher, false, { useCache: false }))[0].id;
-
-            if (Number.isNaN(searcher)) throw new Error(`Username "${searcher}" not found or invalid.`);
+        if (typeof searcher === "string" && !/^\d+$/.test(searcher)) {
+            const users = await this.client.BloxWrap.fetchUsersByUsernames(searcher, false, { useCache: false });
+            if (!users.length) throw new Error(`Username "${searcher}" not found or invalid.`);
+            searcher = users[0].id;
+        } else if (typeof searcher === "string") {
+            searcher = Number(searcher);
         }
 
-        return await this.client.BloxWrap.fetchUserById(searcher as number, { useCache: useCache });
+        return await this.client.BloxWrap.fetchUserById(searcher as number, { useCache });
     };
 
     fetchRobloxUserAvatarHeadshot = async (

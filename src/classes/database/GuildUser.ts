@@ -109,29 +109,6 @@ export default class GuildUser {
         }
     }
 
-    async fetchCreatedPointlogs(): Promise<PointLog[]> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
-            const rawdata = await connection.query<rawPointLogData[]>(
-                `
-                SELECT * FROM PointLogs
-                WHERE creatorRobloxId = ?
-                `,
-                [this.robloxId],
-            );
-
-            const pointlogs = [] as PointLog[];
-            for (const data of rawdata) {
-                pointlogs.push(new PointLog(data));
-            }
-
-            return pointlogs;
-        } finally {
-            if (connection) await connection.end();
-        }
-    }
-
     async save(): Promise<void> {
         let connection: mariadb.Connection | undefined;
         try {
