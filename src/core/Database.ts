@@ -313,6 +313,26 @@ export default class Database {
         return pointlogs;
     };
 
+    getPointlog = async (id: string) => {
+        let connection: mariadb.Connection | undefined;
+        let pointlog: PointLog | null = null;
+
+        try {
+            connection = await this.getConnection();
+
+            // Query to get the PointLog by its id
+            const rows = await connection.query("SELECT * FROM PointLogs WHERE id = ?", [id]);
+
+            if (rows.length > 0) {
+                pointlog = new PointLog(rows[0]);
+            }
+        } finally {
+            if (connection) await connection.end();
+        }
+
+        return pointlog;
+    };
+
     init = async () => {
         if (this.client.devMode) await this.initializeTables();
 

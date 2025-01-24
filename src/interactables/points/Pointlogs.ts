@@ -3,11 +3,11 @@ import {
     type GuildMember,
     MessageFlags,
     SlashCommandSubcommandBuilder,
-    TextChannel,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
 import Emojis from "../../../public/Emojis.json" with { type: "json" };
+import Images from "../../../public/Images.json" with { type: "json" };
 import Button from "../../classes/components/Button.js";
 import ButtonEmbed from "../../classes/components/ButtonEmbed.js";
 import type Embed from "../../classes/components/Embed.js";
@@ -21,6 +21,23 @@ enum addDataMode {
     Increment = 0,
     Set = 1,
 }
+
+const pointlogDataDownload = (pointlog: PointLog) => {
+    const pointsMap: { [key: number]: string[] } = {};
+
+    for (const user of pointlog.data) {
+        if (!pointsMap[user.points]) {
+            pointsMap[user.points] = [];
+        }
+        pointsMap[user.points].push(user.user.robloxUsername);
+    }
+
+    const userText = Object.entries(pointsMap)
+        .map(([points, usernames]) => `${points} - ${usernames.map((username) => `${username}`).join(", ")}`)
+        .join("\n");
+
+    return Buffer.from(userText, "utf-8");
+};
 
 export default new SlashCommand({
     name: "pointlogs",
@@ -115,6 +132,11 @@ export default new SlashCommand({
                     .setRequired(false)
                     .setMinValue(1),
             ),
+
+        new SlashCommandSubcommandBuilder()
+            .setName("get")
+            .setDescription("Get a pointlog by it's id.")
+            .addStringOption((option) => option.setName("id").setDescription("The pointlog id.").setRequired(true)),
     ],
 
     function: async (interaction, guildProfile) => {
@@ -364,26 +386,13 @@ export default new SlashCommand({
                         allowedUsers: [interaction.user.id],
                         disabled: true,
                     }).onPressed(async (buttonInteraction) => {
-                        const pointsMap: { [key: number]: string[] } = {};
-
-                        for (const user of pointlog.data) {
-                            if (!pointsMap[user.points]) {
-                                pointsMap[user.points] = [];
-                            }
-                            pointsMap[user.points].push(user.user.robloxUsername);
-                        }
-
-                        const userText = Object.entries(pointsMap)
-                            .map(
-                                ([points, usernames]) =>
-                                    `${points} - ${usernames.map((username) => `${username}`).join(", ")}`,
-                            )
-                            .join("\n");
-
-                        const userBuffer = Buffer.from(userText, "utf-8");
-
                         await buttonInteraction.reply({
-                            files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
+                            files: [
+                                {
+                                    name: `pointlog_${pointlog.id}_fulldata.txt`,
+                                    attachment: pointlogDataDownload(pointlog),
+                                },
+                            ],
                             flags: MessageFlags.Ephemeral,
                         });
                     }),
@@ -633,6 +642,113 @@ export default new SlashCommand({
                     }
                 }
                 break;
+            }
+
+            case "get": {
+                const pointlogId = interaction.options.getString("id", true);
+                const pointlog = await client.Database.getPointlog(pointlogId);
+                if (!pointlog) {
+                    interaction.editReply({
+                        embeds: [
+                            client.Functions.makeErrorEmbed({
+                                title: "Pointlog not found",
+                                description: `Couldn't find log with id \`${pointlogId}\``,
+                            }),
+                        ],
+                    });
+                    return;
+                }
+
+                const buttonEmbed = new ButtonEmbed(client.Functions.makePointlogEmbed(pointlog));
+                buttonEmbed.addButton(
+                    new Button({
+                        label: "Download",
+                        style: ButtonStyle.Secondary,
+                        emoji: Emojis.import,
+                        allowedUsers: [interaction.user.id],
+                    }).onPressed(async (buttonInteraction) => {
+                        await buttonInteraction.reply({
+                            files: [
+                                {
+                                    name: `pointlog_${pointlog.id}_fulldata.txt`,
+                                    attachment: pointlogDataDownload(pointlog),
+                                },
+                            ],
+                            flags: MessageFlags.Ephemeral,
+                        });
+                    }),
+                );
+
+                buttonEmbed.nextRow();
+
+                buttonEmbed.addButton(
+                    new Button({
+                        label: "Import",
+                        style: ButtonStyle.Success,
+                        emoji: Emojis.import,
+                        allowedUsers: [interaction.user.id],
+                        disabled: !guildProfile.checkPermissions(interaction.member as GuildMember, [
+                            CommandPermission.PointsManager,
+                        ]),
+                    }).oncePressed(async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        try {
+                            await pointlog.import();
+
+                            const embed = client.Functions.makePointlogEmbed(pointlog);
+                            embed.setColor(0x00ff00);
+                            embed.setAuthor({ name: "Imported", iconURL: Images.check });
+                            embed.setTimestamp();
+
+                            await interaction.editReply({ embeds: [embed], components: [] });
+                        } catch (error) {
+                            const message = client.Functions.formatErrorMessage(error);
+
+                            await interaction.editReply({
+                                embeds: [
+                                    client.Functions.makeErrorEmbed({
+                                        title: "Failed to import pointlog",
+                                        description: `\`\`\`${message}\`\`\``,
+                                    }),
+                                ],
+                            });
+                        }
+                    }),
+                );
+
+                buttonEmbed.addButton(
+                    new Button({
+                        label: "Delete",
+                        style: ButtonStyle.Danger,
+                        emoji: Emojis.delete,
+                        allowedUsers: [interaction.user.id],
+                    }).oncePressed(async (buttonInteraction) => {
+                        await buttonInteraction.deferUpdate();
+                        try {
+                            await pointlog.delete();
+
+                            const embed = client.Functions.makePointlogEmbed(pointlog);
+                            embed.setColor(0xff0000);
+                            embed.setAuthor({ name: "Deleted", iconURL: Images.close });
+                            embed.setTimestamp();
+
+                            await interaction.editReply({ embeds: [embed], components: [] });
+                        } catch (error) {
+                            const message = client.Functions.formatErrorMessage(error);
+
+                            await interaction.editReply({
+                                embeds: [
+                                    client.Functions.makeErrorEmbed({
+                                        title: "Failed to delete pointlog",
+                                        description: `\`\`\`${message}\`\`\``,
+                                    }),
+                                ],
+                            });
+                        }
+                    }),
+                );
+
+                await interaction.editReply(buttonEmbed.getMessageData());
             }
         }
     },
