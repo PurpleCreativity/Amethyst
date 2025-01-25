@@ -449,24 +449,6 @@ export default new SlashCommand({
                         } catch (error) {
                             const message = client.Functions.formatErrorMessage(error);
 
-                            const pointsMap: { [key: number]: string[] } = {};
-
-                            for (const user of pointlog.data) {
-                                if (!pointsMap[user.points]) {
-                                    pointsMap[user.points] = [];
-                                }
-                                pointsMap[user.points].push(user.user.robloxUsername);
-                            }
-
-                            const userText = Object.entries(pointsMap)
-                                .map(
-                                    ([points, usernames]) =>
-                                        `${points} - ${usernames.map((username) => `${username}`).join(", ")}`,
-                                )
-                                .join("\n");
-
-                            const userBuffer = Buffer.from(userText, "utf-8");
-
                             await interaction.editReply({
                                 embeds: [
                                     client.Functions.makeErrorEmbed({
@@ -474,7 +456,7 @@ export default new SlashCommand({
                                         description: `There was an error registering the pointlog into the database:\n\n\`\`\`${message}\`\`\`\n\n**Attached below is the full data of the pointlog`,
                                     }),
                                 ],
-                                files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: userBuffer }],
+                                files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: pointlogDataDownload(pointlog) }],
                                 components: [],
                             });
                             return;
