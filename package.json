@@ -1,6 +1,6 @@
 {
     "name": "amethyst",
-    "version": "2.0.0",
+    "version": "1.4.0",
     "author": "Purple_Creativity",
     "license": "MIT",
     "description": "A discord bot written in Typescript, inspired by PB Kronos.",
@@ -33,6 +33,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
+        "@types/bcrypt": "^5.0.2",
         "@types/express": "^5.0.0",
         "@types/node": "^22.10.10",
         "ts-node": "^10.9.2",
@@ -42,6 +43,7 @@
         "@auth/express": "^0.8.4",
         "@date-fns/tz": "^1.2.0",
         "axios": "^1.7.7",
+        "bcrypt": "^5.1.1",
         "bloxwrap": "^0.1.0",
         "chalk": "^5.4.1",
         "date-fns": "^4.1.0",
