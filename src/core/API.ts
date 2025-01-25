@@ -47,7 +47,7 @@ export default class API {
 
                 // Replace dynamic segments `[param]` with `:param`
                 routeUrl = routeUrl.replace(/\[(\w+)]/g, ":$1");
-                console.log(routeUrl)
+                console.log(routeUrl);
 
                 this.server[route.method.toLocaleLowerCase() as keyof express.Application](
                     routeUrl,
