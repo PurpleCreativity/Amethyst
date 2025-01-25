@@ -763,7 +763,7 @@ export default new SlashCommand({
         const options: AutocompleteEntry[] = [];
         for (const log of pointlogs) {
             options.push({
-                name: `${log.id} | ${log.data.length} entrie(s) | Created at ${log.createdAt.toLocaleString("en-US")}`,
+                name: `${log.id} | ${log.data.length} log(s) | Created at ${log.createdAt.toLocaleString("en-US")}`,
                 value: log.id,
             });
         }
