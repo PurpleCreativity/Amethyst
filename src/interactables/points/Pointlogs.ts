@@ -759,7 +759,7 @@ export default new SlashCommand({
         if (!interaction.guild) return [];
         if (interaction.options.getSubcommand(true) !== "get") return [];
 
-        const pointlogs = await client.Database.getPointlogs({ guildId: interaction.guild.id });
+        const pointlogs = await client.Database.getPointlogs({ guildId: interaction.guild.id, limit: 25 });
         const options: AutocompleteEntry[] = [];
         for (const log of pointlogs) {
             options.push({
