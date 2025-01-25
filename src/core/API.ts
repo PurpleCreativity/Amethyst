@@ -38,7 +38,7 @@ export default class API {
                 const relativePath = path.relative(routesDir, routePath);
 
                 // Convert file path to route URL, excluding folders wrapped in `()`
-                let routeUrl = `/api/${relativePath
+                let routeUrl = `/${relativePath
                     .split(path.sep) // Split into path segments
                     .filter((segment) => !segment.startsWith("(") || !segment.endsWith(")")) // Exclude segments wrapped in `()`
                     .join("/") // Rejoin path
@@ -47,6 +47,7 @@ export default class API {
 
                 // Replace dynamic segments `[param]` with `:param`
                 routeUrl = routeUrl.replace(/\[(\w+)]/g, ":$1");
+                console.log(routeUrl)
 
                 this.server[route.method.toLocaleLowerCase() as keyof express.Application](
                     routeUrl,
@@ -84,7 +85,7 @@ export default class API {
     }
 
     init = async () => {
-        await this.loadRoutes("build/api");
+        await this.loadRoutes("build/routes");
 
         this.server.use(express.json());
         this.server.use(express.urlencoded({ extended: true }));

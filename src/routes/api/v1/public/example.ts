@@ -1,4 +1,4 @@
-import Route from "../../../classes/Route.js";
+import Route from "../../../../classes/Route.js";
 
 export default new Route({
     method: "GET",
