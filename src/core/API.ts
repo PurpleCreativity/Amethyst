@@ -38,16 +38,13 @@ export default class API {
                 const relativePath = path.relative(routesDir, routePath);
 
                 // Convert file path to route URL, excluding folders wrapped in `()`
-                let routeUrl = `/${relativePath
+                const routeUrl = `/${relativePath
                     .split(path.sep) // Split into path segments
                     .filter((segment) => !segment.startsWith("(") || !segment.endsWith(")")) // Exclude segments wrapped in `()`
                     .join("/") // Rejoin path
                     .replace(/\\/g, "/") // Normalize slashes
-                    .replace(".js", "")}`; // Remove .js extension
-
-                // Replace dynamic segments `[param]` with `:param`
-                routeUrl = routeUrl.replace(/\[(\w+)]/g, ":$1");
-                console.log(routeUrl);
+                    .replace(".js", "")}` // Remove .js extension
+                    .replace(/\[(\w+)]/g, ":$1"); // Replace dynamic segments `[param]` with `:param`
 
                 this.server[route.method.toLocaleLowerCase() as keyof express.Application](
                     routeUrl,
