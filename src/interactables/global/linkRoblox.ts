@@ -59,6 +59,7 @@ export default new SlashCommand({
             return;
         }
 
+        const userProfile = await client.Database.getUserProfile(interaction.user.id);
         let code = generateCode();
 
         const buttonEmbed = new ButtonEmbed(
@@ -94,7 +95,6 @@ export default new SlashCommand({
                         return await buttonInteraction.deleteReply();
                     }
 
-                    const userProfile = await client.Database.getUserProfile(buttonInteraction.user.id);
                     userProfile.roblox.id = robloxUser.id;
                     userProfile.roblox.username = robloxUser.name;
                     await userProfile.save();
@@ -172,22 +172,50 @@ export default new SlashCommand({
             }),
         );
 
-        const userProfile = await client.Database.getUserProfile(interaction.user.id);
         if (userProfile.roblox.id) {
             const buttonEmbed2 = new ButtonEmbed(
                 client.Functions.makeWarnEmbed({
                     title: "Already linked",
-                    description: `You already have a linked roblox account: [roblox profile](https://www.roblox.com/users/${userProfile.id}/profile)`,
+                    description: `You already have a [linked roblox account](https://www.roblox.com/users/${userProfile.id}/profile)`,
                 }),
             );
 
-            /*
-            buttonEmbed2.addButton(new Button({
-                label: "Continue"
-            }))
-                */
-        }
+            buttonEmbed2.addButton(
+                new Button({
+                    label: "Continue",
+                    style: ButtonStyle.Success,
+                    emoji: Emojis.check,
+                    allowedUsers: [interaction.user.id],
+                }).oncePressed(async (buttonInteraction) => {
+                    await buttonInteraction.deferUpdate();
+                    await interaction.editReply(buttonEmbed.getMessageData());
+                }),
+            );
 
-        return await interaction.editReply(buttonEmbed.getMessageData());
+            buttonEmbed2.addButton(
+                new Button({
+                    label: "Cancel",
+                    style: ButtonStyle.Danger,
+                    emoji: Emojis.delete,
+                    allowedUsers: [interaction.user.id],
+                }).oncePressed(async (buttonInteraction) => {
+                    await buttonInteraction.deferUpdate();
+                    await interaction.editReply({
+                        embeds: [
+                            client.Functions.makeInfoEmbed({
+                                title: "Operation cancelled",
+                                description: "Cancelled roblox account link",
+                                footer: { text: "You can now dismiss this message" },
+                            }),
+                        ],
+                        components: [],
+                    });
+                }),
+            );
+
+            await interaction.editReply(buttonEmbed2.getMessageData());
+        } else {
+            await interaction.editReply(buttonEmbed.getMessageData());
+        }
     },
 });
