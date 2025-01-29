@@ -456,7 +456,12 @@ export default new SlashCommand({
                                         description: `There was an error registering the pointlog into the database:\n\n\`\`\`${message}\`\`\`\n\n**Attached below is the full data of the pointlog`,
                                     }),
                                 ],
-                                files: [{ name: `pointlog_${pointlog.id}_fulldata.txt`, attachment: pointlogDataDownload(pointlog) }],
+                                files: [
+                                    {
+                                        name: `pointlog_${pointlog.id}_fulldata.txt`,
+                                        attachment: pointlogDataDownload(pointlog),
+                                    },
+                                ],
                                 components: [],
                             });
                             return;
