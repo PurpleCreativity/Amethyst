@@ -126,11 +126,7 @@ export default class GuildProfile {
     }
 
     async save(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
-            await connection.beginTransaction();
-
+        client.Database.runTransaction(async (connection) => {
             const result = await connection.query(
                 `INSERT INTO GuildProfiles (id, shortname, permissions, channels, settings)
                 VALUES (?, ?, ?, ?, ?)
@@ -150,14 +146,7 @@ export default class GuildProfile {
             if (result.affectedRows === 0) {
                 throw new Error("Save failed: The record was modified or does not exist.");
             }
-
-            await connection.commit();
             this.__v += 1;
-        } catch (error) {
-            if (connection) await connection.rollback();
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 }

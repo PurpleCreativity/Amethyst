@@ -84,9 +84,7 @@ export default class GuildUser {
     }
 
     async fetchPendingPoints(): Promise<number> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
+        return await client.Database.runQuery(async (connection) => {
             const result = await connection.query<{ pendingPoints: string }[]>(
                 `
                 SELECT SUM(jt.points) AS pendingPoints
@@ -104,17 +102,11 @@ export default class GuildUser {
             );
 
             return result[0]?.pendingPoints ? Number.parseInt(result[0]?.pendingPoints) : 0;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 
     async save(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
-            await connection.beginTransaction();
-
+        client.Database.runTransaction(async (connection) => {
             const result = await connection.query(
                 `
                 INSERT INTO GuildUsers (guildId, robloxId, points, notes, ranklock)
@@ -134,15 +126,7 @@ export default class GuildUser {
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
-
-            await connection.commit();
             this.__v += 1;
-        } catch (error) {
-            if (connection) await connection.rollback();
-
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 }

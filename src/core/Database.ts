@@ -59,6 +59,15 @@ export default class Database {
         }
     }
 
+    async runQuery<T>(fn: (conn: mariadb.Connection) => Promise<T>): Promise<T> {
+        const connection = await this.getConnection();
+        try {
+            return await fn(connection);
+        } finally {
+            await connection.end();
+        }
+    }
+
     private initializeTables = async () => {
         const filesPath = path.join(process.cwd(), "sql");
         const connection = await this.getConnection();
@@ -114,9 +123,8 @@ export default class Database {
     };
 
     getUserProfile = async (discordId: string) => {
-        let connection: mariadb.Connection | undefined;
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
             const existing = await connection.query("SELECT * FROM UserProfiles WHERE id = ?", [discordId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
@@ -129,10 +137,10 @@ export default class Database {
 
             return new UserProfile(rawdata);
         } catch (error) {
-            if (connection) await connection.rollback();
+            await connection.rollback();
             throw error;
         } finally {
-            if (connection) await connection.end();
+            await connection.end();
         }
     };
 
@@ -164,9 +172,8 @@ export default class Database {
     };
 
     getGuildProfile = async (guildId: string) => {
-        let connection: mariadb.Connection | undefined;
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
             const existing = await connection.query("SELECT * FROM GuildProfiles WHERE id = ?", [guildId]);
             if (existing.length > 0) {
                 const rawdata = existing[0];
@@ -176,18 +183,16 @@ export default class Database {
 
             return undefined;
         } catch (error) {
-            if (connection) await connection.rollback();
+            await connection.rollback();
             throw error;
         } finally {
-            if (connection) await connection.end();
+            await connection.end();
         }
     };
 
     private addGuildUserProfile = async (guildId: string, robloxId: number) => {
-        let connection: mariadb.Connection | undefined;
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
-
             await connection.query(
                 `INSERT INTO GuildUsers (guildId, robloxId, notes, ranklock)
                 VALUES (?, ?, ?, ?)`,
@@ -214,17 +219,16 @@ export default class Database {
             const profile = new GuildUser(rawdata);
             return profile;
         } catch (error) {
-            if (connection) await connection.rollback();
+            await connection.rollback();
             throw error;
         } finally {
-            if (connection) await connection.end();
+            await connection.end();
         }
     };
 
     getGuildUserProfile = async (guildId: string, robloxId: number) => {
-        let connection: mariadb.Connection | undefined;
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
             const existing = await connection.query("SELECT * FROM GuildUsers WHERE guildId = ? AND robloxId = ?", [
                 guildId,
                 robloxId,
@@ -245,20 +249,18 @@ export default class Database {
 
             return new GuildUser(rawdata);
         } catch (error) {
-            if (connection) await connection.rollback();
+            await connection.rollback();
             throw error;
         } finally {
-            if (connection) await connection.end();
+            await connection.end();
         }
     };
 
     getPointlogs = async (options: PointLogQueryOptions) => {
-        let connection: mariadb.Connection | undefined;
         const pointlogs: PointLog[] = [];
 
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
-
             const conditions: string[] = [];
             const values: unknown[] = [];
 
@@ -321,27 +323,24 @@ export default class Database {
                 pointlogs.push(new PointLog(row));
             }
         } finally {
-            if (connection) connection.end();
+            connection.end();
         }
 
         return pointlogs;
     };
 
     getPointlog = async (id: string) => {
-        let connection: mariadb.Connection | undefined;
         let pointlog: PointLog | null = null;
 
+        const connection = await this.getConnection();
         try {
-            connection = await this.getConnection();
-
-            // Query to get the PointLog by its id
             const rows = await connection.query("SELECT * FROM PointLogs WHERE id = ?", [id]);
 
             if (rows.length > 0) {
                 pointlog = new PointLog(rows[0]);
             }
         } finally {
-            if (connection) await connection.end();
+            await connection.end();
         }
 
         return pointlog;

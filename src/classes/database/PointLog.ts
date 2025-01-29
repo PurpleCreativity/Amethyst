@@ -54,13 +54,7 @@ export default class PointLog {
     }
 
     async import(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            await this.delete();
-
-            connection = await client.Database.getConnection();
-            await connection.beginTransaction();
-
+        client.Database.runTransaction(async (connection) => {
             for (const entry of this.data) {
                 const result = await connection.query(
                     `
@@ -86,21 +80,11 @@ export default class PointLog {
                     throw new Error(`Failed to update points for user with Roblox Id: ${entry.user.robloxId}`);
                 }
             }
-
-            await connection.commit();
-        } catch (error) {
-            if (connection) await connection.rollback();
-
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 
     async delete(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
+        client.Database.runTransaction(async (connection) => {
             const result = await connection.query(
                 `DELETE FROM PointLogs 
                  WHERE id = ? AND __v = ?`,
@@ -110,21 +94,11 @@ export default class PointLog {
             if (result.affectedRows === 0) {
                 throw new Error(`Failed to delete PointLog with Id "${this.id}" or version mismatch.`);
             }
-        } catch (error) {
-            if (connection) await connection.rollback();
-
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 
     async save(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
-            await connection.beginTransaction();
-
+        client.Database.runTransaction(async (connection) => {
             const updateResult = await connection.query(
                 `UPDATE PointLogs
                  SET 
@@ -158,14 +132,7 @@ export default class PointLog {
                 if (insertResult.affectedRows === 0) throw new Error("Failed to save changes.");
             }
 
-            await connection.commit();
             this.__v += 1;
-        } catch (error) {
-            if (connection) await connection.rollback();
-
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 }

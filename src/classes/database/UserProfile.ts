@@ -43,11 +43,7 @@ export default class UserProfile {
     }
 
     async save(): Promise<void> {
-        let connection: mariadb.Connection | undefined;
-        try {
-            connection = await client.Database.getConnection();
-            await connection.beginTransaction();
-
+        client.Database.runTransaction(async (connection) => {
             const result = await connection.query(
                 `INSERT INTO UserProfiles (id, robloxId, robloxUsername, settings)
                 VALUES (?, ?, ?, ?)
@@ -59,15 +55,7 @@ export default class UserProfile {
             );
 
             if (result.affectedRows < 0) throw new Error("Failed to save changes.");
-
-            await connection.commit();
             this.__v += 1;
-        } catch (error) {
-            if (connection) await connection.rollback();
-
-            throw error;
-        } finally {
-            if (connection) await connection.end();
-        }
+        });
     }
 }
