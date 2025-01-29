@@ -136,7 +136,9 @@ export default class Interactables {
             }
         }
 
-        this.client.success(`Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands, ${this.stored.MessageContextMenuCommands.size} MessageContextMenuCommands and ${this.stored.UserContextMenuCommands.size} UserContextMenuCommands!`);
+        this.client.success(
+            `Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands, ${this.stored.MessageContextMenuCommands.size} MessageContextMenuCommands and ${this.stored.UserContextMenuCommands.size} UserContextMenuCommands!`,
+        );
     };
 
     clearInteractables = async (): Promise<void> => {
