@@ -45,6 +45,20 @@ export default class Database {
         }
     };
 
+    async runTransaction(fn: (conn: mariadb.Connection) => Promise<void>) {
+        const connection = await this.getConnection();
+        try {
+            await connection.beginTransaction();
+            await fn(connection);
+            await connection.commit();
+        } catch (err) {
+            await connection.rollback();
+            throw err;
+        } finally {
+            await connection.end();
+        }
+    }
+
     private initializeTables = async () => {
         const filesPath = path.join(process.cwd(), "sql");
         const connection = await this.getConnection();
@@ -337,6 +351,9 @@ export default class Database {
         if (this.client.devMode) await this.initializeTables();
 
         //await this.addGuildProfile("DEV", "1276574166937505925");
+        this.pool.on("acquire", () => this.client.verbose("Database connection acquired."));
+        this.pool.on("release", () => this.client.verbose("Database connection released."));
+
         this.client.success("Initialized Database");
     };
 }
