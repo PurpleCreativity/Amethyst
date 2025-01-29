@@ -335,7 +335,7 @@ export default new SlashCommand({
                                                 }),
                                             ],
                                         });
-                                        break;
+                                        continue;
                                     }
                                     if (points === 0) continue;
 
