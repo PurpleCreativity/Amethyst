@@ -46,7 +46,7 @@ export default new SlashCommand({
 
     ephemeral: true,
 
-    permissions: [CommandPermission.PointlogCreator],
+    //permissions: [CommandPermission.PointlogCreator],
 
     subcommands: [
         new SlashCommandSubcommandBuilder().setName("new").setDescription("Create a new pointlog."),
@@ -263,8 +263,23 @@ export default new SlashCommand({
                             const [points, users] = line.split(" - ");
                             if (!points || !users) continue;
 
-                            const actualPoints = Number.parseInt(points);
-                            if (Number.isNaN(actualPoints)) continue;
+                            const actualPoints = Math.floor(Number.parseInt(points));
+                            if (
+                                Number.isNaN(actualPoints) ||
+                                actualPoints > Number.MAX_SAFE_INTEGER ||
+                                actualPoints < Number.MIN_SAFE_INTEGER
+                            ) {
+                                buttonInteraction.followUp({
+                                    flags: MessageFlags.Ephemeral,
+                                    embeds: [
+                                        client.Functions.makeErrorEmbed({
+                                            title: "Invalid number",
+                                            description: `The point amount must be between \`${Number.MIN_SAFE_INTEGER}\` and \`${Number.MAX_SAFE_INTEGER}\``,
+                                        }),
+                                    ],
+                                });
+                                continue;
+                            }
 
                             const actualUsers = users.split(",").map((user) => {
                                 const isNumeric = /^\d+$/.test(user.trim());
