@@ -269,7 +269,7 @@ export default new SlashCommand({
                                 actualPoints > Number.MAX_SAFE_INTEGER ||
                                 actualPoints < Number.MIN_SAFE_INTEGER
                             ) {
-                                buttonInteraction.followUp({
+                                await buttonInteraction.followUp({
                                     flags: MessageFlags.Ephemeral,
                                     embeds: [
                                         client.Functions.makeErrorEmbed({
@@ -325,6 +325,18 @@ export default new SlashCommand({
                                         );
                                     }
                                 } else {
+                                    if (pointlog.data.length > 999) {
+                                        await buttonInteraction.followUp({
+                                            flags: MessageFlags.Ephemeral,
+                                            embeds: [
+                                                client.Functions.makeWarnEmbed({
+                                                    title: "Maximum pointlog data reached",
+                                                    description: `A maximum of \`1000\` entries are allowed per pointlog.\n\nThe entry for \`${actualUser.username}\` with \`${points}\` point(s) has been skipped.`,
+                                                }),
+                                            ],
+                                        });
+                                        break;
+                                    }
                                     if (points === 0) continue;
 
                                     pointlog.data.push({
