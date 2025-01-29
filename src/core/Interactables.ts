@@ -137,7 +137,9 @@ export default class Interactables {
         }
 
         this.client.success(
-            `Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands, ${this.stored.MessageContextMenuCommands.size} MessageContextMenuCommands and ${this.stored.UserContextMenuCommands.size} UserContextMenuCommands!`,
+            `Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands,
+            ${this.stored.MessageContextMenuCommands.size} MessageContextMenuCommands
+            and ${this.stored.UserContextMenuCommands.size} UserContextMenuCommands!`,
         );
     };
 
