@@ -15,7 +15,8 @@ export enum CommandPermission {
 export enum CommandModule {
     Developer = 0,
     Global = 1,
-    Points = 2,
-    Schedule = 3,
-    Roblox = 4,
+    Guild = 2,
+    Points = 3,
+    Schedule = 4,
+    Roblox = 5,
 }
