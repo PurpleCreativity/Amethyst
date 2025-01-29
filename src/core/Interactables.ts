@@ -61,7 +61,7 @@ export default class Interactables {
             return;
         }
 
-        this.client.warn(`Unknown command type: ${(interactable as object).constructor.name}`);
+        this.client.warn(`Unknown command type: ${interactable}`);
     };
 
     loadInteractableFiles = async (Filespath: string): Promise<void> => {
@@ -136,7 +136,7 @@ export default class Interactables {
             }
         }
 
-        this.client.success(`Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands!`);
+        this.client.success(`Successfully deployed [${this.stored.SlashCommands.size}] SlashCommands, ${this.stored.MessageContextMenuCommands.size} MessageContextMenuCommands and ${this.stored.UserContextMenuCommands.size} UserContextMenuCommands!`);
     };
 
     clearInteractables = async (): Promise<void> => {
