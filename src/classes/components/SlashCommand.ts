@@ -5,7 +5,6 @@ import {
     GuildMember,
     InteractionContextType,
     type LocalizationMap,
-    type PermissionResolvable,
     type SlashCommandAttachmentOption,
     type SlashCommandBooleanOption,
     SlashCommandBuilder,
