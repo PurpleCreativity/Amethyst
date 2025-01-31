@@ -57,7 +57,6 @@ type SlashCommandFunction = (interaction: ChatInputCommandInteraction, guildProf
  */
 type AutocompleteFunction = (
     interaction: AutocompleteInteraction,
-    guildProfile?: GuildProfile,
 ) => AutocompleteEntry[] | Promise<AutocompleteEntry[]> | [];
 
 /**
@@ -144,7 +143,6 @@ export type SlashCommandOptions = {
     /**
      * The function executed during autocomplete requests.
      * @param interaction The autocomplete interaction instance.
-     * @param guildProfile The profile of the guild, if applicable.
      * @returns A list of autocomplete entries or a promise resolving to such a list.
      */
     autocomplete?: AutocompleteFunction;
