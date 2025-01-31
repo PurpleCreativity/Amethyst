@@ -1,6 +1,6 @@
 import {
     ButtonStyle,
-    type GuildMember,
+    GuildMember,
     MessageFlags,
     SlashCommandSubcommandBuilder,
     TextInputBuilder,
@@ -769,9 +769,13 @@ export default new SlashCommand({
         }
     },
 
-    autocomplete: async (interaction, guildProfile) => {
-        if (!interaction.guild) return [];
+    autocomplete: async (interaction) => {
+        if (!interaction.guild || !(interaction.member instanceof GuildMember)) return [];
         if (interaction.options.getSubcommand(true) !== "get") return [];
+
+        const guildProfile = await client.Database.getGuildProfile(interaction.guild.id);
+        if (!guildProfile || !guildProfile.checkPermissions(interaction.member, [CommandPermission.PointsManager]))
+            return [];
 
         const pointlogs = await client.Database.getPointlogs({ guildId: interaction.guild.id, limit: 25 });
         const options: AutocompleteEntry[] = [];
