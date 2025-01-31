@@ -46,7 +46,7 @@ export default new SlashCommand({
 
     ephemeral: true,
 
-    //permissions: [CommandPermission.PointlogCreator],
+    permissions: [CommandPermission.PointlogCreator],
 
     subcommands: [
         new SlashCommandSubcommandBuilder().setName("new").setDescription("Create a new pointlog."),
