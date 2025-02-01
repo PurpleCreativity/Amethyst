@@ -425,6 +425,26 @@ export default new SlashCommand({
 
                             buttonEmbed.addButton(
                                 new Button({
+                                    label: "Cancel",
+                                    style: ButtonStyle.Danger,
+                                    allowedUsers: [interaction.user.id],
+                                }).oncePressed(async (buttonInteraction) => {
+                                    await buttonInteraction.update({
+                                        embeds: [
+                                            client.Functions.makeErrorEmbed({
+                                                title: "Changes cancelled",
+                                                description: "Permission changes were cancelled",
+                                            }),
+                                        ],
+                                        components: [],
+                                    });
+                                }),
+                            );
+
+                            buttonEmbed.nextRow();
+
+                            buttonEmbed.addButton(
+                                new Button({
                                     label: "Remove unknown entries",
                                     style: ButtonStyle.Secondary,
                                     allowedUsers: [interaction.user.id],
@@ -439,24 +459,6 @@ export default new SlashCommand({
 
                                     updateEmbed();
                                     await interaction.editReply(buttonEmbed.getMessageData());
-                                }),
-                            );
-
-                            buttonEmbed.addButton(
-                                new Button({
-                                    label: "Cancel",
-                                    style: ButtonStyle.Danger,
-                                    allowedUsers: [interaction.user.id],
-                                }).oncePressed(async (buttonInteraction) => {
-                                    await buttonInteraction.update({
-                                        embeds: [
-                                            client.Functions.makeErrorEmbed({
-                                                title: "Changes cancelled",
-                                                description: "Permission changes were cancelled",
-                                            }),
-                                        ],
-                                        components: [],
-                                    });
                                 }),
                             );
 
