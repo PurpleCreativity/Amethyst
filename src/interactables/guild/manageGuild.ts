@@ -425,6 +425,25 @@ export default new SlashCommand({
 
                             buttonEmbed.addButton(
                                 new Button({
+                                    label: "Remove unknown entries",
+                                    style: ButtonStyle.Secondary,
+                                    allowedUsers: [interaction.user.id],
+                                }).onPressed(async (buttonInteraction) => {
+                                    await buttonInteraction.deferUpdate();
+                                    permissionData.users = permissionData.users.filter((id) =>
+                                        interaction.guild?.members.cache.has(id),
+                                    );
+                                    permissionData.roles = permissionData.roles.filter((id) =>
+                                        interaction.guild?.roles.cache.has(id),
+                                    );
+
+                                    updateEmbed();
+                                    await interaction.editReply(buttonEmbed.getMessageData());
+                                }),
+                            );
+
+                            buttonEmbed.addButton(
+                                new Button({
                                     label: "Cancel",
                                     style: ButtonStyle.Danger,
                                     allowedUsers: [interaction.user.id],
