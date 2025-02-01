@@ -1,5 +1,4 @@
-import type { GuildMember } from "discord.js";
-import type mariadb from "mariadb";
+import type { GuildMember, TextChannel } from "discord.js";
 import client from "../../main.js";
 import { CommandPermission } from "../../types/core/Interactables.js";
 
@@ -41,7 +40,7 @@ export default class GuildProfile {
         this.settings = rawdata.settings;
     }
 
-    getSetting(key: string): unknown {
+    getSetting(key: string): unknown | undefined {
         return this.settings[key];
     }
 
@@ -51,6 +50,24 @@ export default class GuildProfile {
 
     getPermission(name: CommandPermission): PermissionEntry | undefined {
         return this.permissions[name];
+    }
+
+    setChannel(type: string, channelId?: string): void {
+        if (channelId) {
+            this.channels[type] = channelId;
+            return;
+        }
+
+        delete this.channels[type];
+    }
+
+    getChannel(type: string, convertToChannel: true): Promise<TextChannel | undefined>;
+    getChannel(type: string, convertToChannel?: false): string | undefined;
+    getChannel(type: string, convertToChannel?: boolean): Promise<TextChannel | undefined> | string | undefined {
+        if (convertToChannel) {
+            return client.Functions.fetchChannel(this.channels[type]) as Promise<TextChannel | undefined>;
+        }
+        return this.channels[type];
     }
 
     addUsersToPermission(name: CommandPermission, userIds: string | string[]): void {
