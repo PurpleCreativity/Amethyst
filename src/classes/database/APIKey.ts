@@ -1,3 +1,8 @@
+import bcrypt from "bcrypt";
+import type mariadb from "mariadb";
+import client from "../../main.js";
+import type { RoutePermission } from "../../types/core/API.js";
+
 export type rawAPIKeyData = {
     id: bigint;
     __v: number;
@@ -7,7 +12,7 @@ export type rawAPIKeyData = {
     name: string;
     value: string;
     enabled: boolean;
-    permissions: string[];
+    permissions: RoutePermission[];
 
     createdAt: Date;
     createdBy: string;
@@ -22,7 +27,7 @@ export default class APIKey {
     name: string;
     value: string;
     enabled: boolean;
-    permissions: string[];
+    permissions: RoutePermission[];
 
     createdAt: Date;
     createdBy: string;
@@ -40,5 +45,30 @@ export default class APIKey {
 
         this.createdAt = rawdata.createdAt;
         this.createdBy = rawdata.createdBy;
+    }
+
+    static async create(
+        guildId: string,
+        name: string,
+        permissions: RoutePermission[],
+        createdBy: string,
+    ): Promise<{ apiKey: string }> {
+        const apiKey = client.API.generateKey();
+        const hashedValue = await bcrypt.hash(apiKey, 10);
+
+        let connection: mariadb.Connection | undefined;
+        try {
+            connection = await client.Database.getConnection();
+
+            await connection.query(
+                `INSERT INTO APIKeys (guildId, name, value, permissions, createdBy)
+                     VALUES (?, ?, ?, ?, ?)`,
+                [guildId, name, hashedValue, JSON.stringify(permissions), createdBy],
+            );
+
+            return { apiKey };
+        } finally {
+            if (connection) await connection.end();
+        }
     }
 }
