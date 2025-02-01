@@ -65,13 +65,14 @@ export default class Modal {
             const listener = async (newInteraction: ModalSubmitInteraction) => {
                 if (newInteraction.customId !== this.modal.data.custom_id) return;
 
+                clearTimeout(timeout);
                 resolve(newInteraction);
                 client.off("modalSubmitInteraction", listener);
             };
 
             client.on("modalSubmitInteraction", listener);
 
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 client.off("modalSubmitInteraction", listener);
                 reject(new Error("Modal interaction timed out"));
             }, 300_000); // 5 minutes
