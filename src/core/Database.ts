@@ -347,11 +347,13 @@ export default class Database {
     };
 
     init = async () => {
-        if (this.client.devMode) await this.initializeTables();
+        if (this.client.devMode) {
+            this.pool.on("acquire", () => this.client.verbose("Database connection acquired."));
+            this.pool.on("release", () => this.client.verbose("Database connection released."));
+            await this.initializeTables();
+        }
 
         //await this.addGuildProfile("DEV", "1276574166937505925");
-        this.pool.on("acquire", () => this.client.verbose("Database connection acquired."));
-        this.pool.on("release", () => this.client.verbose("Database connection released."));
 
         this.client.success("Initialized Database");
     };
