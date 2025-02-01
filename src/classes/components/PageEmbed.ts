@@ -1,3 +1,5 @@
+//! Rewrite to support being ephemeral
+
 import {
     type APIEmbedField,
     ButtonStyle,
