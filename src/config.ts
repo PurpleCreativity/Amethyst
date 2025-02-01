@@ -6,7 +6,7 @@ dotenv.config();
 
 const config = {} as configType;
 
-config.version = "1.4.0";
+config.version = "1.2.0";
 config.baseURL = "";
 config.port = process.env.PORT ? Number.parseInt(process.env.PORT) : 8080;
 
