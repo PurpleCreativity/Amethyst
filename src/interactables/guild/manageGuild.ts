@@ -1,6 +1,7 @@
 import {
     ButtonStyle,
     type Guild,
+    NewsChannel,
     SlashCommandSubcommandBuilder,
     SlashCommandSubcommandGroupBuilder,
     TextChannel,
@@ -99,12 +100,13 @@ export default new SlashCommand({
                         {
                             const type = interaction.options.getString("type", true);
                             const channel = interaction.options.getChannel("channel", true);
-                            if (!(channel instanceof TextChannel)) {
+
+                            if (!(channel instanceof TextChannel) && !(channel instanceof NewsChannel)) {
                                 await interaction.editReply({
                                     embeds: [
                                         client.Functions.makeErrorEmbed({
                                             title: "Invalid channel",
-                                            description: "Please provide a valid `textchannel`",
+                                            description: "Please provide a valid `TextChannel`/`NewsChannel`",
                                         }),
                                     ],
                                 });
